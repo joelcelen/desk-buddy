@@ -70,9 +70,16 @@ On some READMEs, you may see small images that convey metadata, such as whether 
 Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
 
 ## Installation
-// TO-DO
 
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+
+To be able to use this system, you need a [Wio Terminal](https://www.seeedstudio.com/Wio-Terminal-p-4509.html) and the following sensors:
+1. Grove - [Multi Color Flash LED (5mm)](https://www.seeedstudio.com/Grove-Multi-Color-Flash-LED-5mm.html)
+2. Grove - [Button](https://wiki.seeedstudio.com/Grove-Button/)
+3. Grove - [Light Sensor v1.2](https://wiki.seeedstudio.com/Grove-Light_Sensor/)
+4. Grove - [Speaker](https://wiki.seeedstudio.com/Grove-Speaker/)
+5. Grove - [Temperature & Humidity Sensor (DHT11)](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
+
+For further information on installation please see the [wiki page](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Installation/guides-and-installation)
 
 ## Usage
 // TO-DO
