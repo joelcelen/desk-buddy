@@ -73,13 +73,14 @@ Depending on what you are making, it can be a good idea to include screenshots o
 
 
 To be able to use this system, you need a [Wio Terminal](https://www.seeedstudio.com/Wio-Terminal-p-4509.html) and the following sensors:
-1. Grove - [Multi Color Flash LED (5mm)](https://www.seeedstudio.com/Grove-Multi-Color-Flash-LED-5mm.html)
-2. Grove - [Button](https://wiki.seeedstudio.com/Grove-Button/)
-3. Grove - [Light Sensor v1.2](https://wiki.seeedstudio.com/Grove-Light_Sensor/)
-4. Grove - [Speaker](https://wiki.seeedstudio.com/Grove-Speaker/)
-5. Grove - [Temperature & Humidity Sensor (DHT11)](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
 
-For further information on installation please see the [wiki page](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Installation/guides-and-installation)
+1. [Grove - Multi Color Flash LED (5mm)](https://www.seeedstudio.com/Grove-Multi-Color-Flash-LED-5mm.html)
+2. [Grove - Button](https://wiki.seeedstudio.com/Grove-Button/)
+3. [Grove - Light Sensor v1.2](https://wiki.seeedstudio.com/Grove-Light_Sensor/)
+4. [Grove - Speaker](https://wiki.seeedstudio.com/Grove-Speaker/)
+5. [Grove - Temperature & Humidity Sensor (DHT11)](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
+
+For further information on installation please see the [installation wiki page](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Installation/guides-and-installation)
 
 ## Usage
 // TO-DO
