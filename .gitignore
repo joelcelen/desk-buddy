@@ -1,0 +1,4 @@
+# macOS specific files to ignore
+.DS_Store
+.AppleDouble
+.LSOverride
