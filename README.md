@@ -56,8 +56,8 @@ Desk Buddy
 
 ## Description
 The goal of this project is to build a “desk aid” system using Arduino technology and a Wio Seeed Terminal. The system makes sure desk workers who spend a lot of time sitting still work in a healthy environment, stay hydrated and get regular physical movement. 
-The system utilises multiple sensors to measure and monitor temperature, humidity and other environmental factors. The results of these measurements are communicated to the user via a summary of the overall environment conditions. The user is notified on the status of the overall environment values in the form of a “smiley face” which is either happy or sad depending on if the environment goals are met. 
-The system will have options for preference settings regarding time intervals, sensitivity of sensors etc. which will be customizable by the user through a system phone app.
+The system utilises multiple sensors to measure and monitor temperature, humidity and other environmental factors. The results of these measurements are communicated to the user via a summary of the overall environment conditions. The user is notified on the status of the overall environment values in the form of a “smiley face” which is either happy or sad depending on if the environment goals are met. The user will recieve reminders to stretch and to hydrate regularly. Furthermore the user will recieve motivational quotes auditoraly. 
+The system has options for preference settings regarding time intervals, sensitivity of sensors etc. which is customizable by the user through a system phone app.
 
 ## Badges
 // TO-DO
