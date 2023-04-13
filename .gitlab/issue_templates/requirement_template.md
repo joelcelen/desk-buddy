@@ -1,8 +1,8 @@
-# Requirement
+# User Story
 
-Requirement description here
+User story description here
 
-[Related to: #issue number]
+[Related to <Functional Requirement>]
 
 # Acceptance criteria
 
