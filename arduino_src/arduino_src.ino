@@ -11,30 +11,26 @@ TFT_eSPI screen;
 #define serial Serial
 
 void setup() {
-    serial.begin(115200);
-    serial.println("DHT11 test!");
-    Wire.begin();
+  
+  serial.begin(115200);
+  Wire.begin();
 }
 
 void loop() {
   
   
   // Humidity sensor DT11 -----------------------------------
-  // Reading temperature or humidity takes about 250 milliseconds!
-  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
 
-  float temp_hum_val[2] = {0};
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
   
-  if (!dht.readTempAndHumidity(temp_hum_val)) {
-    serial.print("Humidity: ");
-    serial.print(temp_hum_val[0]);
-    serial.print(" %\t");
-    serial.print("Temperature: ");
-    serial.print(temp_hum_val[1]);
-    serial.println(" *C");
-  } else {
-    serial.println("Failed to get temprature and humidity value.");
-  }
+  // Printing the results in the serial monitor
+  serial.print("Humidity: ");
+  serial.print(humidity);
+  serial.print(" %\t");
+  serial.print("Temperature: ");
+  serial.print(temperature);
+  serial.println(" *C");
   
   //--------------------------------------------------------------
 
