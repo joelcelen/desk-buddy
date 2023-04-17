@@ -4,15 +4,14 @@
 // Create an instance of DHT
 DHT dht(A0, DHT11);
 
+
+
 // initialize TFT LCD
 TFT_eSPI screen;
 
-// Define the serial
-#define serial Serial
-
 void setup() {
   
-  serial.begin(115200);
+  Serial.begin(9600);
   Wire.begin();
 }
 
@@ -24,14 +23,22 @@ void loop() {
   float temperature = dht.readTemperature();
   float humidity = dht.readHumidity();
   
-  // Printing the results in the serial monitor
-  serial.print("Humidity: ");
-  serial.print(humidity);
-  serial.print(" %\t");
-  serial.print("Temperature: ");
-  serial.print(temperature);
-  serial.println(" *C");
-  
+  // Printing the results in the Serial monitor
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.print(" %\t");
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" *C");
+
+  // Light sensor--------------------------------------------
+
+  lightValue = analogRead(lightPin);  // Read the analog value from the light sensor
+
+  // Printing the results in the Serial monitor  
+  Serial.print("Light sensor value: ");  // Print the sensor value to the serial monitor
+  Serial.println(lightValue);  
+
   //--------------------------------------------------------------
 
   delay(1000);
