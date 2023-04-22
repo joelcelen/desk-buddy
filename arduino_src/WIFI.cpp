@@ -1,17 +1,20 @@
 #include "WIFI.h"
 #include <rpcWifi.h>
 
-
+// Default constructor, without Wi-Fi parameters
 WIFI::WIFI(){
   connection_status = false;
 }
 
+// Constructor (Overloaded) with user-defined SSID & Password for Wi-Fi
 WIFI::WIFI(const char* ssid, const char* password){
   this->ssid = ssid;
   this->password = password;
   connection_status = false;
 }
 
+
+// Method implementation: Wi-Fi Connection
 void WIFI::connect(){
   WiFi.begin(ssid, password); // Connecting WiFi
   while (!isConnected()) {
@@ -21,11 +24,15 @@ void WIFI::connect(){
   connection_status = true;
 }
 
+
+// Method implementation: to check Wi-Fi Connection status
 bool WIFI::isConnected(){
   connection_status = (WiFi.status() == WL_CONNECTED);
   return connection_status;
 }
 
+
+// Getters & Setters implementation
 const char* WIFI::getSSID() const{
   return ssid;
 }
