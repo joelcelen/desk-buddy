@@ -5,3 +5,5 @@
 
 # Networkinfo
 networkInfo.h
+brokerInfo.h
+mqttTopics.h
