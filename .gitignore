@@ -3,7 +3,9 @@
 .AppleDouble
 .LSOverride
 
-# Networkinfo
-networkInfo.h
-brokerInfo.h
-mqttTopics.h
+# Wifi network info
+arduino_src/networkInfo.h
+
+# MQTT broker and topics info
+arduino_src/brokerInfo.h
+arduino_src/mqttTopics.h
