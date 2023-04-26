@@ -14,7 +14,7 @@ public class MqttHandler {
     private MqttClient client;
 
     //Method for connecting to broker
-    public void connect(String brokerUrl, String clientId) {
+    public void connect(String brokerUrl, String clientId, String username, String password) {
         try {
             // Set up the persistence layer
             MemoryPersistence persistence = new MemoryPersistence();
@@ -25,6 +25,8 @@ public class MqttHandler {
             // Set up the connection options
             MqttConnectOptions connectOptions = new MqttConnectOptions();
             connectOptions.setCleanSession(true);
+            connectOptions.setUserName(username);
+            connectOptions.setPassword(password.toCharArray());
 
             // Connect to the broker
             client.connect(connectOptions);
