@@ -7,13 +7,9 @@
 #include "TFT_eSPI.h" // Wio terminal screen
 #include "button.h" //Reference to the header file for button
 
-//wifi library
-#include <rpcWiFi.h>
-
 //MQTT libraries
 #include <PubSubClient.h> // MQTT library
 #include <WiFiClientSecure.h> // secure Wifi client for PubSub library
-#include "networkInfo.h" //secrets file for wifi network (.gitignore)
 #include "brokerInfo.h" //secrets file for mqtt broker (.gitignore)
 #include "mqttTopics.h" //secrets file for mqtt broker topics (.gitignore)
 
