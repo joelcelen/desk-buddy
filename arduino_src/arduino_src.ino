@@ -12,30 +12,13 @@
 #include "brokerInfo.h" //secrets file for mqtt broker (.gitignore)
 #include "mqttTopics.h" //secrets file for mqtt broker topics (.gitignore)
 
-// PRIVATE MQTT broker settings (such as HiveMQ, Mosquitto) - imported from brokerInfo.h file
-const char* mqtt_broker = BROKER_URL; // MQTT broker URL
-const int mqtt_port = BROKER_PORT; // MQTT broker port
-const char* mqtt_client = CLIENT_ID; // MQTT client ID (unique identifer name)
-const char* mqtt_username = CLIENT_USERNAME; // MQTT client username - from MQTT broker
-const char* mqtt_password = CLIENT_PASSWORD; // MQTT client password - from MQTT broker
-const char* rootCACertificate = ROOT_CA_CERTIFICATE; //SSL certificate - from MQTT broker
-
-// MQTT publish (TOPIC_PUB*) and subscribe (TOPIC_SUB*) topics - imported from mqttTopics.h file
-const char* mqtt_sub_deskBuddy = TOPIC_SUB; // subscribe to deskBuddy topic
-const char* mqtt_pub_deskBuddy = TOPIC_PUB; // publish to deskBuddy topic
-const char* mqtt_sub_mood = TOPIC_SUB_MOOD; // subscribe to mood setting
-const char* mqtt_sub_pref = TOPIC_SUB_PREF; //subscribe to preference setting
-const char* mqtt_sub_sound = TOPIC_SUB_SOUND; //subscribe to sound byte
-const char* mqtt_pub_temp = TOPIC_PUB_TEMP; // publish temperature reading
-const char* mqtt_pub_humid = TOPIC_PUB_HUMID; // publish humidity reading
-const char* mqtt_pub_light = TOPIC_PUB_LIGHT; // publish light reading
-
 WiFiClientSecure wifiSSLClient; //wifi client for PubSub with SSL/TLS cryptographic protocols
 PubSubClient mqttClient(wifiSSLClient); //MQTT client with SSL/TLS communication protocols
-long lastMsg = 0; //last message time
-long lastDisp = 0; //last display feedback on environment preferences
-long lastStandUp = 0; //last stand up message
-long lastMotivate = 0; //last motivational quote
+long lastPublish = 0; //last message time
+long lastDisplay = 0; //last display time feedback on environment preferences
+long lastStandUp = 0; //last stand up message time
+long lastMotivate = 0; //last motivational quote time
+// initialize TFT colors for UI based on Android App environment preferences
 uint16_t tempColor = TFT_GREEN;
 uint16_t humidColor = TFT_ORANGE;
 uint16_t lightColor = TFT_RED;
@@ -65,8 +48,8 @@ void setup() {
   Wire.begin();
 
   //mqtt_setup - connects to secure MQTT broker
-  wifiSSLClient.setCACert(rootCACertificate); // Set root CA certificate
-  mqttClient.setServer(mqtt_broker, mqtt_port);
+  wifiSSLClient.setCACert(ROOT_CA_CERTIFICATE); // Set root CA certificate
+  mqttClient.setServer(BROKER_URL, BROKER_PORT);
   mqttClient.setCallback(mqttCallback);
 
   //button
@@ -104,11 +87,12 @@ void loop() {
   char tempStr[8], humidStr[8], lightStr[8];
   dtostrf(temperature, 3, 2, tempStr);
   dtostrf(humidity, 3, 2, humidStr);
-  itoa(lightValue, lightStr, 4);
+  itoa(lightValue, lightStr, 10);
 
   // Event timer
   long now = millis();
   
+  // Control TFT scenes based on event timer
   if (now - lastStandUp > 60000) { //300000
     lastStandUp = now;
     drawStandUpMsg();
@@ -120,7 +104,7 @@ void loop() {
     //  buttonPressed = true;
     //}
     delay(2000);
-  }else if(now - lastMotivate > 30000){ //150000
+  }else if(now - lastMotivate > 30000){ //150000 ms better for final product
     lastMotivate = now;
     
     delay(3000);
@@ -128,16 +112,16 @@ void loop() {
     // msg displays for 30 seconds
     delay(2000);
 
-  }else if (now - lastMsg > 5000) { //30000
-    lastMsg = now;
+  }else if (now - lastPublish > 5000) { //30000 ms better for final product
+    lastPublish = now;
 
   // publish readings
-  mqttClient.publish("deskBuddy/temperature",tempStr);
-  mqttClient.publish("deskBuddy/humidity",humidStr);
-  mqttClient.publish("deskBuddy/light",lightStr);
+  mqttClient.publish(TOPIC_PUB_TEMP,tempStr);
+  mqttClient.publish(TOPIC_PUB_TEMP,humidStr);
+  mqttClient.publish(TOPIC_PUB_TEMP,lightStr);
 
-  }else if(now - lastDisp > 3000) { // 5000
-    lastDisp = now;
+  }else if(now - lastDisplay > 3000) { // 5000 ms better for final product
+    lastDisplay = now;
     // update feedback from app on environmental preference targets
     drawLayout(tempStr, humidStr, lightStr, tempColor, humidColor, lightColor);
   }
@@ -160,7 +144,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
   }
   Serial.println();
 
-  if (strcmp(topic, "deskBuddy/app/setTemperature") == 0) {
+  if (strcmp(topic, TOPIC_SUB_TEMP) == 0) {
     if (message == "TFT_GREEN") {
       tempColor = TFT_GREEN;
     } else if (message == "TFT_ORANGE") {
@@ -168,7 +152,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
     } else if (message == "TFT_RED") {
       tempColor = TFT_RED;
     }
-  } else if (strcmp(topic, "deskBuddy/app/setHumid") == 0) {
+  } else if (strcmp(topic, TOPIC_SUB_HUMID) == 0) {
     if (message == "TFT_GREEN") {
       humidColor = TFT_GREEN;
     } else if (message == "TFT_ORANGE") {
@@ -176,7 +160,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
     } else if (message == "TFT_RED") {
       humidColor = TFT_RED;
     }
-  } else if (strcmp(topic, "deskBuddy/app/setLight") == 0) {
+  } else if (strcmp(topic, TOPIC_SUB_LIGHT) == 0) {
     if (message == "TFT_GREEN") {
       lightColor = TFT_GREEN;
     } else if (message == "TFT_ORANGE") {
@@ -194,19 +178,19 @@ void mqttReconnect()
   {
     Serial.println("Connecting to MQTT broker...");
     // Attempt to connect
-    if (mqttClient.connect(mqtt_client, mqtt_username, mqtt_password)) {
+    if (mqttClient.connect(CLIENT_ID, CLIENT_USERNAME, CLIENT_PASSWORD)) {
       // Once connected, publish an announcement...
       Serial.println("Connected to MQTT broker!");
-      mqttClient.publish(mqtt_pub_deskBuddy, "{\"message\": \"Wio Terminal is connected!\"}");
+      mqttClient.publish(TOPIC_PUB, "{\"message\": \"Wio Terminal is connected!\"}");
       Serial.println("Published connection message successfully!");
-      // ... and resubscribe
-      Serial.print("Subcribed to: ");
-      Serial.println("deskBuddy");
-      mqttClient.subscribe("deskBuddy");
-      mqttClient.subscribe("deskBuddy/app/setTemperature");
-      mqttClient.subscribe("deskBuddy/app/setHumid");
-      mqttClient.subscribe("deskBuddy/app/setLight");
+
+      // Subscribe to topics that App publishes to, to update UI based on user preferences
+      mqttClient.subscribe(TOPIC_SUB_TEMP);
+      mqttClient.subscribe(TOPIC_SUB_HUMID);
+      mqttClient.subscribe(TOPIC_SUB_LIGHT);
+
     } else {
+      //if not connected:
       Serial.println("Connection to MQTT broker failed!");
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
@@ -216,7 +200,6 @@ void mqttReconnect()
     }
   }
 }
-
 
 // REFACTOR TO UI.h
 void drawLayout(String tempStr, String humidStr, String lightStr, uint16_t tempColor, uint16_t humidColor, uint16_t lightColor){
