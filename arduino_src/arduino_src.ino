@@ -1,3 +1,8 @@
+#include "WIFI.h" //Wi-Fi Custom library
+#include <rpcWiFi.h> //Wi-Fi System library
+#include "networkInfo.h" //contains wifi SSID and PASSWORD
+
+
 #include "DHT.h" // DHT11 humidity/temperature sensor
 #include "TFT_eSPI.h" // Wio terminal screen
 #include "button.h" //Reference to the header file for button
@@ -40,6 +45,9 @@ uint16_t tempColor = TFT_GREEN;
 uint16_t humidColor = TFT_ORANGE;
 uint16_t lightColor = TFT_RED;
 
+// Create Wi-Fi Instance with SSID & Password 
+WIFI myWifi(SSID, PASSWORD);
+
 // Create an instance of DHT
 DHT dht(A0, DHT11);
 
@@ -53,15 +61,13 @@ void setup() {
   
   Serial.begin(115200);
   while (!Serial);
+  
+  //initialize Wi-Fi
+  Serial.print("Attempting to connect to Wi-Fi address: ");
+  Serial.println(myWifi.getSSID()); // Use getter function to get SSID
+  myWifi.connect(); // Method to initialize Wi-Fi connection
+   
   Wire.begin();
-
-  //wifi_setup
-  WiFi.begin(SSID, PASSWORD);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi...");
-  }
-  Serial.println("WiFi connected");
 
   //mqtt_setup - connects to secure MQTT broker
   wifiSSLClient.setCACert(rootCACertificate); // Set root CA certificate

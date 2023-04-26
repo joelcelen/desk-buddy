@@ -1,6 +1,7 @@
 ## Project Name
-### Desk Buddy
-![Logo](https://i.imgur.com/IoqlBfD.png)
+## Desk Buddy
+<img src="https://i.imgur.com/IoqlBfD.png" alt="Logo" width="200"/> 
+
 ## Description
 
 The goal of this project is to build a “desk aid” system using Arduino technology and a Wio Seeed Terminal. The system makes sure desk workers who spend a lot of time sitting still work in a healthy environment, stay hydrated and get regular physical movement. 
