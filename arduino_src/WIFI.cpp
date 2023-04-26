@@ -1,12 +1,7 @@
 #include "WIFI.h"
 #include <rpcWifi.h>
 
-// Default constructor, without Wi-Fi parameters
-WIFI::WIFI(){
-  connection_status = false;
-}
-
-// Constructor (Overloaded) with user-defined SSID & Password for Wi-Fi
+// Constructor with user-defined SSID & Password for Wi-Fi
 WIFI::WIFI(const char* ssid, const char* password){
   this->ssid = ssid;
   this->password = password;
