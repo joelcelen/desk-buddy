@@ -25,11 +25,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //gets the broker info from a file that is in the .gitignore,
+        //connects based on the info in the txt file with the necessary information to connect to secure broker
         inputStream = getResources().openRawResource(R.raw.brokerinfo);
         {
             try {
                 scanBrokerInfo = new Scanner(inputStream);
-                while(scanBrokerInfo.hasNextLine()) {
+                while (scanBrokerInfo.hasNextLine()) {
                     brokerUrl = scanBrokerInfo.next();
                     username = scanBrokerInfo.next();
                     password = scanBrokerInfo.next();
@@ -42,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
         client = new MqttHandler();
         client.connect(brokerUrl, CLIENT_ID, username, password);
-        subscribeTopic(TOPIC);
+        //subscribeTopic(TOPIC);
+        publishMsg(TOPIC, "TCP_GREEN");
         scanBrokerInfo.close();
 
     }
