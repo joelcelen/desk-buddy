@@ -9,3 +9,6 @@ arduino_src/networkInfo.h
 # MQTT broker and topics info
 arduino_src/brokerInfo.h
 arduino_src/mqttTopics.h
+
+#MQTT broker info for android app
+deskBuddyApp/app/src/main/res/raw/brokerinfo.txt
