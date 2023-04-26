@@ -2,7 +2,6 @@
 #include <rpcWiFi.h> //Wi-Fi System library
 #include "networkInfo.h" //contains wifi SSID and PASSWORD
 
-
 #include "DHT.h" // DHT11 humidity/temperature sensor
 #include "TFT_eSPI.h" // Wio terminal screen
 #include "button.h" //Reference to the header file for button
@@ -84,7 +83,7 @@ void setup() {
 }
 
 void loop() {
-  //mqtt_loop - checks for connection to MQTT broker, listens to topic deskBuddy for now
+  //Connect MQTT - Verify connection
   if (!mqttClient.connected()) {
     mqttReconnect();
   }
@@ -96,35 +95,16 @@ void loop() {
 
   float temperature = dht.readTemperature();
   float humidity = dht.readHumidity();
-  
-  // Printing the results in the Serial monitor
-  //Serial.print("Humidity: ");
-  //Serial.print(humidity);
-  //Serial.print(" %\t");
-  //Serial.print("Temperature: ");
-  //Serial.print(temperature);
-  //Serial.println(" *C");
 
   // Light sensor--------------------------------------------
 
   int lightValue = analogRead(A2);  // Read the analog value from the light sensor, assigned to pin A2
-
-  //Printing the results in the Serial monitor  
-  //Serial.print("Light sensor value: ");  // Print the sensor value to the serial monitor
-  //Serial.println(lightValue);  
-
-  //--------------------------------------------------------------
   
   // convert readings to strings
   char tempStr[8], humidStr[8], lightStr[8];
   dtostrf(temperature, 3, 2, tempStr);
   dtostrf(humidity, 3, 2, humidStr);
   itoa(lightValue, lightStr, 4);
-  
-  // display readings
-  //drawLayout(tempStr, humidStr, lightStr, tempColor, humidColor, lightColor);
-
-  
 
   // Event timer
   long now = millis();
@@ -226,9 +206,6 @@ void mqttReconnect()
       mqttClient.subscribe("deskBuddy/app/setTemperature");
       mqttClient.subscribe("deskBuddy/app/setHumid");
       mqttClient.subscribe("deskBuddy/app/setLight");
-      //mqttClient.subscribe(mqtt_pub_light);
-      //mqttClient.subscribe(mqtt_pub_humid);
-      //mqttClient.subscribe(mqtt_pub_temp);
     } else {
       Serial.println("Connection to MQTT broker failed!");
       Serial.print("failed, rc=");
@@ -240,6 +217,8 @@ void mqttReconnect()
   }
 }
 
+
+// REFACTOR TO UI.h
 void drawLayout(String tempStr, String humidStr, String lightStr, uint16_t tempColor, uint16_t humidColor, uint16_t lightColor){
 
   // Clear screen
@@ -251,26 +230,24 @@ void drawLayout(String tempStr, String humidStr, String lightStr, uint16_t tempC
 
   // Draw temperature box and text
   tft.fillRect(10, 15, 20, 20, tempColor);
-  tft.setTextFont(2); // Select custom font
+  tft.setTextFont(2);
   tft.drawString("Temperature", 40, 10);
-  tft.setTextFont(4); // Select system font
+  tft.setTextFont(4);
   tft.drawString(tempStr + " C", 40, 40);
 
   // Draw humidity box and text
   tft.fillRect(10, 90, 20, 20, humidColor);
-  tft.setTextFont(2); // Select custom font
+  tft.setTextFont(2);
   tft.drawString("Humidity", 40, 85);
-  tft.setTextFont(4); // Select system font
+  tft.setTextFont(4);
   tft.drawString(humidStr + " %", 40, 115);
 
   // Draw light level box and text
   tft.fillRect(10, 165, 20, 20, lightColor);
-  tft.setTextFont(2); // Select custom font
+  tft.setTextFont(2);
   tft.drawString("Light Level", 40, 160);
-  tft.setTextFont(4); // Select system font
+  tft.setTextFont(4);
   tft.drawString(lightStr + " lx", 40, 190);
-
-  //delay(1000); // Wait for 1 second before updating display
 }
 
 void drawStandUpMsg(){
@@ -282,12 +259,12 @@ void drawStandUpMsg(){
   tft.setTextColor(TFT_WHITE);
 
   // Draw message for standing up and stretching
-  tft.setTextFont(1); // Select system font
-  tft.setCursor(30, 50); //try 10, 250 also
+  tft.setTextFont(1);
+  tft.setCursor(30, 50);
   tft.println("You have been sitting");
-  tft.setCursor(30, 110); //try 10, 250 also
+  tft.setCursor(30, 110);
   tft.println(" for too long!! o_o");
-  tft.setCursor(30, 170); //try 10, 250 also
+  tft.setCursor(30, 170);
   tft.println("Stand up and stretch!");
 }
 
@@ -301,15 +278,16 @@ void drawMotivationalMsg() {
   tft.setTextColor(TFT_WHITE);
 
   // Draw motivational message
-  tft.setTextFont(1); // Select system font
-  tft.setCursor(30, 50); //try 10, 250 also
+  tft.setTextFont(1);
+  tft.setCursor(30, 50);
   tft.println("Keep going!");
-  tft.setCursor(30, 110); //try 10, 250 also
+  tft.setCursor(30, 110);
   tft.println("You can do it!!");
-  tft.setCursor(30, 170); //try 10, 250 also
+  tft.setCursor(30, 170);
   tft.println("You're doing great!!!");
 }
 
+// Refactor to Buzzer.h
 void buzz(){
   analogWrite(WIO_BUZZER, 128);
   delay(1000);
