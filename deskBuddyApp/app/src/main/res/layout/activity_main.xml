@@ -10,10 +10,11 @@
         android:id="@+id/text_view"
         android:layout_width="295dp"
         android:layout_height="149dp"
+        android:layout_marginTop="16dp"
         android:text="TextView"
         android:textSize="48sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

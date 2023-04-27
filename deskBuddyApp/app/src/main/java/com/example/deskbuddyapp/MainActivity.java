@@ -1,7 +1,10 @@
 package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -44,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
         client = new MqttHandler();
         client.connect(brokerUrl, CLIENT_ID, username, password);
-        //subscribeTopic(TOPIC);
-        publishMsg(TOPIC, "TCP_GREEN");
+        subscribeTopic(TOPIC);
+        //publishMsg(TOPIC, "TCP_GREEN");
         scanBrokerInfo.close();
 
     }
