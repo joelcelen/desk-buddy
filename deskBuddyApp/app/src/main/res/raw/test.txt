@@ -1,0 +1,1 @@
+file used to be able to push the folder "res/raw" to gitlab
