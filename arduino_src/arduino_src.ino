@@ -30,7 +30,7 @@ WIFI myWifi(SSID, PASSWORD);
 DHT dht(A0, DHT11);
 
 //Create instance of button class named "button"
-//button button;
+button button;
 
 // initialize TFT LCD
 TFT_eSPI tft;
@@ -53,7 +53,7 @@ void setup() {
   mqttClient.setCallback(mqttCallback);
 
   //button
-  pinMode(WIO_KEY_A, INPUT_PULLUP); //Sets the mode of "BUTTON_1" pin to input with an internal pull-up resistor.
+  pinMode(WIO_5S_PRESS, INPUT_PULLUP); //Sets the mode of "Wio button 5 press" pin to input with an internal pull-up resistor.
   //button.begin();
 
   //buzzer
@@ -70,9 +70,7 @@ void loop() {
   if (!mqttClient.connected()) {
     mqttReconnect();
   }
-
-  //Button --------------------------------------------------  
-  //button.checkButton();
+  
 
   // Humidity sensor DT11 -----------------------------------
 
@@ -91,18 +89,16 @@ void loop() {
 
   // Event timer
   long now = millis();
+
+
   
   // Control TFT scenes based on event timer
   if (now - lastStandUp > 60000) { //300000
     lastStandUp = now;
-    drawStandUpMsg();
-    buzz();
-    //wait for button click to transition from Msg
-    //bool buttonPressed = false;
-    //while (!buttonPressed) {
-    //if (digitalRead(WIO_KEY_A) == LOW) {
-    //  buttonPressed = true;
-    //}
+    drawStandUpMsg(); //Draws screen with prompt to stand up and stretch
+    buzz(); //Makes noise to alert user
+    button.delayUntilPressed(); //Cause the program to delay indefinitely until button 5 is pressed.
+    Serial.println("Good Job!");
     delay(2000);
   }else if(now - lastMotivate > 30000){ //150000 ms better for final product
     lastMotivate = now;
