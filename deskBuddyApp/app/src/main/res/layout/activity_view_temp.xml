@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".viewTemp">
+    tools:context=".viewTemperature">
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginBottom="24dp"
         android:onClick="dailyGraph"
         android:text="Daily"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,11 +21,22 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginBottom="24dp"
         android:onClick="weeklyGraph"
         android:text="Weekly"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/tempChart"
+        android:layout_width="399dp"
+        android:layout_height="563dp"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.242" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
