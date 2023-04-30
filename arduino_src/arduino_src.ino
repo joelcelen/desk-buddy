@@ -11,6 +11,7 @@
 
 // Sensor libraries
 #include "DHT.h"                              //DHT sensor library (temperature and humidity)    
+#include "Button.h"
 
 // Display libraries
 #include "TFT_eSPI.h"                         // TFT screen library
@@ -30,6 +31,7 @@ int lightValue;
 char tempStr[8], humidStr[8], lightStr[8];
 
 // button
+Button button;
 bool buttonPressed = false;                   // button class/variables
 
 // Event timer
@@ -55,7 +57,7 @@ uint16_t tempColor = TFT_GREEN;              //default indicator color for tempe
 uint16_t humidColor = TFT_ORANGE;            //default indicator color for humidity
 uint16_t lightColor = TFT_RED;               //default indicator color for light level
 
-String deskBuddyLogo = "      _           _    ____            _     _       \n"
+const String deskBuddyLogo = "      _           _    ____            _     _       \n"
                        "     | |         | |  |  _ \\          | |   | |      \n"
                        "   __| | ___  ___| | _| |_) |_   _  __| | __| |_   _ \n"
                        "  / _` |/ _ \\/ __| |/ /  _ <| | | |/ _` |/ _` | | | |\n"
@@ -64,10 +66,11 @@ String deskBuddyLogo = "      _           _    ____            _     _       \n"
                        "                                                __/ |\n"
                        "                                               |___/ ";
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
   //display GUI when you power on device
-  tft.begin();
+  tftInit();
   drawLaunchScreen();
 
   //setup Serial communication
@@ -75,23 +78,21 @@ void setup() {
   while (!Serial); //wait for opening serial port
 
   //setup Wi-Fi connection -- based on networkInfo.h parameters
-  drawConnectingToWifi();
+  drawConnectingToWifi(myWifi.getSSID());
   myWifi.connect();  // Method to initialize Wi-Fi connection
-  tft.println("connected!");
+  drawConnectedToWifi();
   delay(100);
 
   //setup MQTT connection -- based on brokerInfo.h parameters
   wifiSSLClient.setCACert(ROOT_CA_CERTIFICATE);  // Set root CA certificate for SSL/TLS encryption
   mqttClient.setServer(BROKER_URL, BROKER_PORT); // Set MQTT broker URL and port
   mqttClient.setCallback(mqttCallback);          // Set callback method -- what to do when a message is received
-  tft.setCursor(20, 30);
-  tft.print("Connecting to MQTT broker... ");
+  drawConnectingToMQTT();
   mqttConnect();                                 // connect to MQTT (also verify wifi connection)
   delay(100);
-  tft.println("connected!");                     // connected message
-  tft.setCursor(20, 40);
+  drawConnectedToMQTT();                         // connected message
   delay(100);
-  tft.println("Preferences updated!");           // we will update user preferences once the loop starts, but display it now
+  drawPreferencesUpdated();                      // we will update user preferences once the loop starts, but display it now
 
   //setup button
   pinMode(WIO_5S_PRESS, INPUT_PULLUP);
@@ -99,11 +100,10 @@ void setup() {
   //setup buzzer
   pinMode(WIO_BUZZER, OUTPUT);
 
-  tft.setCursor(0, 100);
-  tft.print(deskBuddyLogo);                      // display desk buddy logo
+  drawDeskBuddyLogo();                           // display desk buddy logo
   delay(1500);
   drawAuthorsMsg();                              // display list of authors of project
-  delay(900);
+  delay(2000);
 }
 
 void loop() {
@@ -125,7 +125,10 @@ void loop() {
   if (now - lastStandUp > intervalStandUp) {
     drawStandUpMsg();                            // display standup messsage, user will be prompted to click button
     buzz();                                      // buzz notification
-    waitForButtonClick();                        // wait until button is clicked
+    delay(1000);
+    drawButtonClickMsg();
+    //waitForButtonClick();                        // wait until button is clicked
+    button.delayUntilPressed();
     drawGoodJobMsg();                            // encouraging message (positive reinforcement)
     delay(2000);
     lastStandUp = millis();
@@ -237,7 +240,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
 // MQTT connection method
 void mqttConnect(){
   if (!mqttClient.connected()) {
-    Serial.println("MQTT connection lost.");
+    //Serial.println("MQTT connection lost.");
     if (!myWifi.isConnected()) {
       Serial.println("WIFI connection lost.");
       myWifi.connect();
@@ -276,6 +279,10 @@ void mqttReconnect() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // GUI methods are listed below here:
+
+void tftInit(){
+  tft.begin();
+}
 void drawLaunchScreen(){
   tft.setRotation(3);  // Set the display rotation to 270 degrees
   tft.fillScreen(TFT_BLACK);
@@ -287,17 +294,34 @@ void drawLaunchScreen(){
   tft.println("Launching deskBuddy...");
 }
 
-void drawConnectingToWifi(){
+void drawConnectingToWifi(const char* ssid){
   tft.setCursor(20, 20);
   tft.print("Connecting to Wi-Fi network");
-  String mySSID = String(myWifi.getSSID());
-  if (mySSID.length() > 5) {  // screen doesn't like printing Wi-Fi names more than 5 characters
+  if (strlen(ssid) > 5) {  // screen doesn't like printing Wi-Fi names more than 5 characters
     tft.print("... ");
   } else {
     tft.print("(");
-    tft.print(mySSID);
+    tft.print(ssid);
     tft.print(")... ");
   }
+}
+
+void drawConnectedToWifi(){
+  tft.println("connected!");
+}
+
+void drawConnectingToMQTT(){
+  tft.setCursor(20, 30);
+  tft.print("Connecting to MQTT broker... ");
+}
+
+void drawConnectedToMQTT(){
+  tft.println("connected!");
+}
+
+void drawPreferencesUpdated(){
+  tft.setCursor(20, 40);
+  tft.println("Preferences updated!");           
 }
 
 void drawDashboard(String tempStr, String humidStr, String lightStr, uint16_t tempColor, uint16_t humidColor, uint16_t lightColor) {
@@ -344,9 +368,9 @@ void drawStandUpMsg() {
   tft.println(" for too long!! o_o");
   tft.setCursor(30, 170);
   tft.println("Stand up and stretch!");
+}
 
-  delay(2000);
-
+void drawButtonClickMsg(){
   // Draw message instructing button click
   tft.setTextSize(1);
   tft.setCursor(290, 220);
@@ -381,6 +405,11 @@ void drawMotivationalMsg() {
   tft.println("You're doing great!!!");
 }
 
+void drawDeskBuddyLogo() {
+  tft.setCursor(0, 100);
+  tft.print(deskBuddyLogo);
+}
+
 void drawAuthorsMsg() {
   tft.setCursor(10, 190);
   tft.print("Authors:");
@@ -396,5 +425,4 @@ void drawAuthorsMsg() {
   tft.print("Malte Bengtsson");
   tft.setCursor(180, 220);
   tft.print("Karl Eriksson");
-  delay(1100);
 }

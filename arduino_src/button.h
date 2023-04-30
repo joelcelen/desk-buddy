@@ -4,9 +4,9 @@
 #include <SPI.h>
 
 //Button class with initialization of methods and variables, private and public where appropriate.
-class button {
+class Button {
 public:
-  button();
+  Button();
   void delayUntilPressed();
 private:
   bool isPressed;
