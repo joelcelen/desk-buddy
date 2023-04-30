@@ -11,10 +11,14 @@
 
 // Sensor libraries
 #include "DHT.h"                              //DHT sensor library (temperature and humidity)    
-#include "Button.h"
+#include "Button.h"                           //Button class
+
+// Actuator libraries
+#include "Buzzer.h"                           //Buzzer class
 
 // Display libraries
 #include "TFT_eSPI.h"                         // TFT screen library
+//#include "Display.h"                          // Display class
 
 WIFI myWifi(SSID, PASSWORD);                  //Create Wi-Fi Instance with SSID & Password
 
@@ -30,9 +34,8 @@ float humidity;
 int lightValue;
 char tempStr[8], humidStr[8], lightStr[8];
 
-// button
-Button button;
-bool buttonPressed = false;                   // button class/variables
+Button button;                                // Create an instance of button
+Buzzer buzzer;                                // Create an instance of buzzer
 
 // Event timer
 unsigned long timerStart;
@@ -69,18 +72,16 @@ const String deskBuddyLogo = "      _           _    ____            _     _    
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
-  //display GUI when you power on device
-  tftInit();
-  drawLaunchScreen();
+  tftInit();                                     // set up Wio Display
+  drawLaunchScreen();                            // display GUI when you power on device
 
   //setup Serial communication
-  Serial.begin(115200);
-  while (!Serial); //wait for opening serial port
+  Serial.begin(115200);                          // open serial port with max bit rate
+  while (!Serial);                               // wait for opening serial port
 
-  //setup Wi-Fi connection -- based on networkInfo.h parameters
-  drawConnectingToWifi(myWifi.getSSID());
-  myWifi.connect();  // Method to initialize Wi-Fi connection
-  drawConnectedToWifi();
+  drawConnectingToWifi(myWifi.getSSID());        // connecting msg
+  myWifi.connect();                              // setup Wi-Fi connection -- based on networkInfo.h parameters
+  drawConnectedToWifi();                         // cnonected msg
   delay(100);
 
   //setup MQTT connection -- based on brokerInfo.h parameters
@@ -95,10 +96,9 @@ void setup() {
   drawPreferencesUpdated();                      // we will update user preferences once the loop starts, but display it now
 
   //setup button
-  pinMode(WIO_5S_PRESS, INPUT_PULLUP);
-
+  pinMode(WIO_5S_PRESS, INPUT_PULLUP);           // setup button sensor
   //setup buzzer
-  pinMode(WIO_BUZZER, OUTPUT);
+  pinMode(WIO_BUZZER, OUTPUT);                   // setup buzzer actuator
 
   drawDeskBuddyLogo();                           // display desk buddy logo
   delay(1500);
@@ -114,58 +114,40 @@ void loop() {
   mqttClient.loop();                             // Retrieve messages on subscribed topics and trigger mqttCallback function
 
   // read sensors data
-  temperature = dht.readTemperature();           //read from temperature sensor
-  humidity = dht.readHumidity();                 //read from humidity sensor
+  temperature = dht.readTemperature();           // read from temperature sensor
+  humidity = dht.readHumidity();                 // read from humidity sensor
   lightValue = analogRead(A2);                   // read from light sensor -- which should be connected to pin A2
 
   //start event timer
-  now = millis();
+  now = millis();                                // number of miliseconds elapsed since start of program, used for timing!!
 
   // Control GUI/TFT scenes based on event timer
   if (now - lastStandUp > intervalStandUp) {
     drawStandUpMsg();                            // display standup messsage, user will be prompted to click button
-    buzz();                                      // buzz notification
+    buzzer.notify();                             // buzz notification
     delay(1000);
-    drawButtonClickMsg();
-    //waitForButtonClick();                        // wait until button is clicked
-    button.delayUntilPressed();
-    drawGoodJobMsg();                            // encouraging message (positive reinforcement)
+    drawButtonPressMsg();                        // prompts user to press button, otherwise the standup message will stay on the screen
+    button.delayUntilPressed();                  // wait until button is pressed
+    drawGoodJobMsg();                            // display good job message (encourages user, positive reinforcement)
     delay(2000);
-    lastStandUp = millis();
+    lastStandUp = millis();                      //reset timer
 
   } else if (now - lastMotivate > intervalMotivate) {
     drawMotivationalMsg();                       // draw motivational messages
     delay(2500);
-    lastMotivate = millis();
+    lastMotivate = millis();                      //reset timer
 
   } else if (now - lastPublish > intervalPublish) {
     mqttPublishSensorData();                     //publish sensor data
-    lastPublish = millis();
+    lastPublish = millis();                      //reset timer
 
   } else if (now - lastDisplay > intervalDisplay) {
-    //update dashboard display with sensor data, and indicators that change color according to user preferences
+    //update dashboard display of sensor data, and indicators that change color according to user preferences
     drawDashboard(tempStr, humidStr, lightStr, tempColor, humidColor, lightColor);
-    lastDisplay = millis();
+    lastDisplay = millis();                      //reset timer
   }
   timerEnd = millis();                          //end timing the loop for debugging
   Serial.println((timerEnd - timerStart));      //print serial port msg for debugging
-}
-
-//wait for button click to transition from StandUpMsg
-void waitForButtonClick() {
-  while (!buttonPressed) {
-    if (digitalRead(WIO_5S_PRESS) == LOW) {
-      buttonPressed = true;
-    }
-  }
-  buttonPressed = false;
-}
-
-// buzzer method -- buzzes for 1 second to notify user
-void buzz() {
-  analogWrite(WIO_BUZZER, 128);
-  delay(1000);
-  analogWrite(WIO_BUZZER, 0);
 }
 
 // parser method to parse incoming MQTT messages (payloads) based on subscription topic
@@ -370,8 +352,8 @@ void drawStandUpMsg() {
   tft.println("Stand up and stretch!");
 }
 
-void drawButtonClickMsg(){
-  // Draw message instructing button click
+void drawButtonPressMsg(){
+  // Draw message instructing button press
   tft.setTextSize(1);
   tft.setCursor(290, 220);
   tft.println("press");
