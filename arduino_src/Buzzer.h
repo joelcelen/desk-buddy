@@ -11,7 +11,7 @@ public:
   void notify(int time);
   void notifyLoudly();
 private:
-  int time; // time in ms to buzz
+  int buzzTime; // time in ms to buzz
 };
 
 #endif

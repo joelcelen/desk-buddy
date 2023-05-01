@@ -2,13 +2,13 @@
 
 // Constructor
 Buzzer::Buzzer() {
-  time = 1000; // default buzz time in ms
+  buzzTime = 1000; // default buzz time in ms
 }
 
-// buzzer method -- buzzes for 1 second to notify user
+// buzzer method -- buzzes for 1 second to notify user 
 void Buzzer::notify() {
   analogWrite(WIO_BUZZER, 128);
-  delay(this->time);
+  delay(this->buzzTime);
   analogWrite(WIO_BUZZER, 0);
 }
 
@@ -21,7 +21,7 @@ void Buzzer::notify(int time) {
 
 // loud buzzer method -- buzzes loudly for 1 second to notify user
 void Buzzer::notifyLoudly() {
-  analogWrite(WIO_BUZZER, 255);
+  analogWrite(WIO_BUZZER, 80);
   delay(1000);
   analogWrite(WIO_BUZZER, 0);
 }

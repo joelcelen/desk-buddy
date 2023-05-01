@@ -12,12 +12,13 @@ WIFI::WIFI(const char* ssid, const char* password){
 // Method implementation: Wi-Fi Connection
 void WIFI::connect(){
   WiFi.begin(ssid, password); // Connecting to Wi-Fi (first attempt)
-  Serial.println("Attempting WIFI connection!");
+  Serial.println("Attempting WIFI connection!"); //for debugging
   while (!isConnected()) {
-    Serial.println("... connection to WIFI failed, attempting to reconnect -- reset device if this message persists...");
+    Serial.println("... connection to WIFI failed, attempting to reconnect -- reset device if this message persists..."); //for debugging
     delay(500);
     WiFi.begin(ssid, password); // Reconnect if first attempt was not successful
   }
+  Serial.println("Connected to WIFI network!"); //for debugging
   connection_status = true;
 }
 

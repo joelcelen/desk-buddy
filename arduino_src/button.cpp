@@ -5,7 +5,7 @@ Button::Button() {
   this->isPressed = false; //Set boolean isPressed to false
 }
 
-//Method that delays action indefinitely until button 5 is pressed on the Wio terminal.
+//Method that delays action indefinitely until button 5 is pressed on the Wio terminal. (Blocking delay.)
 void Button::delayUntilPressed() {
   while(!isPressed){
   
@@ -16,3 +16,10 @@ void Button::delayUntilPressed() {
 isPressed = false;
 }
 
+bool Button::checkState(){
+  if(digitalRead(WIO_5S_PRESS) == LOW){
+    return true;
+  }else{
+    return false;
+  }
+}

@@ -8,6 +8,7 @@ class Button {
 public:
   Button();
   void delayUntilPressed();
+  bool checkState();
 private:
   bool isPressed;
 };
