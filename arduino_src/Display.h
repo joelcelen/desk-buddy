@@ -19,8 +19,9 @@ class Display {
     void drawDashboard(String tempStr, String humidStr, String lightStr, uint16_t tempColor, uint16_t humidColor, uint16_t lightColor);
     void drawStandUpMsg();
     void drawButtonPressMsg();
-    void drawNotificationMsg();
-    void drawNotificationMsg(String newNotificationMsg);
+    void drawNotificationMsg(String notificationMsg);
+    void drawNotificationMsgDefault();
+    void drawNotificationMsgUserDefined(String notificationMsg);
     void drawGoodJobMsg();
     void drawGoodJobMsg(int countStandUps);
     void drawMotivationalMsg();

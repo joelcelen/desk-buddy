@@ -91,7 +91,16 @@ void Display::drawStandUpMsg() {
   tft.println("Stand up and stretch!");
 }
 
-void Display::drawNotificationMsg() {
+void Display::drawNotificationMsg(String notificationMsg) {
+    if (notificationMsg.length() == 0) {         //draw default notification msg
+      drawNotificationMsgDefault();              
+    }else{                                                 //user-defined motivational message
+      drawNotificationMsgUserDefined(notificationMsg);
+    }
+  
+}
+
+void Display::drawNotificationMsgDefault() {
   //clear screen and set text properties
   tft.fillScreen(TFT_BLACK);
   tft.setTextSize(2);
@@ -106,7 +115,7 @@ void Display::drawNotificationMsg() {
   tft.println("Come and get it.");
 }
 
-void Display::drawNotificationMsg(String newNotificationMsg) {
+void Display::drawNotificationMsgUserDefined(String notificationMsg){
   //clear screen and set text properties
   tft.fillScreen(TFT_BLACK);
   tft.setTextSize(2);
@@ -115,21 +124,21 @@ void Display::drawNotificationMsg(String newNotificationMsg) {
   tft.setTextFont(1);
   tft.setCursor(30, 50);
   tft.println("ATTENTION!!!");
-  if(newNotificationMsg.length() < 25){
+  if(notificationMsg.length() < 25){
     tft.setCursor(30, 130);
-    tft.println(newNotificationMsg);
-  }else if(newNotificationMsg.length()>25 && newNotificationMsg.length()<50){
+    tft.println(notificationMsg);
+  }else if(notificationMsg.length()>25 && notificationMsg.length()<50){
     tft.setCursor(30, 110);
-    tft.println(newNotificationMsg.substring(0, 24));
+    tft.println(notificationMsg.substring(0, 24));
     tft.setCursor(30, 170);
-    tft.println(newNotificationMsg.substring(25));
+    tft.println(notificationMsg.substring(25));
   }else{
     tft.setCursor(30, 110);
-    tft.println(newNotificationMsg.substring(0, 24));
+    tft.println(notificationMsg.substring(0, 24));
     tft.setCursor(30, 170);
-    tft.println(newNotificationMsg.substring(25, 49));
+    tft.println(notificationMsg.substring(25, 49));
     tft.setCursor(30, 170);
-    tft.println(newNotificationMsg.substring(50));
+    tft.println(notificationMsg.substring(50));
   }
 }
 

@@ -31,8 +31,10 @@
 #include "Buzzer.h"                           //Buzzer class
 
 // Display libraries
-//#include "TFT_eSPI.h"                         // TFT screen library
 #include "Display.h"                          // Display class
+
+// Notification libraries
+#include "Notification.h"                     // Notification class
 
 WIFI myWifi(SSID, PASSWORD);                  //Create Wi-Fi Instance with SSID & Password
 
@@ -63,14 +65,14 @@ unsigned long intervalStandUp = 97000;       // time interval to display stand u
 unsigned long intervalMotivate = 43000;      // time interval to display motivational messages      (default: 43000)
 unsigned long intervalPublish = 3000;        // time interval to publish sensor data                (default: 3000)
 unsigned long intervalDisplay = 5000;        // time interval to refresh dashboard display          (default: 5000)
-unsigned long intervalNotification = 3600000;// time interval to send notification to user          (default: 3600000)
+//unsigned long intervalNotification = 3600000;// time interval to send notification to user          (default: 3600000)
 
 // event timers for publish, display, standup, motivate events
 unsigned long lastPublish = 0;               //last MQTT publish time of sensor data
 unsigned long lastDisplay = 0;               //last update of indicators based on app environment preferences
 unsigned long lastStandUp = 0;               //last stand up message time
 unsigned long lastMotivate = 0;              //last motivational quote time
-unsigned long lastNotification = 0;          //last notification send time
+//unsigned long lastNotification = 0;          //last notification send time
 
 // Count number of times user stands up during session.
 int countStandUps = 0;
@@ -79,7 +81,7 @@ int countStandUps = 0;
 String motivationalMessage;
 
 // Notification message
-String notificationMessage;
+Notification notification;
 
 // initialize TFT LCD display
 Display display;
@@ -179,12 +181,8 @@ void loop() {
     display.drawDashboard(tempStr, humidStr, lightStr, tempColor, humidColor, lightColor);  //update dashboard
     lastDisplay = millis();                      //reset timer
 
-  } else if (millis() - lastNotification > intervalNotification) {
-    if (notificationMessage.length() == 0) {
-      display.drawNotificationMsg();                       //draw default notification msg
-    }else{
-      display.drawNotificationMsg(notificationMessage);   //user-defined motivational message
-    }
+  } else if (millis() - notification.getLastNotification() > notification.getInterval()) {
+    display.drawNotificationMsg(notification.getMessage());  //display notification message
     for(int i=0; i<4; i++){
       buzzer.notifyLoudly();                     // buzz notification
       nonBlockingDelay(300);
@@ -193,8 +191,8 @@ void loop() {
     button.delayUntilPressed();                  // wait until button is pressed
     display.drawGoodJobMsg();                            // display good job message (encourages user, positive reinforcement)
     nonBlockingDelay(3000);
-    intervalNotification = 3600000;              //return to default notification interval (hourly)
-    lastNotification = millis();
+    notification.setInterval(3600000);              //return to default notification interval (hourly)
+    notification.setLastNotification(millis());
   }
 
   timerEnd = millis();                           //end timing the loop for debugging
@@ -265,8 +263,8 @@ void parseMotivation(String message){
 }
 
 void parseNotification(String message){
-  notificationMessage = message;
-  intervalNotification = 0;
+  notification.setMessage(message.c_str());
+  notification.setInterval(0);
   //Serial.println("A new notification has arrived!");  //for debugging  
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
