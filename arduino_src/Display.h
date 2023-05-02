@@ -24,8 +24,9 @@ class Display {
     void drawNotificationMsgUserDefined(String notificationMsg);
     void drawGoodJobMsg();
     void drawGoodJobMsg(int countStandUps);
-    void drawMotivationalMsg();
-    void drawMotivationalMsg(String userDefinedMsg);
+    void drawMotivationMsg(String motivationMsg);
+    void drawMotivationMsgDefault();
+    void drawMotivationMsgUserDefined(String motivationMsg);
     void drawDeskBuddyLogo(const char* deskBuddyLogo);
     void drawAuthorsMsg();
 };

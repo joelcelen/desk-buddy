@@ -97,7 +97,6 @@ void Display::drawNotificationMsg(String notificationMsg) {
     }else{                                                 //user-defined motivational message
       drawNotificationMsgUserDefined(notificationMsg);
     }
-  
 }
 
 void Display::drawNotificationMsgDefault() {
@@ -181,7 +180,7 @@ void Display::drawGoodJobMsg(int countStandUps) {
   tft.setTextColor(TFT_WHITE);
 }
 
-void Display::drawMotivationalMsg() {
+void Display::drawMotivationMsgDefault() {
   //clear screen and set text properties
   tft.fillScreen(TFT_BLACK);
   tft.setTextSize(2);
@@ -196,7 +195,7 @@ void Display::drawMotivationalMsg() {
   tft.println("You're doing great!!!");
 }
 
-void Display::drawMotivationalMsg(String userDefinedMsg){
+void Display::drawMotivationMsgUserDefined(String motivationMsg){
   //clear screen and set text properties
   tft.fillScreen(TFT_BLACK);
   tft.setTextSize(2);
@@ -204,8 +203,16 @@ void Display::drawMotivationalMsg(String userDefinedMsg){
   //draw motivational message
   tft.setTextFont(1);
   tft.setCursor(30, 100);
-  tft.print(userDefinedMsg);
+  tft.print(motivationMsg);
   tft.println();
+}
+
+void Display::drawMotivationMsg(String motivationMsg) {
+    if (motivationMsg.length() == 0) {         //draw default notification msg
+      drawMotivationMsgDefault();              
+    }else{                                                 //user-defined motivational message
+      drawMotivationMsgUserDefined(motivationMsg);
+    }
 }
 
 void Display::drawDeskBuddyLogo(const char* deskBuddyLogo) {
