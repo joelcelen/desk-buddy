@@ -31,8 +31,8 @@
 #include "Buzzer.h"                           //Buzzer class
 
 // Display libraries
-#include "TFT_eSPI.h"                         // TFT screen library
-//#include "Display.h"                        // Display class
+//#include "TFT_eSPI.h"                         // TFT screen library
+#include "Display.h"                          // Display class
 
 WIFI myWifi(SSID, PASSWORD);                  //Create Wi-Fi Instance with SSID & Password
 
@@ -48,8 +48,9 @@ float humidity;                               // variable stores humidity readin
 int lightValue;                               // variable stores light level reading
 char tempStr[8], humidStr[8], lightStr[8];    // variables for converting float or int measurements to string 
 
-// initializing actuators
 Button button;                                // Create an instance of button
+
+// initializing actuators
 Buzzer buzzer;                                // Create an instance of buzzer
 
 // Event timer - for loop
@@ -81,14 +82,14 @@ String motivationalMessage;
 String notificationMessage;
 
 // initialize TFT LCD display
-TFT_eSPI tft;
+Display display;
 
 // default TFT indicator colors for dashboard
 uint16_t tempColor = TFT_GREEN;              //default indicator color for temperature
 uint16_t humidColor = TFT_ORANGE;            //default indicator color for humidity
 uint16_t lightColor = TFT_RED;               //default indicator color for light level
 
-const String deskBuddyLogo = "      _           _    ____            _     _       \n"
+const char* deskBuddyLogo = "      _           _    ____            _     _       \n"
                        "     | |         | |  |  _ \\          | |   | |      \n"
                        "   __| | ___  ___| | _| |_) |_   _  __| | __| |_   _ \n"
                        "  / _` |/ _ \\/ __| |/ /  _ <| | | |/ _` |/ _` | | | |\n"
@@ -100,37 +101,37 @@ const String deskBuddyLogo = "      _           _    ____            _     _    
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
-  tftInit();                                     // set up Wio Display
-  drawLaunchScreen();                            // display GUI when you power on device
+  display.init();                                     // set up Wio Display
+  display.drawLaunchScreen();                            // display GUI when you power on device
 
   //setup Serial communication
   Serial.begin(115200);                          // open serial port with max bit rate
   //while (!Serial);                             // wait for serial port to open -- useful if debugging things in setup
 
-  drawConnectingToWifi(myWifi.getSSID());        // connecting msg
+  display.drawConnectingToWifi(myWifi.getSSID());        // connecting msg
   myWifi.connect();                              // setup Wi-Fi connection -- based on networkInfo.h parameters
-  drawConnectedToWifi();                         // connected msg
+  display.drawConnectedToWifi();                         // connected msg
   delay(100);                                    // this blocking delay is for visual aesthetics on startup screen
 
   //setup MQTT connection -- based on brokerInfo.h parameters
   wifiSSLClient.setCACert(ROOT_CA_CERTIFICATE);  // Set root CA certificate for SSL/TLS encryption
   mqttClient.setServer(BROKER_URL, BROKER_PORT); // Set MQTT broker URL and port
   mqttClient.setCallback(mqttCallback);          // Set callback method -- what to do when a message is received
-  drawConnectingToMQTT();
+  display.drawConnectingToMQTT();
   mqttConnect();                                 // connect to MQTT (also verify wifi connection)
   nonBlockingDelay(100);
-  drawConnectedToMQTT();                         // connected message
+  display.drawConnectedToMQTT();                         // connected message
   nonBlockingDelay(100);
-  drawPreferencesUpdated();                      // we will update user preferences once the loop starts, but display it now
+  display.drawPreferencesUpdated();                      // we will update user preferences once the loop starts, but display it now
 
   //setup sensors and actuators
   dht.begin();
   pinMode(WIO_5S_PRESS, INPUT_PULLUP);           // setup button sensor
   pinMode(WIO_BUZZER, OUTPUT);                   // setup buzzer actuator
 
-  drawDeskBuddyLogo();                           // display desk buddy logo
+  display.drawDeskBuddyLogo(deskBuddyLogo);                           // display desk buddy logo
   nonBlockingDelay(1500);
-  drawAuthorsMsg();                              // display list of authors of project
+  display.drawAuthorsMsg();                              // display list of authors of project
   nonBlockingDelay(2000);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,23 +150,23 @@ void loop() {
 
   // Control GUI/TFT scenes based on event timer
   if (millis() - lastStandUp > intervalStandUp) {
-    drawStandUpMsg();                            // display standup messsage, user will be prompted to click button
+    display.drawStandUpMsg();                            // display standup messsage, user will be prompted to click button
     buzzer.notifyLoudly();                       // buzz notification
     nonBlockingDelay(1000);
-    drawButtonPressMsg();                        // prompts user to press button
+    display.drawButtonPressMsg();                        // prompts user to press button
     while(!button.checkState()){                 // wait until button is pressed
       nonBlockingDelay(100);
     }
     countStandUps++;
-    drawGoodJobMsg(countStandUps);               // display good job message (encourages user, positive reinforcement)
+    display.drawGoodJobMsg(countStandUps);               // display good job message (encourages user, positive reinforcement)
     nonBlockingDelay(2000);
     lastStandUp = millis();                      //reset timer
 
   } else if (millis() - lastMotivate > intervalMotivate) {
     if (motivationalMessage.length() == 0) {
-      drawMotivationalMsg();                       //draw default motivational message
+      display.drawMotivationalMsg();                       //draw default motivational message
     }else{
-      drawMotivationalMsg(motivationalMessage);   //user-defined motivational message
+      display.drawMotivationalMsg(motivationalMessage);   //user-defined motivational message
     }
     nonBlockingDelay(2500);
     lastMotivate = millis();                     //reset timer
@@ -175,22 +176,22 @@ void loop() {
     lastPublish = millis();                      //reset timer
 
   } else if (millis() - lastDisplay > intervalDisplay) {
-    drawDashboard(tempStr, humidStr, lightStr, tempColor, humidColor, lightColor);  //update dashboard
+    display.drawDashboard(tempStr, humidStr, lightStr, tempColor, humidColor, lightColor);  //update dashboard
     lastDisplay = millis();                      //reset timer
 
   } else if (millis() - lastNotification > intervalNotification) {
     if (notificationMessage.length() == 0) {
-      drawNotificationMsg();                       // draw default notification msg
+      display.drawNotificationMsg();                       //draw default notification msg
     }else{
-      drawNotificationMsg(notificationMessage);   //user-defined motivational message
+      display.drawNotificationMsg(notificationMessage);   //user-defined motivational message
     }
     for(int i=0; i<4; i++){
       buzzer.notifyLoudly();                     // buzz notification
       nonBlockingDelay(300);
     }
-    drawButtonPressMsg();                        // prompts user to press button
+    display.drawButtonPressMsg();                        // prompts user to press button
     button.delayUntilPressed();                  // wait until button is pressed
-    drawGoodJobMsg();                            // display good job message (encourages user, positive reinforcement)
+    display.drawGoodJobMsg();                            // display good job message (encourages user, positive reinforcement)
     nonBlockingDelay(3000);
     intervalNotification = 3600000;              //return to default notification interval (hourly)
     lastNotification = millis();
@@ -339,228 +340,4 @@ void mqttSubscribeToAppTopics() {
   mqttClient.subscribe(TOPIC_SUB_TIMING);         //timingSubscriber();
   mqttClient.subscribe(TOPIC_SUB_MOTIVATION);     //motivationSubscriber();
   mqttClient.subscribe(TOPIC_SUB_NOTIFICATION);   //notificationSubscriber();
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////
-// GUI methods are listed below here:
-
-//initialize TFT LCD display
-void tftInit(){
-  tft.begin();
-}
-
-void drawLaunchScreen(){
-  tft.setRotation(3);  // Set the display rotation to 270 degrees
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextSize(1);
-  tft.setTextColor(TFT_WHITE);
-  tft.setTextFont(1);
-  tft.println("");
-  tft.setCursor(20, 10);
-  tft.println("Launching deskBuddy...");
-}
-
-void drawConnectingToWifi(const char* ssid){
-  tft.setCursor(20, 20);
-  tft.print("Connecting to Wi-Fi network");
-  if (strlen(ssid) > 5) {  // screen doesn't like printing Wi-Fi names more than 5 characters
-    tft.print("... ");
-  } else {
-    tft.print("(");
-    tft.print(ssid);       // only print if have a short wifi name (otherwise goes off the screen)
-    tft.print(")... ");
-  }
-}
-
-void drawConnectedToWifi(){
-  tft.println("connected!");
-}
-
-void drawConnectingToMQTT(){
-  tft.setCursor(20, 30);
-  tft.print("Connecting to MQTT broker... ");
-}
-
-void drawConnectedToMQTT(){
-  tft.println("connected!");
-}
-
-void drawPreferencesUpdated(){
-  tft.setCursor(20, 40);
-  tft.println("Preferences updated!");           
-}
-
-void drawDashboard(String tempStr, String humidStr, String lightStr, uint16_t tempColor, uint16_t humidColor, uint16_t lightColor) {
-  //clear screen and set text properties
-  tft.fillScreen(TFT_BLACK);                  //clear screen
-  tft.setTextSize(2);                         //set text size
-  tft.setTextColor(TFT_WHITE);                //set text color
-  
-  //draw temperature box and text
-  tft.fillRect(10, 15, 20, 20, tempColor);
-  tft.setTextFont(2);
-  tft.drawString("Temperature", 40, 10);
-  tft.setTextFont(4);
-  tft.drawString(tempStr + " C", 40, 40);
-
-  //draw humidity box and text
-  tft.fillRect(10, 90, 20, 20, humidColor);
-  tft.setTextFont(2);
-  tft.drawString("Humidity", 40, 85);
-  tft.setTextFont(4);
-  tft.drawString(humidStr + " %", 40, 115);
-
-  //draw light level box and text
-  tft.fillRect(10, 165, 20, 20, lightColor);
-  tft.setTextFont(2);
-  tft.drawString("Light Level", 40, 160);
-  tft.setTextFont(4);
-  tft.drawString(lightStr + " lx", 40, 190);
-}
-
-void drawStandUpMsg() {
-  //clear screen and set text properties
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE);
-  //draw message for standing up and stretching
-  tft.setTextFont(1);
-  tft.setCursor(30, 50);
-  tft.println("You have been sitting");
-  tft.setCursor(30, 110);
-  tft.println(" for too long!! o_o");
-  tft.setCursor(30, 170);
-  tft.println("Stand up and stretch!");
-}
-
-void drawNotificationMsg() {
-  //clear screen and set text properties
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE);
-  //draw message for standing up and stretching
-  tft.setTextFont(1);
-  tft.setCursor(30, 50);
-  tft.println("ATTENTION!!!");
-  tft.setCursor(30, 110);
-  tft.println("Your laundry is ready!");
-  tft.setCursor(30, 170);
-  tft.println("Come and get it.");
-}
-
-void drawNotificationMsg(String newNotificationMsg) {
-  //clear screen and set text properties
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE);
-  //draw message for standing up and stretching
-  tft.setTextFont(1);
-  tft.setCursor(30, 50);
-  tft.println("ATTENTION!!!");
-  if(newNotificationMsg.length() < 25){
-    tft.setCursor(30, 130);
-    tft.println(newNotificationMsg);
-  }else if(newNotificationMsg.length()>25 && newNotificationMsg.length()<50){
-    tft.setCursor(30, 110);
-    tft.println(newNotificationMsg.substring(0, 24));
-    tft.setCursor(30, 170);
-    tft.println(newNotificationMsg.substring(25));
-  }else{
-    tft.setCursor(30, 110);
-    tft.println(newNotificationMsg.substring(0, 24));
-    tft.setCursor(30, 170);
-    tft.println(newNotificationMsg.substring(25, 49));
-    tft.setCursor(30, 170);
-    tft.println(newNotificationMsg.substring(50));
-  }
-}
-
-void drawButtonPressMsg(){
-  //draw message instructing button press
-  tft.setTextSize(1);
-  tft.setCursor(290, 220);
-  tft.println("press");
-  tft.setCursor(294, 230);
-  tft.println("(OK)");
-}
-
-void drawGoodJobMsg() {
-  //draw good job message after user responds to notification
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextSize(3);
-  tft.setTextColor(TFT_WHITE);
-  tft.setTextFont(1);
-  tft.setCursor(30, 80);
-  tft.println("Good Job!!!");
-  tft.setCursor(100, 180);
-  tft.setTextColor(TFT_WHITE);
-  tft.setTextSize(1);
-  tft.println("Done. Now, let's get back to work!");
-  tft.setTextColor(TFT_WHITE);
-}
-
-void drawGoodJobMsg(int countStandUps) {
-  //draw good job message after user responds to stand up message
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextSize(3);
-  tft.setTextColor(TFT_WHITE);
-  tft.setTextFont(1);
-  tft.setCursor(30, 80);
-  tft.println("Good Job!!!");
-  tft.setCursor(100, 180);
-  tft.setTextColor(TFT_WHITE);
-  tft.setTextSize(1);
-  tft.printf("Nice. You stood up %d times today.\n", countStandUps);
-  tft.setTextColor(TFT_WHITE);
-}
-
-void drawMotivationalMsg() {
-  //clear screen and set text properties
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE);
-  //draw motivational message
-  tft.setTextFont(1);
-  tft.setCursor(30, 50);
-  tft.println("Keep going!");  //refactor these to print published msgs from broker
-  tft.setCursor(30, 110);
-  tft.println("You can do it!!");
-  tft.setCursor(30, 170);
-  tft.println("You're doing great!!!");
-}
-
-void drawMotivationalMsg(String userDefinedMsg){
-  //clear screen and set text properties
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE);
-  //draw motivational message
-  tft.setTextFont(1);
-  tft.setCursor(30, 100);
-  tft.print(userDefinedMsg);
-  tft.println();
-}
-
-void drawDeskBuddyLogo() {
-  //draws deskBuddy logo
-  tft.setCursor(0, 100);
-  tft.print(deskBuddyLogo);
-}
-
-void drawAuthorsMsg() {
-  //signature listing developers of the deskBuddy project
-  tft.setCursor(20, 190);
-  tft.print("Authors:");
-  tft.setCursor(70, 200);
-  tft.print("Nasit Vurgun");
-  tft.setCursor(70, 210);
-  tft.print("Rizwan Rafique");
-  tft.setCursor(70, 220);
-  tft.print("Joel Celen");
-  tft.setCursor(185, 200);
-  tft.print("Ahmad Haj Ahmad");
-  tft.setCursor(185, 210);
-  tft.print("Malte Bengtsson");
-  tft.setCursor(185, 220);
-  tft.print("Karl Eriksson");
 }
