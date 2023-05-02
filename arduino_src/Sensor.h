@@ -1,7 +1,12 @@
+/**************************************************************
+* "Sensor.h" - a library for defining Sensor objects that can be used to represent a sensor
+*  and its current value, with an optional indicator color which can be used for TFT displays.
+ **************************************************************/
+
 #ifndef SENSOR_H
 #define SENSOR_H
 
-#include <stdint.h>   // need this because the TFT library only supports colors that are unsigned 16-bit integers (such as green: 0x07E0)
+#include <stdint.h>   // TFT library colors require unsigned 16-bit integers (such as green: 0x07E0)
 
 class Sensor {
   private:

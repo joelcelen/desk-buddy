@@ -1,3 +1,10 @@
+/**************************************************************
+* "Event.h" - a library for defining Event objects that can be used to represent a state that
+*  transitions at event specific time intervals. Each Event state corresponds to a View in the  
+*  MVC pattern, or a state in finite state machine. Each state has an event message, and a counter
+*  for how many times the state was entered. States keep track of when they were last exited, 
+*  and there is a shouldExecute() method checking if the state can be entered again.
+ **************************************************************/
 #ifndef EVENT_H
 #define EVENT_H
 

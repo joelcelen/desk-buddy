@@ -1,3 +1,6 @@
+/**************************************************************
+* "Buzzer.h" - a simple library containing buzzers for user notification
+ **************************************************************/
 #ifndef BUZZER_H
 #define BUZZER_H
 

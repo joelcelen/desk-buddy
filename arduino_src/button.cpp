@@ -1,3 +1,8 @@
+/**************************************************************
+ * "Button.h" - a simple library for checking button press on Wio 5-way switch, and
+ delaying execution until button is pressed (note: delay method not used in current main)
+ **************************************************************/
+
 #include "Button.h"
 
 //Button class

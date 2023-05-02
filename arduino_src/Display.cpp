@@ -48,7 +48,13 @@ void Display::drawPreferencesUpdated(){
   tft.println("Preferences updated!");           
 }
 
-void Display::drawDashboard(String tempStr, String humidStr, String lightStr, uint16_t tempColor, uint16_t humidColor, uint16_t lightColor) {
+void Display::drawDashboard(
+  const char* tempStr, 
+  const char* humidStr, 
+  const char* lightStr, 
+  uint16_t tempColor, 
+  uint16_t humidColor, 
+  uint16_t lightColor) {
   //clear screen and set text properties
   tft.fillScreen(TFT_BLACK);                  //clear screen
   tft.setTextSize(2);                         //set text size
@@ -57,23 +63,32 @@ void Display::drawDashboard(String tempStr, String humidStr, String lightStr, ui
   //draw temperature box and text
   tft.fillRect(10, 15, 20, 20, tempColor);
   tft.setTextFont(2);
-  tft.drawString("Temperature", 40, 10);
+  tft.setCursor(40, 10);
+  tft.print("Temperature");
   tft.setTextFont(4);
-  tft.drawString(tempStr + " C", 40, 40);
+  tft.setCursor(40, 40);
+  tft.print(tempStr);
+  tft.print(" C");
 
   //draw humidity box and text
   tft.fillRect(10, 90, 20, 20, humidColor);
   tft.setTextFont(2);
-  tft.drawString("Humidity", 40, 85);
+  tft.setCursor(40, 85);
+  tft.print("Humidity");
   tft.setTextFont(4);
-  tft.drawString(humidStr + " %", 40, 115);
+  tft.setCursor(40, 115);
+  tft.print(humidStr);
+  tft.print(" %");
 
   //draw light level box and text
   tft.fillRect(10, 165, 20, 20, lightColor);
   tft.setTextFont(2);
-  tft.drawString("Light Level", 40, 160);
+  tft.setCursor(40, 160);
+  tft.print("Light level");
   tft.setTextFont(4);
-  tft.drawString(lightStr + " lx", 40, 190);
+  tft.setCursor(40, 190);
+  tft.print(lightStr);
+  tft.print(" lx");
 }
 
 void Display::drawStandUpMsg() {
@@ -91,54 +106,20 @@ void Display::drawStandUpMsg() {
   tft.println("Stand up and stretch!");
 }
 
-void Display::drawNotificationMsg(String notificationMsg) {
-    if (notificationMsg.length() == 0) {         //draw default notification msg
-      drawNotificationMsgDefault();              
-    }else{                                                 //user-defined motivational message
-      drawNotificationMsgUserDefined(notificationMsg);
-    }
-}
-
-void Display::drawNotificationMsgDefault() {
-  //clear screen and set text properties
+void Display::drawNotificationMsg(const char* notificationMsg) {
+  //clear screen and set fonts
   tft.fillScreen(TFT_BLACK);
   tft.setTextSize(2);
   tft.setTextColor(TFT_WHITE);
-  //draw message for standing up and stretching
   tft.setTextFont(1);
   tft.setCursor(30, 50);
   tft.println("ATTENTION!!!");
-  tft.setCursor(30, 110);
-  tft.println("Your laundry is ready!");
-  tft.setCursor(30, 170);
-  tft.println("Come and get it.");
-}
-
-void Display::drawNotificationMsgUserDefined(String notificationMsg){
-  //clear screen and set text properties
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE);
-  //draw message for standing up and stretching
-  tft.setTextFont(1);
-  tft.setCursor(30, 50);
-  tft.println("ATTENTION!!!");
-  if(notificationMsg.length() < 25){
-    tft.setCursor(30, 130);
-    tft.println(notificationMsg);
-  }else if(notificationMsg.length()>25 && notificationMsg.length()<50){
-    tft.setCursor(30, 110);
-    tft.println(notificationMsg.substring(0, 24));
-    tft.setCursor(30, 170);
-    tft.println(notificationMsg.substring(25));
-  }else{
-    tft.setCursor(30, 110);
-    tft.println(notificationMsg.substring(0, 24));
-    tft.setCursor(30, 170);
-    tft.println(notificationMsg.substring(25, 49));
-    tft.setCursor(30, 170);
-    tft.println(notificationMsg.substring(50));
+  //if string is empty, display default notification message, otherwise print user defined msg
+  if (strlen(notificationMsg) <= 2) { // empty string can have /0 terminator character on some systems, which can be length 2
+    notificationMsg = "Your laundry is ready!\n\n\n  Come and get it.";
   }
+  tft.setCursor(30, 110);
+  tft.println(notificationMsg);
 }
 
 void Display::drawButtonPressMsg(){
@@ -180,39 +161,26 @@ void Display::drawGoodJobMsg(int countStandUps) {
   tft.setTextColor(TFT_WHITE);
 }
 
-void Display::drawMotivationMsgDefault() {
+void Display::drawMotivationMsg(const char* motivationMsg) {
   //clear screen and set text properties
   tft.fillScreen(TFT_BLACK);
   tft.setTextSize(2);
   tft.setTextColor(TFT_WHITE);
-  //draw motivational message
   tft.setTextFont(1);
-  tft.setCursor(30, 50);
-  tft.println("Keep going!");  //refactor these to print published msgs from broker
-  tft.setCursor(30, 110);
-  tft.println("You can do it!!");
-  tft.setCursor(30, 170);
-  tft.println("You're doing great!!!");
-}
 
-void Display::drawMotivationMsgUserDefined(String motivationMsg){
-  //clear screen and set text properties
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE);
-  //draw motivational message
-  tft.setTextFont(1);
-  tft.setCursor(30, 100);
-  tft.print(motivationMsg);
-  tft.println();
-}
-
-void Display::drawMotivationMsg(String motivationMsg) {
-    if (motivationMsg.length() == 0) {         //draw default notification msg
-      drawMotivationMsgDefault();              
-    }else{                                                 //user-defined motivational message
-      drawMotivationMsgUserDefined(motivationMsg);
-    }
+  //display default message if string is empty, otherwise print user-defined message
+  if (strlen(motivationMsg) <= 2) {       //empty strings: terminator character \0 may be length 2 on some systems
+    tft.setCursor(30, 50);
+    tft.println("Keep going!");
+    tft.setCursor(30, 110);
+    tft.println("You can do it!!");
+    tft.setCursor(30, 170);
+    tft.println("You're doing great!!!");
+  } else {
+    tft.setCursor(30, 100);
+    tft.print(motivationMsg);
+    tft.println();
+  }
 }
 
 void Display::drawDeskBuddyLogo(const char* deskBuddyLogo) {

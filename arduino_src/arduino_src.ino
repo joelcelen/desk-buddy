@@ -1,5 +1,5 @@
 /**************************************************************
- * Project: Desk Buddy v1.0 (Sprint 2 Demo)
+ * Project: Desk Buddy - Wio Controller v1.0 (Sprint 2 Demo)
  * Description: A smart desk assistant built with Arduino and connected to the cloud. It helps you monitor your environment and stay productive.
  * 
  * Gitlab Home Page: https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/home
@@ -13,20 +13,20 @@
  **************************************************************/
 
 //WiFi libraries
-#include "WIFI.h"                             //Wi-Fi Custom library
+#include "WIFI.h"                             //Wi-Fi Custom library (deskBuddy)
 #include <rpcWiFi.h>                          //Wi-Fi System library
-#include "networkInfo.h"                      //contains wifi SSID and PASSWORD
+#include "NetworkInfo.h"                      //contains wifi SSID and PASSWORD
 
 //MQTT libraries. See API info here: https://pubsubclient.knolleary.net/api
 #include <PubSubClient.h>                     // MQTT library
 #include <WiFiClientSecure.h>                 // secure Wifi client for PubSub library
-#include "brokerInfo.h"                       //secrets file for mqtt broker (.gitignore)
-#include "mqttTopics.h"                       //secrets file for mqtt broker topics (.gitignore)
+#include "BrokerInfo.h"                       //secrets file for mqtt broker (.gitignore)
+#include "MqttTopics.h"                       //secrets file for mqtt broker topics (.gitignore)
 
 // Sensor libraries (deskBuddy)
 #include "DHT.h"                              //DHT sensor library (temperature and humidity)   
-#include "Sensor.h"                           //Sensor class
-#include "Button.h"                           //Button class
+#include "Sensor.h"                           //Sensor class (deskBuddy)
+#include "Button.h"                           //Button class (deskBuddy)
 
 // Actuator libraries(deskBuddy)
 #include "Buzzer.h"                           //Buzzer class
@@ -92,7 +92,7 @@ const char* deskBuddyLogo = "      _           _    ____            _     _     
                        "                                                __/ |\n"
                        "                                               |___/ ";
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************************************************/
 
 void setup() {
   tft.init();                                     // set up Wio Display
@@ -107,7 +107,7 @@ void setup() {
   tft.drawConnectedToWifi();                      // connected msg
   delay(100);                                     // this blocking delay() is the only one in this program! it is purely for visual aesthetics on startup screen
 
-  //setup MQTT connection, defined in brokerInfo.h
+  //setup MQTT connection, defined in BrokerInfo.h
   wifiSSLClient.setCACert(ROOT_CA_CERTIFICATE);   // Set root CA certificate for SSL/TLS encryption
   mqttClient.setServer(BROKER_URL, BROKER_PORT);  // Set MQTT broker URL and port
   mqttClient.setCallback(mqttCallback);           // Set callback method -- what to do when a message is received
@@ -120,7 +120,7 @@ void setup() {
 
   //setup sensors and actuators
   dht.begin();
-  pinMode(WIO_5S_PRESS, INPUT_PULLUP);            // setup button sensor
+  pinMode(WIO_5S_PRESS, INPUT_PULLUP);            // setup button sensor (wio 5-switch)
   pinMode(WIO_BUZZER, OUTPUT);                    // setup buzzer actuator
 
   tft.drawDeskBuddyLogo(deskBuddyLogo);           // display desk buddy logo
@@ -128,7 +128,6 @@ void setup() {
   tft.drawAuthorsMsg();                           // display list of authors of deskBuddy project
   nonBlockingDelay(2000);
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void loop() {
   timerStart = millis();                          //start timing the loop for debugging purposes -- takes about 500-600ms to get through a loop right now!
@@ -145,7 +144,7 @@ void loop() {
   // convert readings to strings
   dtostrf(temperatureValue, 3, 2, tempStr);
   dtostrf(humidityValue, 3, 2, humidStr);
-  itoa(lightValue, lightStr, 10);                 //base 10
+  itoa(lightValue, lightStr, 10);
 
   // update Sensor objects
   temperature.setValue(tempStr);
@@ -170,13 +169,13 @@ void loop() {
   }
 
   timerEnd = millis();                            //end timing the loop for debugging
-  Serial.println((timerEnd - timerStart));        //print serial port msg for debugging
+  //Serial.println((timerEnd - timerStart));        //print serial port msg for debugging -- loop takes around 500 ms
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// So-called VIEWS / STATES:
+/*******************************************************************************************************************/
+// EVENT METHODS: We are using the main as a controller to check for triggers to transition between states
 
-// STATE: StandUp //////////
+// STATE: StandUp (trigger: default/ user defined timing interval) 
 // prompts user to stand up, internal transitions do not proceed until user presses button to confirm
 void standUpEventSequence(){
   tft.drawStandUpMsg();                           // display standup messsage, user will be prompted to click button
@@ -191,23 +190,23 @@ void standUpEventSequence(){
   nonBlockingDelay(2000);
 }
 
-// STATE: Motivate //////////
+// STATE: Motivate (trigger: default/ user defined timing interval) 
 // displays user defined motivational message (or default if null/empty string)
 void motivationEventSequence(){
-    tft.drawMotivationMsg(motivate.getMessage()); //user-defined motivational message
+    tft.drawMotivationMsg((motivate.getMessage())); //user-defined motivational message
     nonBlockingDelay(2500);
     motivate.setLastEvent(millis());              //reset timer
 }
 
-// STATE: Publish //////////
+// STATE: Publish (trigger: default/ user defined timing interval) 
 // Publishes readings from environmental sensors to MQTT broker
 void publishSensorsEventSequence(){
   mqttPublishSensorData();                        //publish sensor data
   publish.setLastEvent(millis());                 //reset timer
 }
 
-// STATE: UpdateDashboard //////////
-// Updates dashboard on Wio Seeed Terminal/Arduino device with environmental sensor readings and indicators that change based on user preferences
+// STATE: UpdateDashboard (trigger: default/ user defined timing interval)
+// Updates dashboard on device with environmental sensor readings and indicators that change color based on user preferences
 void updateDashboardEventSequence(){
   //update dashboard of sensor readings and indicators based on user preferences
   tft.drawDashboard(
@@ -220,7 +219,7 @@ void updateDashboardEventSequence(){
   refreshDisplay.setLastEvent(millis());          //reset timer
 }
 
-// STATE: Notify //////////
+// STATE: Notify (trigger: default/ user defined timing interval)
 // Notifies users with user defined notification - internal transitions are on hold until user presses button to confirm
 void notificationEventSequence(){
   tft.drawNotificationMsg(notification.getMessage());  //display notification message
@@ -230,24 +229,27 @@ void notificationEventSequence(){
     }
     tft.drawButtonPressMsg();                          // prompts user to press button
     button.delayUntilPressed();                        // wait until button is pressed
+    nonBlockingDelay(300);
     tft.drawGoodJobMsg();                              // display good job message (encourages user, positive reinforcement)
     nonBlockingDelay(3000);
     notification.setInterval(3600000);                 //return to default notification interval (hourly)
     notification.setLastEvent(millis());
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Nonblocking delay method: so that we do not stop all processes on the arduino
+/*******************************************************************************************************************/
+// ***Nonblocking delay method***: a crucial method for creating delays that do not stop all processes on the arduino*
+
 void nonBlockingDelay(unsigned int delayInterval){
   delayStart = millis();
   while(millis() - delayStart < delayInterval){
-    mqttConnect();                /// verify MQTT connection
-    mqttClient.loop();            /// check for messages while we wait!
+    mqttConnect();                // verify MQTT connection, and more importantly
+    mqttClient.loop();            // check for messages while we wait!!! (SUPER IMPORTANT)
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************************************************/
 // Parser methods - to parse incoming MQTT messages (payloads) based on subscription topic
+
 void parser(char* topic, String message) {
     if (strcmp(topic, TOPIC_SUB_TEMP) == 0) {               // Temperature topic parser
     parseTemperature(message);
@@ -290,12 +292,12 @@ uint16_t parseColor(String message){
 
 void parseMotivation(String message){
   motivate.setMessage(message.c_str());
-  //Serial.println("A new motivational message has arrived!");  //for debugging
+  //Serial.println("A new motivation has arrived!");    //for debugging
 }
 
 void parseNotification(String message){
   notification.setMessage(message.c_str());
-  notification.setInterval(0);                          // notifications should display immediately
+  notification.setInterval(0);                          // notification should display almost immediately
   //Serial.println("A new notification has arrived!");  //for debugging  
 }
 
@@ -307,7 +309,7 @@ void parseTiming(String message){
   //TODO: feature may be developed in sprint 3
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************************************************/
 // MQTT methods - Lookup API documentation here: https://pubsubclient.knolleary.net/api
 
 // MQTT callback method for receiving messages - this needs to be short and sweet to avoid processing slowdowns

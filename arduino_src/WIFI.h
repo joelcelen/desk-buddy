@@ -3,7 +3,7 @@
 *  Copyright (c) 2023-2025 Desk Buddy . All rights reserved.
 *  - version 1.1 
 *
-*  Netowrk Requirements: Max Encryption - Open Network with PSK (WPA2-PSK)
+*  Network Requirements: Max Encryption - Open Network with PSK (WPA2-PSK)
 *
 *  Implementation on Client Side: must include "rpcWiFi.h" in paralel to this library. 
 *
