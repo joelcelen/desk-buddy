@@ -2,6 +2,10 @@ package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -9,7 +13,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String TOPIC = "deskBuddy/app/setLight";
     private static final String CLIENT_ID = "androidDeskBuddy";
     private String brokerUrl;
@@ -23,7 +27,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Inflate our layout with setContentView and turn all views in the layout into java objects.
         setContentView(R.layout.activity_main);
+
+        Spinner settingsSpinner = findViewById(R.id.spinner_settings_profile);
+        ArrayAdapter<CharSequence>  adapter = ArrayAdapter.createFromResource(this, R.array.profile_settings, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        settingsSpinner.setAdapter(adapter);
+        settingsSpinner.setOnItemSelectedListener(this);
+
+
+
 
         //gets the broker info from a file that is in the .gitignore,
         //connects based on the info in the txt file with the necessary information to connect to secure broker
@@ -72,5 +87,16 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText(payload);
             }
         });
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String text = adapterView.getItemAtPosition(i).toString();
+        Toast.makeText(adapterView.getContext(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }
