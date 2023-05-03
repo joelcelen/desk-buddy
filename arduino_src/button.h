@@ -4,15 +4,13 @@
 #include <SPI.h>
 #include <TFT_eSPI.h>
 
+//Button class with initialization of methods and variables, private and public where appropriate.
 class button {
 public:
   button();
-  void begin();
-  void checkButton();
+  void delayUntilPressed();
 private:
-  TFT_eSPI _tft;
-  bool _isPressed;
-  bool _prevButtonState;
+  bool isPressed;
 };
 
 #endif
