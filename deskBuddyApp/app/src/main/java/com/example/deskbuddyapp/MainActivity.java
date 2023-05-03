@@ -13,8 +13,8 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TOPIC = "deskBuddy/app/setLight";
-    private static final String CLIENT_ID = "androidDeskBuddy";
+    private static final String TOPIC = "deskBuddy/light";
+    private static final String CLIENT_ID = "";
     private String brokerUrl;
     private String username;
     private String password;
