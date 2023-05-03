@@ -2,10 +2,7 @@ package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -13,8 +10,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    private static final String TOPIC = "deskBuddy/app/setLight";
+public class MainActivity extends AppCompatActivity {
+    private static final String TOPIC = "deskBuddy/light";
     private static final String CLIENT_ID = "androidDeskBuddy";
     private String brokerUrl;
     private String username;
@@ -31,11 +28,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //Inflate our layout with setContentView and turn all views in the layout into java objects.
         setContentView(R.layout.activity_main);
 
+
+        /* Spinner (dropdown menu) code. Might not be used in our project.
         Spinner settingsSpinner = findViewById(R.id.spinner_settings_profile);
         ArrayAdapter<CharSequence>  adapter = ArrayAdapter.createFromResource(this, R.array.profile_settings, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         settingsSpinner.setAdapter(adapter);
         settingsSpinner.setOnItemSelectedListener(this);
+        */
 
 
 
@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         client = new MqttHandler();
         client.connect(brokerUrl, CLIENT_ID, username, password);
-        //subscribeTopic(TOPIC);
-        publishMsg(TOPIC, "TCP_GREEN");
+        subscribeTopic(TOPIC);
+        //publishMsg(TOPIC, "TFT_GREEN");
         scanBrokerInfo.close();
 
     }
@@ -82,13 +82,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         client.subscribe(topic, new IMqttMessageListener() {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
+                //Displaying the current measurements in the app's main screen
+                Log.d("hello world","am i receiving the value");
                 String payload = new String(message.getPayload());
+                //TextView tempView = findViewById(R.id.temp_view);
+                //TextView lightView = findViewById(R.id.light_view);
+                //TextView humView = findViewById(R.id.hum_view);
                 TextView textView = findViewById(R.id.text_view);
+                //tempView.setText(payload);
+                //lightView.setText(payload);
+                //humView.setText(payload);
                 textView.setText(payload);
+
             }
         });
     }
 
+/* Part of the Spinner(dropdown menu). Might not be needed for our project.
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         String text = adapterView.getItemAtPosition(i).toString();
@@ -99,4 +109,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+    */
+
 }

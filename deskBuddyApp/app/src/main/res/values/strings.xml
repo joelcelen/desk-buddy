@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">deskBuddyApp</string>
-    <string name="current_settings_profile">Living Room</string> //TODO: Instead of harcoding Living Room, make this use name of settings
+    <string name="current_setting">Living Room</string> <!--TODO: Instead of hardcoding Living Room, make this use name of settings-->
 
+    <!-- Spinner (dropdown menu) code. Might not be used in our project.
     <string-array name="profile_settings">
         <item>Living Room</item>
         <item>Home Office</item>
         <item>Bedroom</item>
     </string-array>
+    -->
 </resources>
