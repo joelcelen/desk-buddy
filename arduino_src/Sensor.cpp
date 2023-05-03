@@ -12,15 +12,15 @@ Sensor::Sensor(uint16_t startProgramColor) {
 }
 
 const char* Sensor::getValue() {
-  return value;
+  return value.c_str();
 }
 
 uint16_t Sensor::getIndicatorColor() {
   return indicatorColor;
 }
 
-void Sensor::setValue(const char* value) {
-  this->value = value;
+void Sensor::setValue(const char* newValue) {
+  value = String(newValue);
 }
 
 void Sensor::setIndicatorColor(uint16_t indicatorColor) {
