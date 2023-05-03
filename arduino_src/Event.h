@@ -12,7 +12,7 @@
 
 class Event {
   private:
-    const char* eventMessage;         //event message
+    String eventMessage;         //event message
     unsigned long intervalEvent;      //time interval to send event to user (default: 3600000)
     unsigned long lastEvent;          //last event send time
     int countEvents;                  //event counter

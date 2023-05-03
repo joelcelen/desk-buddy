@@ -35,7 +35,7 @@ bool Event::shouldExecute() {
 
 // Getters
 const char* Event::getMessage() {
-  return eventMessage;
+  return eventMessage.c_str();
 }
 
 unsigned long Event::getInterval() {
@@ -52,7 +52,7 @@ int Event::getCount(){
 
 // Setters
 void Event::setMessage(const char* message) {
-  eventMessage = message;
+  eventMessage = String(message);
   countEvents = 0;
 }
 

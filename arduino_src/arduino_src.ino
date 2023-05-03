@@ -42,7 +42,8 @@ WIFI myWifi(SSID, PASSWORD);                  //Create Wi-Fi Instance with SSID 
 // initializing MQTT connection
 WiFiClientSecure wifiSSLClient;               //wifi client for PubSub with SSL/TLS cryptographic protocols
 PubSubClient mqttClient(wifiSSLClient);       //MQTT client with SSL/TLS communication protocols
-String message = "";                          //MQTT default message (empty string)
+const int MQTT_BUFFER_SIZE = 256;             //MQTT payload buffer size (default is 256)
+char message[MQTT_BUFFER_SIZE];               //MQTT message buffer
 
 // initializing sensor measurement variables and their string conversions
 DHT dht(A0, DHT11);                           //Create an instance of DHT (temperature and humidity) sensor
@@ -250,7 +251,7 @@ void nonBlockingDelay(unsigned int delayInterval){
 /*******************************************************************************************************************/
 // Parser methods - to parse incoming MQTT messages (payloads) based on subscription topic
 
-void parser(char* topic, String message) {
+void parser(const char* topic, const char* message) {
     if (strcmp(topic, TOPIC_SUB_TEMP) == 0) {               // Temperature topic parser
     parseTemperature(message);
   } else if (strcmp(topic, TOPIC_SUB_HUMID) == 0) {         // Humidity topic parser
@@ -268,44 +269,44 @@ void parser(char* topic, String message) {
   }
 }
 
-void parseTemperature(String message){
+void parseTemperature(const char* message){
   temperature.setIndicatorColor(parseColor(message));
 }
 
-void parseHumid(String message){
+void parseHumid(const char* message){
   humidity.setIndicatorColor(parseColor(message));
 }
 
-void parseLight(String message){
+void parseLight(const char* message){
   light.setIndicatorColor(parseColor(message));
 }
 
-uint16_t parseColor(String message){
-  if (message == "TFT_GREEN") {
-      return TFT_GREEN;
-    } else if (message == "TFT_ORANGE") {
-      return TFT_ORANGE;
-    } else if (message == "TFT_RED") {
-      return TFT_RED;
-    }
+uint16_t parseColor(const char* message) {
+  if (strcmp(message, "TFT_GREEN") == 0) {
+    return TFT_GREEN;
+  } else if (strcmp(message, "TFT_ORANGE") == 0) {
+    return TFT_ORANGE;
+  } else if (strcmp(message, "TFT_RED") == 0) {
+    return TFT_RED;
+  }
 }
 
-void parseMotivation(String message){
-  motivate.setMessage(message.c_str());
+void parseMotivation(const char* message){
+  motivate.setMessage(message);
   //Serial.println("A new motivation has arrived!");    //for debugging
 }
 
-void parseNotification(String message){
-  notification.setMessage(message.c_str());
+void parseNotification(const char* message){
+  notification.setMessage(message);
   notification.setInterval(0);                          // notification should display almost immediately
   //Serial.println("A new notification has arrived!");  //for debugging  
 }
 
-void parseMood(String message){
+void parseMood(const char* message){
   //TODO: feature may be developed in sprint 3
 }
 
-void parseTiming(String message){
+void parseTiming(const char* message){
   //TODO: feature may be developed in sprint 3
 }
 
@@ -314,11 +315,15 @@ void parseTiming(String message){
 
 // MQTT callback method for receiving messages - this needs to be short and sweet to avoid processing slowdowns
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
-  message = "";
-  for (int i = 0; i < length; i++) {
-    message += (char)payload[i];              //append to message string based on payload
-  }
-  parser(topic, message);                     //call parser method to check topic and parse payload
+  // Copy the incoming message payload to the buffer
+  memcpy(message, payload, min(length, MQTT_BUFFER_SIZE - 1));
+  message[min(length, MQTT_BUFFER_SIZE - 1)] = '\0';
+
+  // Call the parser function to check topic and payload message
+  parser(topic, message);
+
+  // clear the message buffer
+  memset(message, 0, sizeof(message));
 }
 
 // MQTT connection method
