@@ -29,8 +29,8 @@ import java.util.Scanner;
 
 //Credits to https://www.youtube.com/watch?v=DD1CxoVONFE&ab_channel=KGPTalkie
 
-public class viewTemperature extends AppCompatActivity {
-    private static final String TOPIC = "deskBuddy/light";
+public class TemperatureView extends AppCompatActivity {
+    private static final String TOPIC = "deskBuddy/temperature";
     private static final String CLIENT_ID = "androidDeskBuddy";
     private String brokerUrl;
     private String username;
@@ -80,7 +80,7 @@ public class viewTemperature extends AppCompatActivity {
         xAxis.setTypeface(Typeface.DEFAULT_BOLD);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
-        //xAxis.setEnabled(false);
+        xAxis.setEnabled(false);
 
         YAxis yAxis = temperatureChart.getAxisLeft();
         yAxis.setTextSize(12);
@@ -89,7 +89,7 @@ public class viewTemperature extends AppCompatActivity {
         temperatureChart.getAxisRight().setEnabled(false);
 
         Legend legend = temperatureChart.getLegend();
-        legend.setEnabled(false);
+        legend.setEnabled(true);
         legend.setTextSize(12);
         legend.setTextColor(Color.BLACK);
 

@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DeskBuddyApp">
         <activity
-            android:name=".viewTemperature"
+            android:name=".TemperatureView"
             android:exported="false" />
 
         <service
