@@ -6,17 +6,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import java.io.InputStream;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TOPIC = "deskBuddy/app/setLight";
-    private static final String CLIENT_ID = "androidDeskBuddy";
-    private String brokerUrl;
-    private String username;
-    private String password;
-    private InputStream inputStream;
-    private Scanner scanBrokerInfo;
     private MqttHandler client;
 
     //method for creating and starting the app
@@ -24,29 +16,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //gets the broker info from a file that is in the .gitignore,
-        //connects based on the info in the txt file with the necessary information to connect to secure broker
-        inputStream = getResources().openRawResource(R.raw.brokerinfo);
-        {
-            try {
-                scanBrokerInfo = new Scanner(inputStream);
-                while (scanBrokerInfo.hasNextLine()) {
-                    brokerUrl = scanBrokerInfo.next();
-                    username = scanBrokerInfo.next();
-                    password = scanBrokerInfo.next();
-                }
-                inputStream.close();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        client = new MqttHandler();
-        client.connect(brokerUrl, CLIENT_ID, username, password);
+        client = new MqttHandler(this);
+        client.connect();
         //subscribeTopic(TOPIC);
         publishMsg(TOPIC, "TCP_GREEN");
-        scanBrokerInfo.close();
+
 
     }
 
