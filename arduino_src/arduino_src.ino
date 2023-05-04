@@ -1,279 +1,395 @@
-#include "WIFI.h" //Wi-Fi Custom library
-#include <rpcWiFi.h> //Wi-Fi System library
-#include "networkInfo.h" //contains wifi SSID and PASSWORD
+/**************************************************************
+ * Project: Desk Buddy - Wio Controller v1.0 (Sprint 2 Demo)
+ * Description: A smart desk assistant built with Arduino and connected to the cloud. It helps you monitor your environment and stay productive.
+ * 
+ * Gitlab Home Page: https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/home
+ * Authors: Nasit Vurgun, Rizwan Rafique, Joel Celen, Ahmad Haj Ahmad, Malte Bengtsson, Karl Eriksson
+ * Contact: gus***na@student.gu.se - replace *** with the first three letters of the first author's last name
+ * Date: May 1, 2023
+ * 
+ * Copyright (c) 2023 Desk Buddy
+ * 
+ * License: MIT License
+ **************************************************************/
 
-#include "DHT.h" // DHT11 humidity/temperature sensor
-#include "TFT_eSPI.h" // Wio terminal screen
-#include "button.h" //Reference to the header file for button
+//WiFi libraries
+#include "WIFI.h"                             //Wi-Fi Custom library (deskBuddy)
+#include <rpcWiFi.h>                          //Wi-Fi System library
+#include "NetworkInfo.h"                      //contains wifi SSID and PASSWORD
 
-//MQTT libraries
-#include <PubSubClient.h> // MQTT library
-#include <WiFiClientSecure.h> // secure Wifi client for PubSub library
-#include "brokerInfo.h" //secrets file for mqtt broker (.gitignore)
-#include "mqttTopics.h" //secrets file for mqtt broker topics (.gitignore)
+//MQTT libraries. See API info here: https://pubsubclient.knolleary.net/api
+#include <PubSubClient.h>                     // MQTT library
+#include <WiFiClientSecure.h>                 // secure Wifi client for PubSub library
+#include "BrokerInfo.h"                       //secrets file for mqtt broker (.gitignore)
+#include "MqttTopics.h"                       //secrets file for mqtt broker topics (.gitignore)
 
-WiFiClientSecure wifiSSLClient; //wifi client for PubSub with SSL/TLS cryptographic protocols
-PubSubClient mqttClient(wifiSSLClient); //MQTT client with SSL/TLS communication protocols
-long lastPublish = 0; //last message time
-long lastDisplay = 0; //last display time feedback on environment preferences
-long lastStandUp = 0; //last stand up message time
-long lastMotivate = 0; //last motivational quote time
-// initialize TFT colors for UI based on Android App environment preferences
-uint16_t tempColor = TFT_GREEN;
-uint16_t humidColor = TFT_ORANGE;
-uint16_t lightColor = TFT_RED;
+// Sensor libraries (deskBuddy)
+#include "DHT.h"                              //DHT sensor library (temperature and humidity)   
+#include "Sensor.h"                           //Sensor class (deskBuddy)
+#include "Button.h"                           //Button class (deskBuddy)
 
-// Create Wi-Fi Instance with SSID & Password 
-WIFI myWifi(SSID, PASSWORD);
+// Actuator libraries(deskBuddy)
+#include "Buzzer.h"                           //Buzzer class
 
-// Create an instance of DHT
-DHT dht(A0, DHT11);
+// Display libraries (deskBuddy)
+#include "Display.h"                          //Display class
 
-//Create instance of button class named "button"
-//button button;
+// Event libraries (deskBuddy)
+#include "Event.h"                            //Events class
 
-// initialize TFT LCD
-TFT_eSPI tft;
+// initializing WIFI conection
+WIFI myWifi(SSID, PASSWORD);                  //Create Wi-Fi Instance with SSID & Password
+
+// initializing MQTT connection
+WiFiClientSecure wifiSSLClient;               //wifi client for PubSub with SSL/TLS cryptographic protocols
+PubSubClient mqttClient(wifiSSLClient);       //MQTT client with SSL/TLS communication protocols
+const int MQTT_BUFFER_SIZE = 256;             //MQTT payload buffer size (default is 256)
+char message[MQTT_BUFFER_SIZE];               //MQTT message buffer
+
+// initializing sensor measurement variables and their string conversions
+DHT dht(A0, DHT11);                           //Create an instance of DHT (temperature and humidity) sensor
+
+// initializing Sensors
+float temperatureValue;                       //stores temperature sensor readings
+float humidityValue;                          //stores humidity sensor readings
+int lightValue;                               //stores light sensor readings
+char tempStr[8], humidStr[8], lightStr[8];    //used in conversion of sensor data to string form
+Sensor temperature(TFT_GREEN);                //holds published temperature readings and dashboard indicator color
+Sensor humidity(TFT_ORANGE);                  //holds published temperature readings and dashboard indicator color
+Sensor light(TFT_RED);                        //holds published light level readings and dashboard indicator color
+
+// initializing Actuators
+Button button;                               //Create an instance of button
+Buzzer buzzer;                               //Create an instance of buzzer
+
+// Event timer - for loop
+unsigned long timerStart;                    // timer for debugging purposes
+unsigned long timerEnd;                      // timer for debugging purposes
+unsigned long delayStart;                    // timer for custom nonblocking delay method (so MQTT can keep looping)
+
+// GUI update intervals are intentionally short for demo purposes
+unsigned long intervalStandUp = 97000;       // time interval to display stand up messages          (default: 97000)
+unsigned long intervalMotivate = 43000;      // time interval to display motivational messages      (default: 43000)
+unsigned long intervalPublish = 3000;        // time interval to publish sensor data                (default: 3000)
+unsigned long intervalDisplay = 5000;        // time interval to refresh dashboard display          (default: 5000)
+unsigned long intervalNotification = 3600000;// time interval to send notification to user          (default: 3600000)
+
+// Events (deskBuddy core features)
+Event standUp(intervalStandUp);              // define stand up event/view
+Event notification(intervalNotification);    // define notification event/view
+Event motivate(intervalMotivate);            // define motivation event/view
+Event publish(intervalPublish);              // define publish event/view
+Event refreshDisplay(intervalDisplay);       // define refresh GUI dashboard event/view
+
+// initialize TFT LCD display
+Display tft;
+
+// ascii art deskBuddy logo (font: big, layouts: default), from https://www.coolgenerator.com/ascii-text-generator
+const char* deskBuddyLogo = "      _           _    ____            _     _       \n"
+                       "     | |         | |  |  _ \\          | |   | |      \n"
+                       "   __| | ___  ___| | _| |_) |_   _  __| | __| |_   _ \n"
+                       "  / _` |/ _ \\/ __| |/ /  _ <| | | |/ _` |/ _` | | | |\n"
+                       " | (_| |  __/\\__ \\   <| |_) | |_| | (_| | (_| | |_| |\n"
+                       "  \\__,_|\\___||___/_|\\_\\____/ \\__,_|\\__,_|\\__,_|\\__, |\n"
+                       "                                                __/ |\n"
+                       "                                               |___/ ";
+
+/*******************************************************************************************************************/
 
 void setup() {
-  
-  Serial.begin(115200);
-  while (!Serial);
-  
-  //initialize Wi-Fi
-  Serial.print("Attempting to connect to Wi-Fi address: ");
-  Serial.println(myWifi.getSSID()); // Use getter function to get SSID
-  myWifi.connect(); // Method to initialize Wi-Fi connection
-   
-  Wire.begin();
+  tft.init();                                     // set up Wio Display
+  tft.drawLaunchScreen();                         // display GUI when you power on device
 
-  //mqtt_setup - connects to secure MQTT broker
-  wifiSSLClient.setCACert(ROOT_CA_CERTIFICATE); // Set root CA certificate
-  mqttClient.setServer(BROKER_URL, BROKER_PORT);
-  mqttClient.setCallback(mqttCallback);
+  //setup Serial communication
+  Serial.begin(115200);                           // open serial port with max bit rate
+  //while (!Serial);                              // wait for serial port to open -- useful if debugging things in setup
 
-  //button
-  pinMode(WIO_KEY_A, INPUT_PULLUP); //Sets the mode of "BUTTON_1" pin to input with an internal pull-up resistor.
-  //button.begin();
+  tft.drawConnectingToWifi(myWifi.getSSID());     // connecting msg
+  myWifi.connect();                               // setup Wi-Fi connection -- based on networkInfo.h parameters
+  tft.drawConnectedToWifi();                      // connected msg
+  delay(100);                                     // this blocking delay() is the only one in this program! it is purely for visual aesthetics on startup screen
 
-  //buzzer
-  pinMode(WIO_BUZZER, OUTPUT);
+  //setup MQTT connection, defined in BrokerInfo.h
+  wifiSSLClient.setCACert(ROOT_CA_CERTIFICATE);   // Set root CA certificate for SSL/TLS encryption
+  mqttClient.setServer(BROKER_URL, BROKER_PORT);  // Set MQTT broker URL and port
+  mqttClient.setCallback(mqttCallback);           // Set callback method -- what to do when a message is received
+  tft.drawConnectingToMQTT();
+  mqttConnect();                                  // connect to MQTT (also verify wifi connection)
+  nonBlockingDelay(100);
+  tft.drawConnectedToMQTT();                      // connected message
+  nonBlockingDelay(100);
+  tft.drawPreferencesUpdated();                   // we will update user preferences once the loop starts, but display it now
 
-  //tft
-  tft.begin();
-  tft.setRotation(3); // Set the display rotation to 270 degrees
-  tft.fillScreen(TFT_BLACK);
+  //setup sensors and actuators
+  dht.begin();
+  pinMode(WIO_5S_PRESS, INPUT_PULLUP);            // setup button sensor (wio 5-switch)
+  pinMode(WIO_BUZZER, OUTPUT);                    // setup buzzer actuator
+
+  tft.drawDeskBuddyLogo(deskBuddyLogo);           // display desk buddy logo
+  nonBlockingDelay(1500);
+  tft.drawAuthorsMsg();                           // display list of authors of deskBuddy project
+  nonBlockingDelay(2000);
 }
 
 void loop() {
+  timerStart = millis();                          //start timing the loop for debugging purposes -- takes about 500-600ms to get through a loop right now!
+
   //Connect MQTT - Verify connection
-  if (!mqttClient.connected()) {
-    mqttReconnect();
-  }
+  mqttConnect();                                  // verify MQTT connection
+  mqttClient.loop();                              // Retrieve messages on subscribed topics and trigger mqttCallback function
 
-  //Button --------------------------------------------------  
-  //button.checkButton();
+  // read sensors data
+  temperatureValue = dht.readTemperature();
+  humidityValue = dht.readHumidity();
+  lightValue = analogRead(A2);
 
-  // Humidity sensor DT11 -----------------------------------
-
-  float temperature = dht.readTemperature();
-  float humidity = dht.readHumidity();
-
-  // Light sensor--------------------------------------------
-
-  int lightValue = analogRead(A2);  // Read the analog value from the light sensor, assigned to pin A2
-  
   // convert readings to strings
-  char tempStr[8], humidStr[8], lightStr[8];
-  dtostrf(temperature, 3, 2, tempStr);
-  dtostrf(humidity, 3, 2, humidStr);
+  dtostrf(temperatureValue, 3, 2, tempStr);
+  dtostrf(humidityValue, 3, 2, humidStr);
   itoa(lightValue, lightStr, 10);
 
-  // Event timer
-  long now = millis();
-  
-  // Control TFT scenes based on event timer
-  if (now - lastStandUp > 60000) { //300000
-    lastStandUp = now;
-    drawStandUpMsg();
-    buzz();
-    //wait for button click to transition from Msg
-    //bool buttonPressed = false;
-    //while (!buttonPressed) {
-    //if (digitalRead(WIO_KEY_A) == LOW) {
-    //  buttonPressed = true;
-    //}
-    delay(2000);
-  }else if(now - lastMotivate > 30000){ //150000 ms better for final product
-    lastMotivate = now;
+  // update Sensor objects
+  temperature.setValue(tempStr);
+  humidity.setValue(humidStr);
+  light.setValue(lightStr);
+
+  // Controller: Updates View based on Model (uses non-blocking timers and mqtt event listeners)
+  if (standUp.shouldExecute()) {
+    standUpEventSequence();                       //STATE: StandUp
     
-    delay(3000);
-    drawMotivationalMsg();
-    // msg displays for 30 seconds
-    delay(2000);
+  } else if (motivate.shouldExecute()) {
+    motivationEventSequence();                    //STATE: Motivate
 
-  }else if (now - lastPublish > 5000) { //30000 ms better for final product
-    lastPublish = now;
+  } else if (publish.shouldExecute()) {
+    publishSensorsEventSequence();                //STATE: Publish
 
-  // publish readings
-  mqttClient.publish(TOPIC_PUB_TEMP,tempStr);
-  mqttClient.publish(TOPIC_PUB_TEMP,humidStr);
-  mqttClient.publish(TOPIC_PUB_TEMP,lightStr);
+  } else if (refreshDisplay.shouldExecute()) {
+    updateDashboardEventSequence();               //STATE: UpdateDashboard
 
-  }else if(now - lastDisplay > 3000) { // 5000 ms better for final product
-    lastDisplay = now;
-    // update feedback from app on environmental preference targets
-    drawLayout(tempStr, humidStr, lightStr, tempColor, humidColor, lightColor);
+  } else if (notification.shouldExecute()) {
+    notificationEventSequence();                  //STATE: Notify
   }
-  
-  mqttClient.loop(); // Receive messages on subscribed topics and trigger mqttCallback function
-  delay(1000);
+
+  timerEnd = millis();                            //end timing the loop for debugging
+  //Serial.println((timerEnd - timerStart));        //print serial port msg for debugging -- loop takes around 500 ms
 }
 
-void mqttCallback(char *topic, byte *payload, unsigned int length)
-{
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
+/*******************************************************************************************************************/
+// EVENT METHODS: We are using the main as a controller to check for triggers to transition between states
 
-  String message = "";
-  for (int i = 0; i < length; i++)
-  {
-    Serial.print((char)payload[i]);
-    message += (char)payload[i];
+// STATE: StandUp (trigger: default/ user defined timing interval) 
+// prompts user to stand up, internal transitions do not proceed until user presses button to confirm
+void standUpEventSequence(){
+  tft.drawStandUpMsg();                           // display standup messsage, user will be prompted to click button
+  buzzer.notifyLoudly();                          // buzz notification
+  nonBlockingDelay(1000);
+  tft.drawButtonPressMsg();                       // prompts user to press button
+  while(!button.checkState()){                    // wait until button is pressed
+      nonBlockingDelay(100);
   }
-  Serial.println();
-
-  if (strcmp(topic, TOPIC_SUB_TEMP) == 0) {
-    if (message == "TFT_GREEN") {
-      tempColor = TFT_GREEN;
-    } else if (message == "TFT_ORANGE") {
-      tempColor = TFT_ORANGE;
-    } else if (message == "TFT_RED") {
-      tempColor = TFT_RED;
-    }
-  } else if (strcmp(topic, TOPIC_SUB_HUMID) == 0) {
-    if (message == "TFT_GREEN") {
-      humidColor = TFT_GREEN;
-    } else if (message == "TFT_ORANGE") {
-      humidColor = TFT_ORANGE;
-    } else if (message == "TFT_RED") {
-      humidColor = TFT_RED;
-    }
-  } else if (strcmp(topic, TOPIC_SUB_LIGHT) == 0) {
-    if (message == "TFT_GREEN") {
-      lightColor = TFT_GREEN;
-    } else if (message == "TFT_ORANGE") {
-      lightColor = TFT_ORANGE;
-    } else if (message == "TFT_RED") {
-      lightColor = TFT_RED;
-    }
-}
+  standUp.setLastEvent(millis());                 //reset timer (before the event to increment counter by 1)
+  tft.drawGoodJobMsg(standUp.getCount());         // display good job message (encourages user, positive reinforcement)
+  nonBlockingDelay(2000);
 }
 
-void mqttReconnect()
-{
+// STATE: Motivate (trigger: default/ user defined timing interval) 
+// displays user defined motivational message (or default if null/empty string)
+void motivationEventSequence(){
+    tft.drawMotivationMsg((motivate.getMessage())); //user-defined motivational message
+    nonBlockingDelay(2500);
+    motivate.setLastEvent(millis());              //reset timer
+}
+
+// STATE: Publish (trigger: default/ user defined timing interval) 
+// Publishes readings from environmental sensors to MQTT broker
+void publishSensorsEventSequence(){
+  mqttPublishSensorData();                        //publish sensor data
+  publish.setLastEvent(millis());                 //reset timer
+}
+
+// STATE: UpdateDashboard (trigger: default/ user defined timing interval)
+// Updates dashboard on device with environmental sensor readings and indicators that change color based on user preferences
+void updateDashboardEventSequence(){
+  //update dashboard of sensor readings and indicators based on user preferences
+  tft.drawDashboard(
+    temperature.getValue(),                       //displays live temperature sensor reading
+    humidity.getValue(),                          //displays live humidity sensor reading
+    light.getValue(),                             //displays live light sensor reading
+    temperature.getIndicatorColor(),              //updates temperature indicator based on user defined target sent by MQTT from App
+    humidity.getIndicatorColor(),                 //updates humidity indicator based on user defined target sent by MQTT from App
+    light.getIndicatorColor());                   //updates light indicator based on user defined target sent by MQTT from App
+  refreshDisplay.setLastEvent(millis());          //reset timer
+}
+
+// STATE: Notify (trigger: default/ user defined timing interval)
+// Notifies users with user defined notification - internal transitions are on hold until user presses button to confirm
+void notificationEventSequence(){
+  tft.drawNotificationMsg(notification.getMessage());  //display notification message
+    for(int i=0; i<4; i++){
+      buzzer.notifyLoudly();                           // buzz notification
+      nonBlockingDelay(300);
+    }
+    tft.drawButtonPressMsg();                          // prompts user to press button
+    button.delayUntilPressed();                        // wait until button is pressed
+    nonBlockingDelay(300);
+    tft.drawGoodJobMsg();                              // display good job message (encourages user, positive reinforcement)
+    nonBlockingDelay(3000);
+    notification.setInterval(3600000);                 //return to default notification interval (hourly)
+    notification.setLastEvent(millis());
+}
+
+// STATE: <New feature>
+// Create your own void method below which describes the event sequence (such as to play music, or change timing intervals)
+
+// STATE: <New feature>
+// Create your own void method below which describes the event sequence (such as to play music, or change timing intervals)
+
+/*******************************************************************************************************************/
+// ***Nonblocking delay method***: a crucial method for creating delays that do not stop all processes on the arduino*
+
+void nonBlockingDelay(unsigned int delayInterval){
+  delayStart = millis();
+  while(millis() - delayStart < delayInterval){
+    mqttConnect();                // verify MQTT connection, and more importantly
+    mqttClient.loop();            // check for messages while we wait!!! (SUPER IMPORTANT)
+  }
+}
+
+/*******************************************************************************************************************/
+// Parser methods - to parse incoming MQTT messages (payloads) based on subscription topic
+
+void parser(const char* topic, const char* message) {
+    if (strcmp(topic, TOPIC_SUB_TEMP) == 0) {               // Temperature topic parser
+    parseTemperature(message);
+  } else if (strcmp(topic, TOPIC_SUB_HUMID) == 0) {         // Humidity topic parser
+    parseHumid(message);
+  } else if (strcmp(topic, TOPIC_SUB_LIGHT) == 0) {         // Light level topic parser
+    parseLight(message);
+  } else if (strcmp(topic, TOPIC_SUB_MOTIVATION) == 0) {    // Motivational messages topic parser
+    parseMotivation(message);
+  } else if (strcmp(topic, TOPIC_SUB_NOTIFICATION) == 0) {  // Notification messages topic parser
+    parseNotification(message);
+  } else if (strcmp(topic, TOPIC_SUB_MOOD) == 0) {          // TODO: Mood topic parser (Sprint 3)
+    parseMood(message);
+  } else if (strcmp(topic, TOPIC_SUB_TIMING) == 0) {        // TODO: Timing topic parser (Sprint 3)
+    parseTiming(message);
+  }
+}
+
+void parseTemperature(const char* message){
+  temperature.setIndicatorColor(parseColor(message));
+}
+
+void parseHumid(const char* message){
+  humidity.setIndicatorColor(parseColor(message));
+}
+
+void parseLight(const char* message){
+  light.setIndicatorColor(parseColor(message));
+}
+
+uint16_t parseColor(const char* message) {
+  if (strcmp(message, "TFT_GREEN") == 0) {
+    return TFT_GREEN;
+  } else if (strcmp(message, "TFT_ORANGE") == 0) {
+    return TFT_ORANGE;
+  } else if (strcmp(message, "TFT_RED") == 0) {
+    return TFT_RED;
+  }
+}
+
+void parseMotivation(const char* message){
+  motivate.setMessage(message);
+  //Serial.println("A new motivation has arrived!");    //for debugging
+}
+
+void parseNotification(const char* message){
+  notification.setMessage(message);
+  notification.setInterval(0);                          // notification should display almost immediately
+  //Serial.println("A new notification has arrived!");  //for debugging  
+}
+
+void parseMood(const char* message){
+  //TODO: feature may be developed in sprint 3
+}
+
+void parseTiming(const char* message){
+  //TODO: feature may be developed in sprint 3
+}
+
+/*******************************************************************************************************************/
+// MQTT methods - Lookup API documentation here: https://pubsubclient.knolleary.net/api
+
+// MQTT callback method for receiving messages - this needs to be short and sweet to avoid processing slowdowns
+void mqttCallback(char* topic, byte* payload, unsigned int length) {
+  // Copy the incoming message payload to the buffer
+  memcpy(message, payload, min(length, MQTT_BUFFER_SIZE - 1));
+  message[min(length, MQTT_BUFFER_SIZE - 1)] = '\0';
+
+  // Call the parser function to check topic and payload message
+  // IMPORTANT: create new string object for each new message (String class has dynamic memory allocation!)
+  parser(String(topic).c_str(), String(message).c_str()); 
+
+  // clear the message buffer
+  memset(message, 0, sizeof(message));
+}
+
+// MQTT connection method: check MQTT connection. If lost, check WIFI connection & restore WIFI connection. Then restore MQTT connection.
+void mqttConnect(){
+  if (!mqttClient.connected()) {               // check MQTT connection first
+    //Serial.println("MQTT connection lost."); //for debugging
+    if (!myWifi.isConnected()) {               // check WIFI connection
+      Serial.println("WIFI connection lost."); //for debugging
+      myWifi.connect();                        // restore WIFI connection
+    }
+    mqttReconnect();                           //restore MQTT connection
+  }
+}
+
+// MQTT reconnection method
+void mqttReconnect() {
   // Loop until we're reconnected
-  while (!mqttClient.connected())
-  {
-    Serial.println("Connecting to MQTT broker...");
-    // Attempt to connect
-    if (mqttClient.connect(CLIENT_ID, CLIENT_USERNAME, CLIENT_PASSWORD)) {
-      // Once connected, publish an announcement...
-      Serial.println("Connected to MQTT broker!");
-      mqttClient.publish(TOPIC_PUB, "{\"message\": \"Wio Terminal is connected!\"}");
-      Serial.println("Published connection message successfully!");
+  while (!mqttClient.connected()) {
+    Serial.println("Connecting to MQTT broker...");                          //for debugging
+    // Attempt to connect to broker
+    if (mqttClient.connect(CLIENT_ID, CLIENT_USERNAME, CLIENT_PASSWORD)) {   //connect to broker with client ID (unique for each connection instance), username and password
+      // Once connected, publish an announcement to broker...
+      Serial.println("Connected to MQTT broker!");                           //for debugging
 
-      // Subscribe to topics that App publishes to, to update UI based on user preferences
-      mqttClient.subscribe(TOPIC_SUB_TEMP);
-      mqttClient.subscribe(TOPIC_SUB_HUMID);
-      mqttClient.subscribe(TOPIC_SUB_LIGHT);
+      //publish a message from the Wio Terminal
+      mqttClient.publish(TOPIC_PUBSUB, "{\"message\": \"Wio Terminal is connected!\"}");
+      Serial.println("Published connection message successfully!");          //for debugging
+
+      // Subscribe to all topics that the deskBuddy Android App publishes to, defined in MqttTopics.h
+      mqttSubscribeToAppTopics();
 
     } else {
       //if not connected:
-      Serial.println("Connection to MQTT broker failed!");
-      Serial.print("failed, rc=");
-      Serial.print(mqttClient.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
+      Serial.println("... connection to MQTT broker failed! ");
+      Serial.print("rc= ");
+      Serial.print(mqttClient.state());                          // display error message from PubSubClient library
+      Serial.println(". Trying again in 1 second");
+      nonBlockingDelay(1000);                                    // Wait 1 second before retrying
     }
   }
 }
 
-// REFACTOR TO UI.h
-void drawLayout(String tempStr, String humidStr, String lightStr, uint16_t tempColor, uint16_t humidColor, uint16_t lightColor){
-
-  // Clear screen
-  tft.fillScreen(TFT_BLACK);
-
-  // Set text properties
-  tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE);
-
-  // Draw temperature box and text
-  tft.fillRect(10, 15, 20, 20, tempColor);
-  tft.setTextFont(2);
-  tft.drawString("Temperature", 40, 10);
-  tft.setTextFont(4);
-  tft.drawString(tempStr + " C", 40, 40);
-
-  // Draw humidity box and text
-  tft.fillRect(10, 90, 20, 20, humidColor);
-  tft.setTextFont(2);
-  tft.drawString("Humidity", 40, 85);
-  tft.setTextFont(4);
-  tft.drawString(humidStr + " %", 40, 115);
-
-  // Draw light level box and text
-  tft.fillRect(10, 165, 20, 20, lightColor);
-  tft.setTextFont(2);
-  tft.drawString("Light Level", 40, 160);
-  tft.setTextFont(4);
-  tft.drawString(lightStr + " lx", 40, 190);
+// MQTT method for publishing sensor data
+void mqttPublishSensorData() {
+  mqttClient.publish(TOPIC_PUB_TEMP, temperature.getValue());   //temperaturePublisher();
+  mqttClient.publish(TOPIC_PUB_HUMID, humidity.getValue());     //humidityPublisher();
+  mqttClient.publish(TOPIC_PUB_LIGHT, light.getValue());        //lightPublisher();
+  //Serial.println("Sensor readings published.");               //debugging
 }
 
-void drawStandUpMsg(){
-  // Clear screen
-  tft.fillScreen(TFT_BLACK);
-
-  // Set text properties
-  tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE);
-
-  // Draw message for standing up and stretching
-  tft.setTextFont(1);
-  tft.setCursor(30, 50);
-  tft.println("You have been sitting");
-  tft.setCursor(30, 110);
-  tft.println(" for too long!! o_o");
-  tft.setCursor(30, 170);
-  tft.println("Stand up and stretch!");
-}
-
-void drawMotivationalMsg() {
-
-  // Clear screen
-  tft.fillScreen(TFT_BLACK);
-
-  // Set text properties
-  tft.setTextSize(2);
-  tft.setTextColor(TFT_WHITE);
-
-  // Draw motivational message
-  tft.setTextFont(1);
-  tft.setCursor(30, 50);
-  tft.println("Keep going!");
-  tft.setCursor(30, 110);
-  tft.println("You can do it!!");
-  tft.setCursor(30, 170);
-  tft.println("You're doing great!!!");
-}
-
-// Refactor to Buzzer.h
-void buzz(){
-  analogWrite(WIO_BUZZER, 128);
-  delay(1000);
-  analogWrite(WIO_BUZZER, 0);
-  delay(1000);
+// MQTT method for subscribing to all topics defined in mqttTopics.h-- called by the connect() / reconnect() methods
+void mqttSubscribeToAppTopics() {
+  // subscribe to deskBuddy App topics
+  mqttClient.subscribe(TOPIC_SUB_TEMP);           //temperatureSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_HUMID);          //humiditySubscriber();
+  mqttClient.subscribe(TOPIC_SUB_LIGHT);          //lightSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_MOOD);           //moodSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_TIMING);         //timingSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_MOTIVATION);     //motivationSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_NOTIFICATION);   //notificationSubscriber();
 }
