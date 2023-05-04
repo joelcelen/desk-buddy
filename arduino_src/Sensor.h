@@ -7,7 +7,7 @@
 #define SENSOR_H
 
 #include <stdint.h>   // TFT library colors require unsigned 16-bit integers (such as green: 0x07E0)
-#include <Arduino.h> // need this library to include Strings
+#include <Arduino.h>  // need this library to include Strings
 
 class Sensor {
   private:

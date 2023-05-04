@@ -39,6 +39,7 @@
 
 // initializing WIFI conection
 WIFI myWifi(SSID, PASSWORD);                  //Create Wi-Fi Instance with SSID & Password
+
 // initializing MQTT connection
 WiFiClientSecure wifiSSLClient;               //wifi client for PubSub with SSL/TLS cryptographic protocols
 PubSubClient mqttClient(wifiSSLClient);       //MQTT client with SSL/TLS communication protocols
@@ -237,6 +238,12 @@ void notificationEventSequence(){
     notification.setLastEvent(millis());
 }
 
+// STATE: <New feature>
+// Create your own void method below which describes the event sequence (such as to play music, or change timing intervals)
+
+// STATE: <New feature>
+// Create your own void method below which describes the event sequence (such as to play music, or change timing intervals)
+
 /*******************************************************************************************************************/
 // ***Nonblocking delay method***: a crucial method for creating delays that do not stop all processes on the arduino*
 
@@ -320,21 +327,22 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   message[min(length, MQTT_BUFFER_SIZE - 1)] = '\0';
 
   // Call the parser function to check topic and payload message
-  parser(topic, message);
+  // IMPORTANT: create new string object for each new message (String class has dynamic memory allocation!)
+  parser(String(topic).c_str(), String(message).c_str()); 
 
   // clear the message buffer
   memset(message, 0, sizeof(message));
 }
 
-// MQTT connection method
+// MQTT connection method: check MQTT connection. If lost, check WIFI connection & restore WIFI connection. Then restore MQTT connection.
 void mqttConnect(){
-  if (!mqttClient.connected()) {
+  if (!mqttClient.connected()) {               // check MQTT connection first
     //Serial.println("MQTT connection lost."); //for debugging
-    if (!myWifi.isConnected()) {
+    if (!myWifi.isConnected()) {               // check WIFI connection
       Serial.println("WIFI connection lost."); //for debugging
-      myWifi.connect();
+      myWifi.connect();                        // restore WIFI connection
     }
-    mqttReconnect();
+    mqttReconnect();                           //restore MQTT connection
   }
 }
 
@@ -342,37 +350,36 @@ void mqttConnect(){
 void mqttReconnect() {
   // Loop until we're reconnected
   while (!mqttClient.connected()) {
-    Serial.println("Connecting to MQTT broker..."); //for debugging
+    Serial.println("Connecting to MQTT broker...");                          //for debugging
     // Attempt to connect to broker
-    if (mqttClient.connect(CLIENT_ID, CLIENT_USERNAME, CLIENT_PASSWORD)) {
+    if (mqttClient.connect(CLIENT_ID, CLIENT_USERNAME, CLIENT_PASSWORD)) {   //connect to broker with client ID (unique for each connection instance), username and password
       // Once connected, publish an announcement to broker...
-      Serial.println("Connected to MQTT broker!");    //for debugging
+      Serial.println("Connected to MQTT broker!");                           //for debugging
 
       //publish a message from the Wio Terminal
       mqttClient.publish(TOPIC_PUBSUB, "{\"message\": \"Wio Terminal is connected!\"}");
+      Serial.println("Published connection message successfully!");          //for debugging
 
-      Serial.println("Published connection message successfully!"); //for debugging
-
-      // Subscribe to all topics that the deskBuddy Android App publishes to, defined in mqttTopics.h
+      // Subscribe to all topics that the deskBuddy Android App publishes to, defined in MqttTopics.h
       mqttSubscribeToAppTopics();
 
     } else {
       //if not connected:
       Serial.println("... connection to MQTT broker failed! ");
       Serial.print("rc= ");
-      Serial.print(mqttClient.state()); // display error message from PubSubClient library
+      Serial.print(mqttClient.state());                          // display error message from PubSubClient library
       Serial.println(". Trying again in 1 second");
-      nonBlockingDelay(1000); // Wait 1 second before retrying
+      nonBlockingDelay(1000);                                    // Wait 1 second before retrying
     }
   }
 }
 
 // MQTT method for publishing sensor data
 void mqttPublishSensorData() {
-  mqttClient.publish(TOPIC_PUB_TEMP, temperature.getValue());    //temperaturePublisher();
-  mqttClient.publish(TOPIC_PUB_HUMID, humidity.getValue());  //humidityPublisher();
-  mqttClient.publish(TOPIC_PUB_LIGHT, light.getValue());  //lightPublisher();
-  //Serial.println("Sensor readings published.");                                       // debugging
+  mqttClient.publish(TOPIC_PUB_TEMP, temperature.getValue());   //temperaturePublisher();
+  mqttClient.publish(TOPIC_PUB_HUMID, humidity.getValue());     //humidityPublisher();
+  mqttClient.publish(TOPIC_PUB_LIGHT, light.getValue());        //lightPublisher();
+  //Serial.println("Sensor readings published.");               //debugging
 }
 
 // MQTT method for subscribing to all topics defined in mqttTopics.h-- called by the connect() / reconnect() methods
