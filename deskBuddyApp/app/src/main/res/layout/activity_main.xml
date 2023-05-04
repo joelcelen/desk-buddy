@@ -10,7 +10,7 @@
         android:id="@+id/text_view"
         android:layout_width="295dp"
         android:layout_height="149dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="72dp"
         android:text="TextView"
         android:textSize="48sp"
         app:layout_constraintEnd_toEndOf="parent"
