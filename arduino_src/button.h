@@ -1,14 +1,14 @@
-#ifndef _BUTTONTESWIO_H_
-#define _BUTTONTESWIO_H_
+#ifndef BUTTON_H
+#define BUTTON_H
 
 #include <SPI.h>
-#include <TFT_eSPI.h>
 
 //Button class with initialization of methods and variables, private and public where appropriate.
-class button {
+class Button {
 public:
-  button();
+  Button();
   void delayUntilPressed();
+  bool checkState();
 private:
   bool isPressed;
 };
