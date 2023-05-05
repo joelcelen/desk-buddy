@@ -17,8 +17,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DeskBuddyApp">
         <activity
+
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"/>
+
+        <activity
+
+            android:name=".TemperatureView"
+            android:exported="true" />
+
+
         <service
             android:name="org.eclipse.paho.android.service.MqttService"
             android:theme="@style/Theme.Design.NoActionBar"
