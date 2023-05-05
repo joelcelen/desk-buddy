@@ -1,7 +1,10 @@
 package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -11,19 +14,26 @@ public class MainActivity extends AppCompatActivity {
     private static final String TOPIC = "deskBuddy/light";
     private MqttHandler client;
 
+
     //method for creating and starting the app
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //gets the broker info from a file that is in the .gitignore,
+        //connects based on the info in the txt file with the necessary information to connect to secure broker
+
+        client = MqttHandler.getInstance();
         client = MqttHandler.getInstance(); //gets singleton instance
         client.connect();
+
         subscribeTopic(TOPIC);
     }
 
     protected void onDestroy() {
-        client.disconnect();
         super.onDestroy();
+        client.disconnect();
     }
 
 
@@ -44,5 +54,9 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText(payload);
             }
         });
+    }
+    public void Temperature(View view){
+        Intent intent = new Intent(this, TemperatureView.class);
+        startActivity(intent);
     }
 }
