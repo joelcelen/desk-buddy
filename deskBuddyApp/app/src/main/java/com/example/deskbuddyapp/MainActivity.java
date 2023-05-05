@@ -8,7 +8,7 @@ import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TOPIC = "deskBuddy/app/setLight";
+    private static final String TOPIC = "deskBuddy/light";
     private MqttHandler client;
 
     //method for creating and starting the app
@@ -16,18 +16,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        client = new MqttHandler(this);
+        client = MqttHandler.getInstance();
         client.connect();
-        //subscribeTopic(TOPIC);
-        publishMsg(TOPIC, "TCP_GREEN");
-
-
+        subscribeTopic(TOPIC);
     }
 
     protected void onDestroy() {
         client.disconnect();
         super.onDestroy();
     }
+
 
     //method for publishing a message to a topic and showing a message when the method has run
     private void publishMsg(String topic, String message) {
