@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        android:name=".ContextHelper"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,8 +17,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DeskBuddyApp">
         <activity
+
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"/>
+
+        <activity
+
+            android:name=".TemperatureView"
+            android:exported="true" />
+
+
         <service
             android:name="org.eclipse.paho.android.service.MqttService"
             android:theme="@style/Theme.Design.NoActionBar"

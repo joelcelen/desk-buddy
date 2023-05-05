@@ -16,26 +16,40 @@ import java.util.Scanner;
 //Link to video: https://www.youtube.com/watch?v=2ucv0IZgT1E&ab_channel=CoffeeProgrammer
 public class MqttHandler {
 
+    private static MqttHandler singleInstance;
     private MqttClient client;
 
-    private final String CLIENT_ID = "Fransisco";
+    private final String CLIENT_ID = "androidDeskBuddy";
+
+
     private String brokerUrl;
     private String username;
     private String password;
     private InputStream inputStream;
     private Scanner scanBrokerInfo;
 
-    private Context context;
 
 
     // Credit to this Stack overflow entry and user: LuckyLuke in regards to getting resources from a raw folder in a class that is not an activity class
     //https://stackoverflow.com/questions/7666589/using-getresources-in-non-activity-class
-    public MqttHandler (Context current){
-        this.context = current;
+
+
+    // Credit to this article: https://www.geeksforgeeks.org/singleton-class-java/
+    // for info on how to implement singleton pattern
+    private MqttHandler(){}
+
+    //creates instance of Mqtthandler if one is not already existing,
+    // otherwise returns the instance already created
+
+    public static synchronized MqttHandler getInstance() {
+        if (singleInstance == null) {
+            singleInstance= new MqttHandler();
+        }
+        return singleInstance;
     }
 
     public InputStream getResource(){
-        return context.getResources().openRawResource(R.raw.brokerinfo);
+        return ContextHelper.getContext().getResources().openRawResource(R.raw.brokerinfo);
     }
     //Method for connecting to broker
     public void connect() {
