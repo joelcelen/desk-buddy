@@ -14,7 +14,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TOPIC = "deskBuddy/light";
     private MqttHandler client;
 
-    private static int count = 0;
 
     //method for creating and starting the app
     @Override
@@ -26,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
         //connects based on the info in the txt file with the necessary information to connect to secure broker
 
         client = MqttHandler.getInstance();
+        client = MqttHandler.getInstance(); //gets singleton instance
+        client.connect();
+
         subscribeTopic(TOPIC);
     }
 
@@ -55,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     }
     public void Temperature(View view){
         Intent intent = new Intent(this, TemperatureView.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 }

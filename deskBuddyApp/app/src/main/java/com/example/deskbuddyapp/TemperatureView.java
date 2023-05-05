@@ -126,10 +126,9 @@ public class TemperatureView extends AppCompatActivity {
     }
 
     public void mainActivity(){
-        //Intent intent = new Intent(this,MainActivity.class);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        //startActivity(intent);
-        super.onBackPressed();
+        Intent intent = new Intent(this,MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void dailyGraph(View view){

@@ -12,3 +12,9 @@ arduino_src/mqttTopics.h
 
 #MQTT broker info for android app
 deskBuddyApp/app/src/main/res/raw/brokerinfo.txt
+
+#Idea
+.idea/
+
+#VS code
+arduino_src/.vscode/
