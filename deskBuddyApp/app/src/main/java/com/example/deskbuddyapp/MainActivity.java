@@ -11,8 +11,7 @@ import android.widget.Button;
 
 import android.widget.TextView;
 import android.widget.Toast;
-import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,14 +52,14 @@ public class MainActivity extends AppCompatActivity {
 
         //Locate the correct button entities from the xml file
         tempButton = findViewById(R.id.temp_button);
-        //lightButton = findViewById(R.id.light_button);
+        lightButton = findViewById(R.id.light_button);
         humButton = findViewById(R.id.hum_button);
         profilesButton = findViewById(R.id.profiles_button);
 
 
         //Initialise listeners for if button is clicked --> call corresponding method
         tempButton.setOnClickListener(view -> openTemperatureView());
-        //lightButton.setOnClickListener(view -> openLightView());
+        lightButton.setOnClickListener(view -> openLightView());
         humButton.setOnClickListener(view -> openHumidityView());
         profilesButton.setOnClickListener(view ->openProfilesView());
 
@@ -78,12 +77,12 @@ public class MainActivity extends AppCompatActivity {
         Intent intentTemp = new Intent(this, TemperatureView.class);
         startActivity(intentTemp);
     }
-    /*public void openLightView() {
+    public void openLightView() {
         Intent intentLight = new Intent(this, LightView.class);
         startActivity(intentLight);
     }
 
-     */
+
     public void openHumidityView() {
         Intent intentHumidity = new Intent(this, HumidityView.class);
         startActivity(intentHumidity);
@@ -130,9 +129,5 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         });
-    }
-    public void Temperature(View view){
-        Intent intent = new Intent(this, HumidityView.class);
-        startActivity(intent);
     }
 }
