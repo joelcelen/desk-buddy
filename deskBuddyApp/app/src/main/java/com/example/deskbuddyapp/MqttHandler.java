@@ -21,6 +21,7 @@ public class MqttHandler {
 
     private final String CLIENT_ID = "androidDeskBuddy";
 
+
     private String brokerUrl;
     private String username;
     private String password;

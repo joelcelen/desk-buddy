@@ -34,7 +34,7 @@ import java.util.Scanner;
 //Credits to https://www.youtube.com/watch?v=DD1CxoVONFE&ab_channel=KGPTalkie
 
 public class TemperatureView extends AppCompatActivity {
-    private static final String TOPIC = "deskBuddy/light";
+    private static final String TOPIC = "deskBuddy/temperature";
     private MqttHandler client;
     static ArrayList<Entry> tempData = new ArrayList<>();
     static LineChart temperatureChart;
