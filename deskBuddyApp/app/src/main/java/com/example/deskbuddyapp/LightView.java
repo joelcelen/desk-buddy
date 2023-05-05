@@ -58,7 +58,7 @@ public class LightView extends AppCompatActivity {
         lightDataSet .setCircleRadius(5f);
 
 
-        dataSets.add(lightDataSet );
+        dataSets.add(lightDataSet);
 
 
         XAxis xAxis = lightChart.getXAxis();

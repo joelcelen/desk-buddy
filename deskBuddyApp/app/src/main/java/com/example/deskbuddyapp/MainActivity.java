@@ -11,8 +11,7 @@ import android.widget.Button;
 
 import android.widget.TextView;
 import android.widget.Toast;
-import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -130,9 +129,5 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         });
-    }
-    public void Temperature(View view){
-        Intent intent = new Intent(this, HumidityView.class);
-        startActivity(intent);
     }
 }

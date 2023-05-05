@@ -28,6 +28,9 @@
         <activity
             android:name=".TemperatureView"
             android:exported="true" />
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
 
         <service
             android:name="org.eclipse.paho.android.service.MqttService"

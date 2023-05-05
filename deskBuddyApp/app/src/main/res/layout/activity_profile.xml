@@ -6,76 +6,217 @@
     android:layout_height="match_parent"
     tools:context=".ProfileActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="299dp"
-        android:layout_height="384dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.245">
+    <ViewFlipper
+        android:id="@+id/view_flipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btnDefaultProfile"
-            android:layout_width="140dp"
-            android:layout_height="180dp"
-            android:onClick="clickDefault"
-            android:text="Default"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!-- First view -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ProfileActivity">
 
-        <Button
-            android:id="@+id/btnProfile1"
-            android:layout_width="140dp"
-            android:layout_height="180dp"
-            android:onClick="clickProfile1"
-            android:text="empty"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="299dp"
+                android:layout_height="384dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.245">
 
-        <Button
-            android:id="@+id/btnProfile2"
-            android:layout_width="140dp"
-            android:layout_height="180dp"
-            android:onClick="clickProfile2"
-            android:text="empty"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+                <Button
+                    android:id="@+id/btnProfile1"
+                    android:layout_width="140dp"
+                    android:layout_height="180dp"
+                    android:text="Profile 1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/btnProfile3"
-            android:layout_width="140dp"
-            android:layout_height="180dp"
-            android:onClick="clickProfile3"
-            android:text="empty"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <Button
+                    android:id="@+id/btnProfile2"
+                    android:layout_width="140dp"
+                    android:layout_height="180dp"
+                    android:text="empty"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/btnProfile3"
+                    android:layout_width="140dp"
+                    android:layout_height="180dp"
+                    android:text="empty"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/btnSettings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Settings"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.781" />
+                <Button
+                    android:id="@+id/btnProfile4"
+                    android:layout_width="140dp"
+                    android:layout_height="180dp"
+                    android:text="empty"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/btnHome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:onClick="clickHome"
-        android:text="Home"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/btnSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.781" />
+
+            <Button
+                android:id="@+id/btnHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Home"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Second view -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".Temp">
+
+
+            <Button
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Go back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnSave"
+                app:layout_constraintVertical_bias="0.163"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="0dp" />
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Save changes"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+                app:layout_constraintVertical_bias="0.293" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="371dp"
+                android:layout_height="461dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.059">
+
+
+                <EditText
+                    android:id="@+id/editName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="30dp"
+                    android:text="Profile Name"
+                    app:layout_constraintBottom_toTopOf="@+id/sldTemp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0"/>
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sldTemp"
+                    android:layout_width="332dp"
+                    android:layout_height="50dp"
+                    android:stepSize="1"
+                    android:value="22"
+                    android:valueFrom="15"
+                    android:valueTo="30"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.41"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.355" />
+
+                <TextView
+                    android:id="@+id/txtHum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Humidity"
+                    app:layout_constraintBottom_toTopOf="@+id/sldHum"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.96" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sldHum"
+                    android:layout_width="332dp"
+                    android:layout_height="50dp"
+                    android:stepSize="1"
+                    android:value="40"
+                    android:valueFrom="20"
+                    android:valueTo="60"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.41"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.602" />
+
+                <TextView
+                    android:id="@+id/txtLight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Light Level"
+                    app:layout_constraintBottom_toTopOf="@+id/sldLight"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.972" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sldLight"
+                    android:layout_width="332dp"
+                    android:layout_height="50dp"
+                    android:stepSize="10"
+                    android:value="700"
+                    android:valueFrom="500"
+                    android:valueTo="1000"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.41"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.835" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ViewFlipper>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
