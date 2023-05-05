@@ -2,6 +2,7 @@ package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,13 +18,15 @@ public class MainActivity extends AppCompatActivity {
     private static final String TOPICLIGHT = "deskBuddy/light";
     private MqttHandler client;
 
+    /*
+    //Initialize buttons on homescreen
     private Button tempButton;
-
     private Button lightButton;
-
     private Button humButton;
-
+    private Button profilesButton;
+    */
     //method for creating and starting the app
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,36 +40,47 @@ public class MainActivity extends AppCompatActivity {
         subscribeTopic(TOPICLIGHT);
 
         //publishMsg(TOPIC, "TCP_GREEN");
-
+        /*
         //Locate the correct button entities from the xml file
         tempButton = (Button) findViewById(R.id.temp_button);
         lightButton = (Button) findViewById(R.id.light_button);
         humButton = (Button) findViewById(R.id.hum_button);
+        profilesButton = (Button) findViewById(R.id.profiles_button);
 
-        /*
+
         //Initialise listeners for if button is clicked --> call corresponding method
         tempButton.setOnClickListener(view -> openTemperatureView());
         lightButton.setOnClickListener(view -> openLightView());
         humButton.setOnClickListener(view -> openHumidityView());
+        profilesButton.setOnClickListener(view ->openProfilesView());
         */
+
+        RoomProfile roomProfile = new RoomProfile();
+        TextView currentProfile = (TextView) findViewById(R.id.current_profile);
+        String nameOfProfile = roomProfile.getRoomName();
+        currentProfile.setText(nameOfProfile);
     }
+
     /*
     //Specific behavior for each button that when clicked takes you to corresponding page in the app
     public void openTemperatureView() {
         Intent intentTemp = new Intent(this, TemperatureView.class);
         startActivity(intentTemp);
     }
-
     public void openLightView() {
         Intent intentLight = new Intent(this, LightView.class);
         startActivity(intentLight);
     }
-
     public void openHumidityView() {
         Intent intentHumidity = new Intent(this, HumidityView.class);
         startActivity(intentHumidity);
     }
+    public void openProfilesView() {
+        Intent intentProfiles = new Intent(this, ProfileActivity.class);
+        startActivity(intentProfiles);
+    }
     */
+
 
     protected void onDestroy() {
         client.disconnect();
@@ -91,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 //TextView tempView = findViewById(R.id.temp_view);
                 //tempView.setText(payload);
 
-                //Conditions for how to handle incoming topic payloads depending on the current subscribed-to topic
+                //Conditions for handling incoming topic payloads depending on the current subscribed-to topic
                 if(topic.equals("deskBuddy/temperature")){
                     TextView tempView = findViewById(R.id.temp_view);
                     tempView.setText(payload);
