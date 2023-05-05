@@ -1,13 +1,17 @@
 package com.example.deskbuddyapp;
 
-import androidx.appcompat.app.AppCompatActivity;
 
+
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -21,7 +25,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.InputStream;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
 
@@ -30,27 +34,21 @@ import java.util.Scanner;
 //Credits to https://www.youtube.com/watch?v=DD1CxoVONFE&ab_channel=KGPTalkie
 
 public class TemperatureView extends AppCompatActivity {
-    private static final String TOPIC = "deskBuddy/temperature";
-    private static final String CLIENT_ID = "androidDeskBuddy";
-    private String brokerUrl;
-    private String username;
-    private String password;
-    private InputStream inputStream;
-    private Scanner scanBrokerInfo;
+    private static final String TOPIC = "deskBuddy/light";
     private MqttHandler client;
-    ArrayList<Entry> tempData = new ArrayList<>();
-    LineChart temperatureChart;
-    LineDataSet temperatureDataSet = new LineDataSet(tempData,"Temperature Data Set");
-    ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-    LineData data = new LineData(dataSets);
+    static ArrayList<Entry> tempData = new ArrayList<>();
+    static LineChart temperatureChart;
+    static LineDataSet temperatureDataSet = new LineDataSet(tempData,"Temperature Data Set");
+    static ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+    static LineData data = new LineData(dataSets);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_temp);
         temperatureChart = findViewById(R.id.tempChart);
-        initializeConnection();
-        subscribeTopic();
+        client = MqttHandler.getInstance();
+        subscribeTopic(TOPIC);
         generateGraph();
     }
 
@@ -66,11 +64,9 @@ public class TemperatureView extends AppCompatActivity {
         temperatureDataSet.setDrawCircles(true);
         temperatureDataSet.setCircleColor(Color.BLUE);
         temperatureDataSet.setCircleRadius(5f);
-        //set1.setValueTextSize(18f);
 
 
         dataSets.add(temperatureDataSet);
-
 
 
         XAxis xAxis = temperatureChart.getXAxis();
@@ -99,30 +95,6 @@ public class TemperatureView extends AppCompatActivity {
         temperatureChart.setData(data);
     }
 
-    public void initializeConnection(){
-        inputStream = getResources().openRawResource(R.raw.brokerinfo);
-        {
-            try {
-                scanBrokerInfo = new Scanner(inputStream);
-                while (scanBrokerInfo.hasNextLine()) {
-                    brokerUrl = scanBrokerInfo.next();
-                    username = scanBrokerInfo.next();
-                    password = scanBrokerInfo.next();
-                }
-                inputStream.close();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        client = new MqttHandler();
-        client.connect(brokerUrl, CLIENT_ID, username, password);
-        scanBrokerInfo.close();
-    }
-    public void subscribeTopic(){
-        subscribeTopic(TOPIC);
-    }
-
     private void subscribeTopic(String topic) {
         Toast.makeText(this, "subscribing to topic: " + topic, Toast.LENGTH_SHORT).show();
         client.subscribe(topic, new IMqttMessageListener() {
@@ -131,10 +103,6 @@ public class TemperatureView extends AppCompatActivity {
                 Log.d("Is the message arrived","will see");
                 String payload = new String(message.getPayload());
                 Float temperature = Float.parseFloat(payload);
-                //GregorianCalendar calendar = new GregorianCalendar();
-                //long currentTime = calendar.getTimeInMillis();
-                //SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                //String formattedTime = sdf.format(currentTime);
 
                 LocalTime currentTime = LocalTime.now();
                 int seconds = currentTime.toSecondOfDay();
@@ -152,14 +120,19 @@ public class TemperatureView extends AppCompatActivity {
                 temperatureChart.notifyDataSetChanged();
                 temperatureChart.setData(data);
                 temperatureChart.invalidate();
-                //generateGraph();
                 System.out.println(tempData);
             }
         });
     }
 
-    private void dailyGraph(View view){
+    public void mainActivity(){
+        //Intent intent = new Intent(this,MainActivity.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //startActivity(intent);
+        super.onBackPressed();
+    }
 
+    private void dailyGraph(View view){
     }
     private void weeklyGraph(View view){
 

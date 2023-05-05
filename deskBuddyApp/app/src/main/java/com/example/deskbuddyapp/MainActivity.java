@@ -9,18 +9,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import java.io.InputStream;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TOPIC = "deskBuddy/light";
-    private static final String CLIENT_ID = "";
-    private String brokerUrl;
-    private String username;
-    private String password;
-    private InputStream inputStream;
-    private Scanner scanBrokerInfo;
     private MqttHandler client;
+
+    private static int count = 0;
 
     //method for creating and starting the app
     @Override
@@ -30,33 +24,16 @@ public class MainActivity extends AppCompatActivity {
 
         //gets the broker info from a file that is in the .gitignore,
         //connects based on the info in the txt file with the necessary information to connect to secure broker
-        inputStream = getResources().openRawResource(R.raw.brokerinfo);
-        {
-            try {
-                scanBrokerInfo = new Scanner(inputStream);
-                while (scanBrokerInfo.hasNextLine()) {
-                    brokerUrl = scanBrokerInfo.next();
-                    username = scanBrokerInfo.next();
-                    password = scanBrokerInfo.next();
-                }
-                inputStream.close();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
 
-        client = new MqttHandler();
-        client.connect(brokerUrl, CLIENT_ID, username, password);
+        client = MqttHandler.getInstance();
         subscribeTopic(TOPIC);
-        //publishMsg(TOPIC, "TCP_GREEN");
-        scanBrokerInfo.close();
-
     }
 
     protected void onDestroy() {
-        client.disconnect();
         super.onDestroy();
+        client.disconnect();
     }
+
 
     //method for publishing a message to a topic and showing a message when the method has run
     private void publishMsg(String topic, String message) {
@@ -78,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void Temperature(View view){
         Intent intent = new Intent(this, TemperatureView.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-
     }
 }
