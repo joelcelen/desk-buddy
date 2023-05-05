@@ -27,10 +27,12 @@ public class MqttHandler {
     private Scanner scanBrokerInfo;
 
 
-    // Credit to this article
-    private MqttHandler(){
+    // Credit to this article: https://www.geeksforgeeks.org/singleton-class-java/
+    // for info on how to implement singleton pattern
+    private MqttHandler(){}
 
-    }
+    //creates instance of Mqtthandler if one is not already existing,
+    // otherwise returns the instance already created
     public static synchronized MqttHandler getInstance() {
         if (singleInstance == null) {
             singleInstance= new MqttHandler();

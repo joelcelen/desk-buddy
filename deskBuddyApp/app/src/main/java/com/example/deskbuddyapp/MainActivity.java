@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        client = MqttHandler.getInstance();
+        client = MqttHandler.getInstance(); //gets singleton instance
         client.connect();
         subscribeTopic(TOPIC);
     }
