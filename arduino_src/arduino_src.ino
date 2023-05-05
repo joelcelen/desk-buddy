@@ -322,16 +322,19 @@ void parseTiming(const char* message){
 
 // MQTT callback method for receiving messages - this needs to be short and sweet to avoid processing slowdowns
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
-  // Copy the incoming message payload to the buffer
+  // Clear the message buffer
+  memset(message, 0, sizeof(message));
+
+  // Copy the payload to the message buffer
   memcpy(message, payload, min(length, MQTT_BUFFER_SIZE - 1));
   message[min(length, MQTT_BUFFER_SIZE - 1)] = '\0';
 
+  // Create immutable objects for the topic and message
+  const String topicStr(topic);
+  const String payloadStr(message);
+  
   // Call the parser function to check topic and payload message
-  // IMPORTANT: create new string object for each new message (String class has dynamic memory allocation!)
-  parser(String(topic).c_str(), String(message).c_str()); 
-
-  // clear the message buffer
-  memset(message, 0, sizeof(message));
+  parser(topicStr.c_str(), payloadStr.c_str());
 }
 
 // MQTT connection method: check MQTT connection. If lost, check WIFI connection & restore WIFI connection. Then restore MQTT connection.
@@ -369,7 +372,7 @@ void mqttReconnect() {
       Serial.print("rc= ");
       Serial.print(mqttClient.state());                          // display error message from PubSubClient library
       Serial.println(". Trying again in 1 second");
-      nonBlockingDelay(1000);                                    // Wait 1 second before retrying
+      delay(1000);                                               // Wait 1 second before retrying
     }
   }
 }

@@ -24,5 +24,9 @@ void Sensor::setValue(const char* newValue) {
 }
 
 void Sensor::setIndicatorColor(uint16_t indicatorColor) {
-  this->indicatorColor = indicatorColor;
+  if (indicatorColor == 0x07E0 || indicatorColor == 0xFDA0 || indicatorColor == 0xF800) {   //primitive exception handling to check for unexpected colors
+    this->indicatorColor = indicatorColor;
+  }else{
+    Serial.println("Runtime exception while setting indicatorColor");                       //statement to help debug
+  }
 }
