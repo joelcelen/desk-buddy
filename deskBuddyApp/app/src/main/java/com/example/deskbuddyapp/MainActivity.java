@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         client = MqttHandler.getInstance(); //gets singleton instance
         client.connect();
         subscribeTopic(TOPIC);
+
     }
 
     protected void onDestroy() {
