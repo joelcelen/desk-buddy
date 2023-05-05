@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void Temperature(View view){
-        Intent intent = new Intent(this, TemperatureView.class);
+        Intent intent = new Intent(this, HumidityView.class);
         startActivity(intent);
     }
 }
