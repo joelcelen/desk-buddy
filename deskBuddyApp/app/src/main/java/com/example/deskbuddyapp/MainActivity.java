@@ -54,14 +54,14 @@ public class MainActivity extends AppCompatActivity {
         //Locate the correct button entities from the xml file
         tempButton = findViewById(R.id.temp_button);
         //lightButton = findViewById(R.id.light_button);
-        //humButton = findViewById(R.id.hum_button);
+        humButton = findViewById(R.id.hum_button);
         profilesButton = findViewById(R.id.profiles_button);
 
 
         //Initialise listeners for if button is clicked --> call corresponding method
         tempButton.setOnClickListener(view -> openTemperatureView());
         //lightButton.setOnClickListener(view -> openLightView());
-        //humButton.setOnClickListener(view -> openHumidityView());
+        humButton.setOnClickListener(view -> openHumidityView());
         profilesButton.setOnClickListener(view ->openProfilesView());
 
 
@@ -82,10 +82,12 @@ public class MainActivity extends AppCompatActivity {
         Intent intentLight = new Intent(this, LightView.class);
         startActivity(intentLight);
     }
+
+     */
     public void openHumidityView() {
         Intent intentHumidity = new Intent(this, HumidityView.class);
         startActivity(intentHumidity);
-    }*/
+    }
     public void openProfilesView() {
         Intent intentProfiles = new Intent(this, ProfileActivity.class);
         startActivity(intentProfiles);
@@ -111,9 +113,6 @@ public class MainActivity extends AppCompatActivity {
         //Toast.makeText(this, "subscribing to topic: " + topic, Toast.LENGTH_SHORT).show();
         client.subscribe(topic, (topic1, message) -> {
             String payload = new String(message.getPayload());
-            //TextView textView = findViewById(R.id.text_view);
-            //TextView tempView = findViewById(R.id.temp_view);
-            //tempView.setText(payload);
 
             //Conditions for handling incoming topic payloads depending on the current subscribed-to topic
             switch (topic1) {
@@ -133,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void Temperature(View view){
-        Intent intent = new Intent(this, TemperatureView.class);
+        Intent intent = new Intent(this, HumidityView.class);
         startActivity(intent);
     }
 }
