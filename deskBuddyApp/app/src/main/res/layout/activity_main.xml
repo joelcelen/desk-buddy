@@ -8,37 +8,78 @@
 
     <TextView
         android:id="@+id/light_view"
-        android:layout_width="295dp"
-        android:layout_height="149dp"
-        android:layout_marginBottom="52dp"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="90dp"
         android:text="Light"
-        android:textSize="48sp"
-        app:layout_constraintBottom_toTopOf="@+id/hum_view"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.846"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/temp_view"
-        app:layout_constraintVertical_bias="1.0" />
+        android:translationZ="90dp"/>
+    />
 
     <TextView
         android:id="@+id/temp_view"
-        android:layout_width="295dp"
-        android:layout_height="149dp"
-        android:layout_marginTop="48dp"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="100dp"
         android:text="Temperature"
-        android:textSize="48sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.846"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:translationZ="90dp"/>
 
     <TextView
         android:id="@+id/hum_view"
-        android:layout_width="295dp"
+        android:layout_width="120dp"
         android:layout_height="149dp"
-        android:layout_marginBottom="152dp"
+        android:layout_marginBottom="175dp"
         android:text="Humidity"
-        android:textSize="48sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.846"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/light_view"
+        app:layout_constraintVertical_bias="1.0"
+        android:translationZ="90dp"/>
+    />
+
+    <Button
+        android:id="@+id/temp_button"
+        android:layout_width="305dp"
+        android:layout_height="126dp"
+        android:text="Temp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.136" />
+
+    <Button
+        android:id="@+id/light_button"
+        android:layout_width="305dp"
+        android:layout_height="126dp"
+        android:text="Light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.398" />
+
+    <Button
+        android:id="@+id/hum_button"
+        android:layout_width="305dp"
+        android:layout_height="126dp"
+        android:text="Humidity"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.644" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

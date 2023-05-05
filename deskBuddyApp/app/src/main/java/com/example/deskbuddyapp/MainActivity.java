@@ -1,17 +1,27 @@
 package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TOPIC1 = "deskBuddy/temperature";
-    private static final String TOPIC2 = "deskBuddy/humidity";
-    private static final String TOPIC3 = "deskBuddy/light";
+    private static final String TOPICTEMP = "deskBuddy/temperature";
+    private static final String TOPICHUM = "deskBuddy/humidity";
+    private static final String TOPICLIGHT = "deskBuddy/light";
     private MqttHandler client;
+
+    private Button tempButton;
+
+    private Button lightButton;
+
+    private Button humButton;
 
     //method for creating and starting the app
     @Override
@@ -20,13 +30,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         client = new MqttHandler(this);
         client.connect();
-        subscribeTopic(TOPIC1);
-        subscribeTopic(TOPIC2);
-        subscribeTopic(TOPIC3);
+
+        //Call methods for subscribing to topics for sensor values
+        subscribeTopic(TOPICTEMP);
+        subscribeTopic(TOPICHUM);
+        subscribeTopic(TOPICLIGHT);
+
         //publishMsg(TOPIC, "TCP_GREEN");
 
+        //Locate the correct button entities from the xml file
+        tempButton = (Button) findViewById(R.id.temp_button);
+        lightButton = (Button) findViewById(R.id.light_button);
+        humButton = (Button) findViewById(R.id.hum_button);
 
+        /*
+        //Initialise listeners for if button is clicked --> call corresponding method
+        tempButton.setOnClickListener(view -> openTemperatureView());
+        lightButton.setOnClickListener(view -> openLightView());
+        humButton.setOnClickListener(view -> openHumidityView());
+        */
     }
+    /*
+    //Specific behavior for each button that when clicked takes you to corresponding page in the app
+    public void openTemperatureView() {
+        Intent intentTemp = new Intent(this, TemperatureView.class);
+        startActivity(intentTemp);
+    }
+
+    public void openLightView() {
+        Intent intentLight = new Intent(this, LightView.class);
+        startActivity(intentLight);
+    }
+
+    public void openHumidityView() {
+        Intent intentHumidity = new Intent(this, HumidityView.class);
+        startActivity(intentHumidity);
+    }
+    */
 
     protected void onDestroy() {
         client.disconnect();
@@ -37,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private void publishMsg(String topic, String message) {
         Toast.makeText(this, "publishing message: " + message, Toast.LENGTH_LONG).show();
         client.publish(topic, message);
+
     }
 
     //method for subscribing to topic and showing published messages to the topic the app is subscribing to
@@ -49,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
                 //TextView textView = findViewById(R.id.text_view);
                 //TextView tempView = findViewById(R.id.temp_view);
                 //tempView.setText(payload);
+
+                //Conditions for how to handle incoming topic payloads depending on the current subscribed-to topic
                 if(topic.equals("deskBuddy/temperature")){
                     TextView tempView = findViewById(R.id.temp_view);
                     tempView.setText(payload);
