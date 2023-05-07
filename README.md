@@ -1,6 +1,6 @@
 ## Project
 
-<img src="https://i.imgur.com/kZWLL0f.jpg" alt="Logo" width="1000"/>  
+<img src="https://i.imgur.com/kZWLL0f.jpg" alt="Logo" width="500"/>  
 
 ## Description
 
