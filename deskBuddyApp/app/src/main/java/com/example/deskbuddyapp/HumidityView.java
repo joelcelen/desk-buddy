@@ -117,9 +117,9 @@ public class HumidityView extends AppCompatActivity {
         });
     }
 
-    public void mainActivity(){
+    public void mainActivity(View view){
         Intent intent = new Intent(this,MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
     private void dailyGraph(View view){

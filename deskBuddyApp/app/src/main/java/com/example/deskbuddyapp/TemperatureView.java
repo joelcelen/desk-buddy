@@ -2,7 +2,6 @@ package com.example.deskbuddyapp;
 
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -15,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -29,8 +29,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-import java.util.Scanner;
-
 //Credits to https://www.youtube.com/watch?v=DD1CxoVONFE&ab_channel=KGPTalkie
 
 public class TemperatureView extends AppCompatActivity {
@@ -44,7 +42,7 @@ public class TemperatureView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_temp);
+        setContentView(R.layout.activity_temperature_view);
         temperatureChart = findViewById(R.id.tempChart);
         client = MqttHandler.getInstance();
         subscribeTopic(Topics.TEMP_SUB.getTopic());
@@ -58,11 +56,12 @@ public class TemperatureView extends AppCompatActivity {
         temperatureChart.setScaleEnabled(false);
 
 
-        temperatureDataSet.setColor(Color.BLUE);
+        temperatureDataSet.setColor(Color.RED);
         temperatureDataSet.setLineWidth(2f);
         temperatureDataSet.setDrawCircles(true);
-        temperatureDataSet.setCircleColor(Color.BLUE);
+        temperatureDataSet.setCircleColor(Color.RED);
         temperatureDataSet.setCircleRadius(5f);
+        temperatureDataSet.setValueTextColor(Color.WHITE);
 
 
         dataSets.add(temperatureDataSet);
@@ -79,14 +78,14 @@ public class TemperatureView extends AppCompatActivity {
 
         YAxis yAxis = temperatureChart.getAxisLeft();
         yAxis.setTextSize(12);
-        yAxis.setTextColor(Color.BLACK);
+        yAxis.setTextColor(Color.WHITE);
         yAxis.setTypeface(Typeface.DEFAULT_BOLD);
         temperatureChart.getAxisRight().setEnabled(false);
 
         Legend legend = temperatureChart.getLegend();
         legend.setEnabled(true);
         legend.setTextSize(12);
-        legend.setTextColor(Color.BLACK);
+        legend.setTextColor(Color.WHITE);
 
         temperatureChart.setDragEnabled(true);
         temperatureChart.setScaleEnabled(true);
@@ -124,9 +123,9 @@ public class TemperatureView extends AppCompatActivity {
         });
     }
 
-    public void mainActivity(){
+    public void mainActivity(View view){
         Intent intent = new Intent(this,MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
