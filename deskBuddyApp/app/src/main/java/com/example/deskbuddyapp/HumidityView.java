@@ -27,7 +27,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class HumidityView extends AppCompatActivity {
-    private static final String TOPIC = "deskBuddy/humidity";
     private MqttHandler client;
     static ArrayList<Entry> humData = new ArrayList<>();
     static LineChart humidityChart;
@@ -41,7 +40,7 @@ public class HumidityView extends AppCompatActivity {
         setContentView(R.layout.activity_humidity_view);
         humidityChart = findViewById(R.id.humChart);
         client = MqttHandler.getInstance();
-        subscribeTopic(TOPIC);
+        subscribeTopic(Topics.HUMIDITY_SUB.getTopic());
         generateGraph();
     }
 

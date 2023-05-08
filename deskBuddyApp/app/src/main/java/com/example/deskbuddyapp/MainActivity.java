@@ -14,12 +14,7 @@ import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final String TOPICTEMP = "deskBuddy/temperature";
-    private static final String TOPICHUM = "deskBuddy/humidity";
-    private static final String TOPICLIGHT = "deskBuddy/light";
     private MqttHandler client;
-
 
     //Initialize buttons on homescreen
     private Button tempButton;
@@ -44,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Call methods for subscribing to topics for sensor values
-        subscribeTopic(TOPICTEMP);
-        subscribeTopic(TOPICHUM);
-        subscribeTopic(TOPICLIGHT);
+        subscribeTopic(Topics.TEMP_SUB.getTopic());
+        subscribeTopic(Topics.HUMIDITY_SUB.getTopic());
+        subscribeTopic(Topics.LIGHT_SUB.getTopic());
 
         //publishMsg(TOPIC, "TCP_GREEN");
 

@@ -20,15 +20,11 @@ public class MqttHandler {
     private MqttClient client;
 
     private final String CLIENT_ID = "androidDeskBuddy";
-
-
     private String brokerUrl;
     private String username;
     private String password;
     private InputStream inputStream;
     private Scanner scanBrokerInfo;
-
-
 
     // Credit to this Stack overflow entry and user: LuckyLuke in regards to getting resources from a raw folder in a class that is not an activity class
     //https://stackoverflow.com/questions/7666589/using-getresources-in-non-activity-class

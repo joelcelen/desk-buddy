@@ -34,7 +34,6 @@ import java.util.Scanner;
 //Credits to https://www.youtube.com/watch?v=DD1CxoVONFE&ab_channel=KGPTalkie
 
 public class TemperatureView extends AppCompatActivity {
-    private static final String TOPIC = "deskBuddy/temperature";
     private MqttHandler client;
     static ArrayList<Entry> tempData = new ArrayList<>();
     static LineChart temperatureChart;
@@ -48,7 +47,7 @@ public class TemperatureView extends AppCompatActivity {
         setContentView(R.layout.activity_view_temp);
         temperatureChart = findViewById(R.id.tempChart);
         client = MqttHandler.getInstance();
-        subscribeTopic(TOPIC);
+        subscribeTopic(Topics.TEMP_SUB.getTopic());
         generateGraph();
     }
 
