@@ -18,6 +18,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.Utils;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -45,7 +46,7 @@ public class HumidityView extends AppCompatActivity {
     }
 
     public void generateGraph(){
-
+        Utils.init(this);
         humidityChart.refreshDrawableState();
         humidityChart.setDragEnabled(true);
         humidityChart.setScaleEnabled(false);
@@ -71,13 +72,14 @@ public class HumidityView extends AppCompatActivity {
         xAxis.setEnabled(false);
 
         YAxis yAxis = humidityChart.getAxisLeft();
-        yAxis.setTextSize(12);
+        yAxis.setTextSize(30);
         yAxis.setTextColor(Color.BLACK);
         yAxis.setTypeface(Typeface.DEFAULT_BOLD);
         humidityChart.getAxisRight().setEnabled(false);
+        humidityChart.getDescription().setEnabled(false);
 
         Legend legend = humidityChart.getLegend();
-        legend.setEnabled(true);
+        legend.setEnabled(false);
         legend.setTextSize(12);
         legend.setTextColor(Color.BLACK);
 
@@ -92,7 +94,7 @@ public class HumidityView extends AppCompatActivity {
         client.subscribe(topic, new IMqttMessageListener() {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Log.d("Is the message arrived","will see");
+                //Log.d("Is the message arrived","will see");
                 String payload = new String(message.getPayload());
                 Float humidity = Float.parseFloat(payload);
 
@@ -117,13 +119,12 @@ public class HumidityView extends AppCompatActivity {
         });
     }
 
-    public void mainActivity(){
-        Intent intent = new Intent(this,MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    public void mainActivity(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-    private void dailyGraph(View view){
+    public void dailyGraph(View view){
     }
-    private void weeklyGraph(View view){
+    public void weeklyGraph(View view){
     }
 }

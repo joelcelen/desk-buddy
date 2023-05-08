@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".LightView">
 
+    <TextView
+        android:id="@+id/light_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Brightness (lx)"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/lightChart" />
+
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
@@ -30,13 +41,13 @@
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lightChart"
-        android:layout_width="399dp"
-        android:layout_height="563dp"
+        android:layout_width="400dp"
+        android:layout_height="500dp"
         app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.242" />
+        app:layout_constraintVertical_bias="0.450" />
 
     <Button
         android:id="@+id/back_button"
