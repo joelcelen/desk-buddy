@@ -26,7 +26,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class LightView extends AppCompatActivity {
-    private static final String TOPIC = "deskBuddy/light";
     private MqttHandler client;
     static ArrayList<Entry> lightData = new ArrayList<>();
     static LineChart lightChart;
@@ -40,7 +39,7 @@ public class LightView extends AppCompatActivity {
         setContentView(R.layout.activity_light_view);
         lightChart = findViewById(R.id.lightChart);
         client = MqttHandler.getInstance();
-        subscribeTopic(TOPIC);
+        subscribeTopic(Topics.LIGHT_SUB.getTopic());
         generateGraph();
     }
 
