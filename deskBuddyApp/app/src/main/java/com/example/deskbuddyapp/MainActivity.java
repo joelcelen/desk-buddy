@@ -59,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
         profilesButton.setOnClickListener(view ->openProfilesView());
 
 
-        RoomProfile roomProfile = new RoomProfile();
+        Profile profile = new Profile();
         TextView currentProfile = findViewById(R.id.current_profile);
-        String nameOfProfile = roomProfile.getRoomName();
+        String nameOfProfile = profile.getProfileName();
         currentProfile.setText(nameOfProfile);
 
     }
