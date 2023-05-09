@@ -22,6 +22,14 @@ public class MainActivity extends AppCompatActivity {
     private Button humButton;
     private Button profilesButton;
 
+    private RoomProfile roomProfile;
+
+    private TextView currentProfile;
+
+    private TextView tempView;
+    private TextView lightView;
+    private TextView humView;
+
 
     //method for creating and starting the app
     @SuppressLint("MissingInflatedId")
@@ -30,10 +38,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        tempView = findViewById(R.id.temp_view);
+        humView = findViewById(R.id.hum_view);
+        lightView = findViewById(R.id.light_view);
+
         //gets the broker info from a file that is in the .gitignore,
         //connects based on the info in the txt file with the necessary information to connect to secure broker
 
-        client = MqttHandler.getInstance();
         client = MqttHandler.getInstance(); //gets singleton instance
         client.connect();
 
@@ -43,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         subscribeTopic(Topics.HUMIDITY_SUB.getTopic());
         subscribeTopic(Topics.LIGHT_SUB.getTopic());
 
-        //publishMsg(TOPIC, "TCP_GREEN");
 
         //Locate the correct button entities from the xml file
         tempButton = findViewById(R.id.temp_button);
@@ -111,16 +121,16 @@ public class MainActivity extends AppCompatActivity {
             //Conditions for handling incoming topic payloads depending on the current subscribed-to topic
             switch (topic1) {
                 case "deskBuddy/temperature":
-                    TextView tempView = findViewById(R.id.temp_view);
+                    payload = payload + " \u00B0C";
                     tempView.setText(payload);
                     break;
-                case "deskBuddy/light":
-                    TextView lightView = findViewById(R.id.light_view);
-                    lightView.setText(payload);
-                    break;
                 case "deskBuddy/humidity":
-                    TextView humView = findViewById(R.id.hum_view);
+                    payload = payload + " %";
                     humView.setText(payload);
+                    break;
+                case "deskBuddy/light":
+                    payload = payload + " lx";
+                    lightView.setText(payload);
                     break;
             }
         });

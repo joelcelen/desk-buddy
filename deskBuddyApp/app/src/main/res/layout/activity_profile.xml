@@ -32,7 +32,7 @@
                     android:id="@+id/btnProfile1"
                     android:layout_width="140dp"
                     android:layout_height="180dp"
-                    android:text="Profile 1"
+                    android:text="Alfons"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
