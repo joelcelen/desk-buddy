@@ -16,6 +16,7 @@ To be able to use this system, you need a [Wio Terminal](https://www.seeedstudio
 
 1. [Grove - Temperature & Humidity Sensor (DHT11)](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
 2. [Grove - Light Sensor v1.2](https://wiki.seeedstudio.com/Grove-Light_Sensor/)
+3. [Grove - Multi Color Flash LED (5mm)](https://www.seeedstudio.com/Grove-Multi-Color-Flash-LED-5mm.html)
 
 For further information on installation please see the [installation wiki page](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Installation/guides-and-installation)
 
