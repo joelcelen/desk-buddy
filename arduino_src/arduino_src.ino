@@ -82,7 +82,7 @@ unsigned long intervalStandUp = 3600000;     // time interval to display stand u
 unsigned long intervalMotivate = 1800000;    // time interval to display motivational messages      1800000 (default: 43000)
 unsigned long intervalPublish = 3000;        // time interval to publish sensor data                3000    (default: 3000)
 unsigned long intervalDisplay = 5000;        // time interval to refresh dashboard display          5000    (default: 5000)
-unsigned long intervalNotification = 86400000; // time interval to send notification to user        86400000 (default: 3600000) = 1 hour
+unsigned long intervalNotification = 86400000; // time interval to send notification to user        86400000 (default: 3600000  = 1 hour)
 /* ADD YOUR OWN EVENT INTERVALS HERE */
 
 // Events (deskBuddy core features)
