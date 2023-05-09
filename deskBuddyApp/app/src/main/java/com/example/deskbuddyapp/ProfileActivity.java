@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,11 +20,11 @@ import java.util.HashMap;
 public class ProfileActivity extends AppCompatActivity {
 
     private ViewFlipper viewFlipper;
-    private Profile currentProfile;
-    private Profile profile1;
-    private Profile profile2;
-    private Profile profile3;
-    private Profile profile4;
+    private RoomProfile currentRoomProfile;
+    private RoomProfile roomProfile1;
+    private RoomProfile roomProfile2;
+    private RoomProfile roomProfile3;
+    private RoomProfile roomProfile4;
     private double sliderTemp;
     private double sliderHum;
     private double sliderLight;
@@ -33,7 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference profilesRef = database.getReference("Profiles");
 
-    private HashMap<Profile, Button> profileList;
+    private HashMap<RoomProfile, Button> profileList;
 
 
 
@@ -60,10 +59,10 @@ public class ProfileActivity extends AppCompatActivity {
             Slider lightSlider = findViewById(R.id.sldLight);
             EditText nameEditor = findViewById(R.id.editName);
 
-            nameEditor.setText(currentProfile.getProfileName());
-            tempSlider.setValue((float) currentProfile.getTemperature());
-            humSlider.setValue((float) currentProfile.getHumidity());
-            lightSlider.setValue((float) currentProfile.getLightLevel());
+            nameEditor.setText(currentRoomProfile.getProfileName());
+            tempSlider.setValue((float) currentRoomProfile.getTemperature());
+            humSlider.setValue((float) currentRoomProfile.getHumidity());
+            lightSlider.setValue((float) currentRoomProfile.getLightLevel());
             viewFlipper.showNext();
         });
         backButton.setOnClickListener(v -> viewFlipper.showPrevious());
@@ -87,12 +86,12 @@ public class ProfileActivity extends AppCompatActivity {
         Button saveButton = findViewById(R.id.btnSave);
         saveButton.setOnClickListener(v -> {
 
-            currentProfile.setTemperature(sliderTemp);
-            currentProfile.setHumidity(sliderHum);
-            currentProfile.setLightLevel(sliderLight);
-            currentProfile.setProfileName(nameEditor.getText().toString());
-            profilesRef.child(currentProfile.getId().toString()).setValue(currentProfile);
-            profileList.get(currentProfile).setText(updateButtonTxt(currentProfile));
+            currentRoomProfile.setTemperature(sliderTemp);
+            currentRoomProfile.setHumidity(sliderHum);
+            currentRoomProfile.setLightLevel(sliderLight);
+            currentRoomProfile.setProfileName(nameEditor.getText().toString());
+            profilesRef.child(currentRoomProfile.getId().toString()).setValue(currentRoomProfile);
+            profileList.get(currentRoomProfile).setText(updateButtonTxt(currentRoomProfile));
             viewFlipper.showPrevious();
         });
     }
@@ -112,21 +111,21 @@ public class ProfileActivity extends AppCompatActivity {
                     int temperature = profileSnapshot.child("temperature").getValue(Integer.class);
 
                     // Create a new Profile object and add it to the appropriate list
-                    Profile profile = new Profile(profileName,temperature, humidity, lightLevel,index+1);
+                    RoomProfile roomProfile = new RoomProfile(profileName,temperature, humidity, lightLevel,index+1);
 
                     // Assign profile to the appropriate index
                     switch (index) {
                         case 0:
-                            profile1 = profile;
+                            roomProfile1 = roomProfile;
                             break;
                         case 1:
-                            profile2 = profile;
+                            roomProfile2 = roomProfile;
                             break;
                         case 2:
-                            profile3 = profile;
+                            roomProfile3 = roomProfile;
                             break;
                         case 3:
-                            profile4 = profile;
+                            roomProfile4 = roomProfile;
                             break;
                     }
                     index++;
@@ -137,25 +136,25 @@ public class ProfileActivity extends AppCompatActivity {
                 Button profile2Button = findViewById(R.id.btnProfile2);
                 Button profile3Button = findViewById(R.id.btnProfile3);
                 Button profile4Button = findViewById(R.id.btnProfile4);
-                profile1Button.setText(updateButtonTxt(profile1));
-                profile2Button.setText(updateButtonTxt(profile2));
-                profile3Button.setText(updateButtonTxt(profile3));
-                profile4Button.setText(updateButtonTxt(profile4));
+                profile1Button.setText(updateButtonTxt(roomProfile1));
+                profile2Button.setText(updateButtonTxt(roomProfile2));
+                profile3Button.setText(updateButtonTxt(roomProfile3));
+                profile4Button.setText(updateButtonTxt(roomProfile4));
 
                 // Assign buttons to their respective profiles
-                profileList.put(profile1, profile1Button);
-                profileList.put(profile2, profile2Button);
-                profileList.put(profile3, profile3Button);
-                profileList.put(profile4, profile4Button);
+                profileList.put(roomProfile1, profile1Button);
+                profileList.put(roomProfile2, profile2Button);
+                profileList.put(roomProfile3, profile3Button);
+                profileList.put(roomProfile4, profile4Button);
 
                 // Current profile is set to a button on start
-                profileList.put(currentProfile, profile1Button);
+                profileList.put(currentRoomProfile, profile1Button);
 
                 // Set current profile to the profile associated with the button pressed
-                profileList.get(profile1).setOnClickListener(v -> currentProfile = profile1);
-                profileList.get(profile2).setOnClickListener(v -> currentProfile = profile2);
-                profileList.get(profile3).setOnClickListener(v -> currentProfile = profile3);
-                profileList.get(profile4).setOnClickListener(v -> currentProfile = profile4);
+                profileList.get(roomProfile1).setOnClickListener(v -> currentRoomProfile = roomProfile1);
+                profileList.get(roomProfile2).setOnClickListener(v -> currentRoomProfile = roomProfile2);
+                profileList.get(roomProfile3).setOnClickListener(v -> currentRoomProfile = roomProfile3);
+                profileList.get(roomProfile4).setOnClickListener(v -> currentRoomProfile = roomProfile4);
             }
 
             @Override
@@ -169,9 +168,9 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     // Method to update the values and display them on the button.
-    public String updateButtonTxt(Profile profile){
-        return profile.getProfileName() + "\n Temp: " + profile.getTemperature()
-                + "\n Hum: " + profile.getHumidity() + "\n Lux: " + profile.getLightLevel();
+    public String updateButtonTxt(RoomProfile roomProfile){
+        return roomProfile.getProfileName() + "\n Temp: " + roomProfile.getTemperature()
+                + "\n Hum: " + roomProfile.getHumidity() + "\n Lux: " + roomProfile.getLightLevel();
     }
 
     public void goToViewOne(View view) {

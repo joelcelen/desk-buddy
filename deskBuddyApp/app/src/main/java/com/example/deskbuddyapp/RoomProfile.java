@@ -3,7 +3,7 @@ package com.example.deskbuddyapp;
 
 /** Class for saving user preferences. **/
 
-public class Profile {
+public class RoomProfile {
 
     private String profileName;
     private int id;
@@ -12,7 +12,7 @@ public class Profile {
     private double lightLevel;
 
     // Constructor with specific values
-    public Profile(String profileName, double temperature, double humidity, double lightLevel,int id){
+    public RoomProfile(String profileName, double temperature, double humidity, double lightLevel, int id){
         this.profileName = profileName;
         this.temperature = temperature;
         this.humidity = humidity;
@@ -21,8 +21,8 @@ public class Profile {
     }
 
     // Constructor with default values.
-    public Profile(){
-        this.profileName = "Default";
+    public RoomProfile(){
+        this.profileName = "Alfons";
         this.temperature = 23.0;
         this.humidity = 40.0;
         this.lightLevel = 700;
