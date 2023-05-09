@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "98779750118",
+    "project_id": "desk-buddy-705d9",
+    "storage_bucket": "desk-buddy-705d9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98779750118:android:36c9f67b9fbf0a89766527",
+        "android_client_info": {
+          "package_name": "com.example.deskbuddyapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "98779750118-baofnrc5ot1k4c889j8kk4b90qph3s1p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgwk2lIb7RkyRhnWcJQZMoHpUXcX4QiAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "98779750118-baofnrc5ot1k4c889j8kk4b90qph3s1p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

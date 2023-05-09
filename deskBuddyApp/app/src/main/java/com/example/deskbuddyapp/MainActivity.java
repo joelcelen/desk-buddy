@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import android.widget.TextView;
@@ -68,10 +67,10 @@ public class MainActivity extends AppCompatActivity {
         humButton.setOnClickListener(view -> openHumidityView());
         profilesButton.setOnClickListener(view ->openProfilesView());
 
-        // room profiles
-        roomProfile = new RoomProfile();
-        currentProfile = findViewById(R.id.current_profile);
-        String nameOfProfile = roomProfile.getRoomName();
+
+        RoomProfile roomProfile = new RoomProfile();
+        TextView currentProfile = findViewById(R.id.current_profile);
+        String nameOfProfile = roomProfile.getProfileName();
         currentProfile.setText(nameOfProfile);
 
     }
