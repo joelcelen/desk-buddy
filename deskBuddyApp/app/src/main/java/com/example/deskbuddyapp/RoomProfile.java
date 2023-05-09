@@ -20,7 +20,7 @@ public class RoomProfile {
 
     // Constructor with default values.
     public RoomProfile(){
-        this.roomName = "Default";
+        this.roomName = "Alfons";
         this.temperature = 23.0;
         this.humidity = 40.0;
         this.lightLevel = 700;
