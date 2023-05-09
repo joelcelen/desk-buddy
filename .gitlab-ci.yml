@@ -1,6 +1,3 @@
-jobs:
-  script:
-      -ruby
 
 build-job:
   stage: build
