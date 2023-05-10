@@ -22,9 +22,9 @@ For further information on installation please see the [installation wiki page](
 
 ## Project status
 
-In development. 
+[+ In development. +]
 
-Expected delivery: May 24th, 2023
+Expected delivery of `v1.0`: [+ May 24th, 2023 +]
 
 ## Authors and acknowledgment
 - [Karl Eriksson](https://git.chalmers.se/kaeriks)
