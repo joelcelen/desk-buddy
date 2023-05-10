@@ -5,30 +5,35 @@ package com.example.deskbuddyapp;
 
 public class RoomProfile {
 
-    private String roomName;
+    private String profileName;
+    private int id;
     private double temperature;
     private double humidity;
     private double lightLevel;
 
     // Constructor with specific values
-    public RoomProfile(String roomName, double temperature, double humidity, double lightLevel){
-        this.roomName = roomName;
+    public RoomProfile(String profileName, double temperature, double humidity, double lightLevel, int id){
+        this.profileName = profileName;
         this.temperature = temperature;
         this.humidity = humidity;
         this.lightLevel = lightLevel;
+        this.id = id;
     }
 
     // Constructor with default values.
     public RoomProfile(){
-        this.roomName = "Default";
+        this.profileName = "Alfons";
         this.temperature = 23.0;
         this.humidity = 40.0;
         this.lightLevel = 700;
     }
 
     // Getters and setters.
-    public String getRoomName() {
-        return roomName;
+    public String getProfileName() {
+        return profileName;
+    }
+    public Integer getId() {
+        return id;
     }
 
     public double getTemperature() {
@@ -43,8 +48,8 @@ public class RoomProfile {
         return lightLevel;
     }
 
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
     }
 
     public void setTemperature(double temperature) {
@@ -57,5 +62,8 @@ public class RoomProfile {
 
     public void setLightLevel(double lightLevel) {
         this.lightLevel = lightLevel;
+    }
+    public void setId(Integer ID) {
+        this.id = ID;
     }
 }

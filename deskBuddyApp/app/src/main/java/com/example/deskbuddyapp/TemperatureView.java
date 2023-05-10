@@ -2,12 +2,10 @@ package com.example.deskbuddyapp;
 
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -29,8 +27,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-import java.util.Scanner;
-
 //Credits to https://www.youtube.com/watch?v=DD1CxoVONFE&ab_channel=KGPTalkie
 
 public class TemperatureView extends AppCompatActivity {
@@ -44,7 +40,7 @@ public class TemperatureView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_temp);
+        setContentView(R.layout.activity_temp_view);
         temperatureChart = findViewById(R.id.tempChart);
         client = MqttHandler.getInstance();
         subscribeTopic(Topics.TEMP_SUB.getTopic());
@@ -78,13 +74,14 @@ public class TemperatureView extends AppCompatActivity {
         xAxis.setEnabled(false);
 
         YAxis yAxis = temperatureChart.getAxisLeft();
-        yAxis.setTextSize(12);
+        yAxis.setTextSize(30);
         yAxis.setTextColor(Color.BLACK);
         yAxis.setTypeface(Typeface.DEFAULT_BOLD);
         temperatureChart.getAxisRight().setEnabled(false);
+        temperatureChart.getDescription().setEnabled(false);
 
         Legend legend = temperatureChart.getLegend();
-        legend.setEnabled(true);
+        legend.setEnabled(false);
         legend.setTextSize(12);
         legend.setTextColor(Color.BLACK);
 
@@ -99,7 +96,7 @@ public class TemperatureView extends AppCompatActivity {
         client.subscribe(topic, new IMqttMessageListener() {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Log.d("Is the message arrived","will see");
+                //Log.d("Is the message arrived","will see");
                 String payload = new String(message.getPayload());
                 Float temperature = Float.parseFloat(payload);
 
@@ -124,15 +121,14 @@ public class TemperatureView extends AppCompatActivity {
         });
     }
 
-    public void mainActivity(){
-        Intent intent = new Intent(this,MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    public void mainActivity(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    private void dailyGraph(View view){
+    public void dailyGraph(View view){
     }
-    private void weeklyGraph(View view){
+    public void weeklyGraph(View view){
 
     }
 }
