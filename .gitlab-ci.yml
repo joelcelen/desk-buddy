@@ -7,6 +7,14 @@ build:
   script:
     - echo "Building project..."
 
+
+unit-test:
+  stage: test
+  script:
+    - echo "Running all tests..."
+  only:
+    - main
+
 integration-test:
   stage: test
   script:
@@ -16,9 +24,4 @@ integration-test:
   except:
     - main
 
-unit-test:
-  stage: test
-  script:
-    - echo "Running all tests..."
-  only:
-    - main
+
