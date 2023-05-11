@@ -1,5 +1,5 @@
 #Specify docker image
-image: openjdk:8-jdk 
+image: gradle:latest
 
 #Declare variables that are used in the pipeline, in this project's case API 33
 
