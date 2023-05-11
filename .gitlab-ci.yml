@@ -31,26 +31,23 @@ stages:
   - build
   - test
 
-build:
+#LintDebugger job (static code analysis, before it's run), runs in build stage
+lintDebug:
   stage: build
   script:
-    - echo "Building project..."
+    - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint #Command that runs the lint debugger with gradle wrapper
 
+#AssembleDebugger job, runs in build stage
+assembleDebug:
+  stage: build
+  script:
+    - ./gradlew assembleDebug #Command that runs the assembleDebugger with gradle wrapper
+  artifacts:
+    paths:
+    - app/build/outputs/ #Save contents in this directory as artifacts which can be used later
 
-unit-test:
+#Debug tests, runs in test stage 
+debugTests:
   stage: test
   script:
-    - echo "Running all tests..."
-  only:
-    - main
-
-integration-test:
-  stage: test
-  script:
-    - echo "Running integration tests..."
-  only:
-    - branches
-  except:
-    - main
-
-
+    - ./gradlew -Pci --console=plain :app:testDebug #Command that runs this job with gradle wrapper
