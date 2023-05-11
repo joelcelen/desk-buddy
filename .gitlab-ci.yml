@@ -9,9 +9,8 @@ variables:
 
 #Commands to run before any of the pipeline stages
 before_script:
-
-  - sudo apt-get --quiet update --yes #Updates packade index and cache
-  - sudo apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 #Installs set of packages required for the Android SDK
+  - sudo apt-get update -y
+  - sudo apt-get install -y wget tar unzip lib32stdc++6 lib32z1 default-jre #Installs set of packages required for the Android SDK and default JRE
   - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip #Downloads Android SDK zip file from the google repo and saves it as "android-sdk.zip"
   - unzip -d android-sdk-linux android-sdk.zip #Unsips the Android SDK into directory "android-sdk-linux"
   - echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null #Installs the specified Android platform
@@ -25,6 +24,7 @@ before_script:
   - yes | android-sdk-linux/tools/bin/sdkmanager --licenses #Accepts all android SDK licenses
   - set -o pipefail #Enables checking EPIPE error again
 
+ 
 
 #The stages of the CI/CD and its order
 stages:
