@@ -1,4 +1,4 @@
-image: unitedclassifiedsapps/gitlab-ci-android-fastlane
+image: openjdk:8-jdk 
 
 cache:
   paths:
