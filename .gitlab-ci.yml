@@ -9,10 +9,12 @@ variables:
 
 #Commands to run before any of the pipeline stages
 before_script:
-  - sudo apt-get update -y
-  - sudo apt-get install -y wget tar unzip lib32stdc++6 lib32z1 default-jre #Installs set of packages required for the Android SDK and default JRE
+  - export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which javac))))"
+  - export PATH=$PATH:$JAVA_HOME/bin
+  - sudo apt-get --quiet update --yes #Updates package index and cache
+  - sudo apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 #Installs set of packages required for the Android SDK
   - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip #Downloads Android SDK zip file from the google repo and saves it as "android-sdk.zip"
-  - unzip -d android-sdk-linux android-sdk.zip #Unsips the Android SDK into directory "android-sdk-linux"
+  - unzip -d android-sdk-linux android-sdk.zip #Unzips the Android SDK into directory "android-sdk-linux"
   - echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null #Installs the specified Android platform
   - echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null #Installs Android platform tools
   - echo y | android-sdk-linux/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null #Installs specified version of the android build tools
@@ -23,6 +25,7 @@ before_script:
   - set +o pipefail #Disables checking for the EPIPE error (might occur when there is a mismatch with the read stream and write stream)
   - yes | android-sdk-linux/tools/bin/sdkmanager --licenses #Accepts all android SDK licenses
   - set -o pipefail #Enables checking EPIPE error again
+
 
  
 
