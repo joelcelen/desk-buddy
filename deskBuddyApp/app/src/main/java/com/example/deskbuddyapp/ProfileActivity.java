@@ -25,12 +25,17 @@ public class ProfileActivity extends AppCompatActivity {
 
     private HashMap<RoomProfile, Button> profileList;
 
+    Slider slider;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        //slider = findViewById(R.id.sldTemp);
+       // slider.setSty(R.style.Widget_MaterialComponents_Slider);
 
         // Get a reference to the ViewFlipper
         viewFlipper = findViewById(R.id.view_flipper);

@@ -51,7 +51,7 @@ public class HumidityView extends AppCompatActivity {
         humidityChart.setScaleEnabled(false);
 
 
-        humidityDataSet.setColor(Color.BLUE);
+        humidityDataSet.setColor(Color.GREEN);
         humidityDataSet.setLineWidth(2f);
         humidityDataSet.setDrawCircles(true);
         humidityDataSet.setCircleColor(Color.BLUE);

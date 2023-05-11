@@ -59,7 +59,7 @@ public class TemperatureView extends AppCompatActivity {
         temperatureDataSet.setColor(Color.RED);
         temperatureDataSet.setLineWidth(2f);
         temperatureDataSet.setDrawCircles(true);
-        temperatureDataSet.setCircleColor(Color.RED);
+        temperatureDataSet.setCircleColor(Color.BLUE);
         temperatureDataSet.setCircleRadius(5f);
         temperatureDataSet.setValueTextColor(Color.WHITE);
 

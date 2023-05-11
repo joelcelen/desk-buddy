@@ -5,100 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileActivity"
-    android:background="@drawable/background_gradient"
-    android:theme="@style/ProfileTheme">
+
+    android:theme="@style/ProfileTheme"
+    >
 
     <ViewFlipper
         android:id="@+id/view_flipper"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- First view -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ProfileActivity">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/frameLayout"
-                android:layout_width="299dp"
-                android:layout_height="384dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.245">
-
-                <Button
-                    android:id="@+id/btnProfile1"
-                    android:layout_width="140dp"
-                    android:layout_height="180dp"
-                    android:text="Profile 1"
-                    android:textColor="#FFFFFF"
-                    android:background="@drawable/button_shape_createprofile"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/btnProfile2"
-                    android:layout_width="140dp"
-                    android:layout_height="180dp"
-                    android:background="@drawable/button_shape_createprofile"
-                    android:text="empty"
-                    android:textColor="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/btnProfile3"
-                    android:layout_width="140dp"
-                    android:layout_height="180dp"
-                    android:background="@drawable/button_shape_createprofile"
-                    android:text="empty"
-                    android:textColor="#FFFFFF"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <Button
-                    android:id="@+id/btnProfile4"
-                    android:layout_width="140dp"
-                    android:layout_height="180dp"
-                    android:background="@drawable/button_shape_createprofile"
-                    android:text="empty"
-                    android:textColor="#FFFFFF"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <Button
-                android:id="@+id/btnSettings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Settings"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/button_shape_profile"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.781" />
-
-            <Button
-                android:id="@+id/btnHome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="Home"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/button_shape_profile"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Second view -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -150,16 +65,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="30dp"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#CCCCCC"
-                    android:hint="Enter the profile name"
-                    android:textStyle="italic"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-
+                    android:textColor="#090909"
+                android:textColorHint="#101010"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
 
@@ -171,13 +81,13 @@
                     android:value="22"
                     android:valueFrom="15"
                     android:valueTo="30"
-                    app:tickColor="#FFFFFF"
-                    app:tickColorActive="#FFFFFF"
-                    app:tickColorInactive="#FFFFFF"
-                    app:thumbColor="#FFFFFF"
-                    app:haloColor="#FFFFFF"
-                    app:trackColor="#FFFFFF"
-                    app:thumbStrokeColor="#FFFFFF"
+                    app:tickColor="#FF0000"
+                    app:tickColorActive="#FF0000"
+                    app:tickColorInactive="#FF0000"
+                    app:thumbColor="#FF0000"
+                    app:haloColor="#FF0000"
+                    app:trackColor="#FF0000"
+                    app:thumbStrokeColor="#FF0000"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.41"
@@ -207,13 +117,13 @@
                     android:value="40"
                     android:valueFrom="20"
                     android:valueTo="60"
-                    app:trackColor="#FFFFFF"
-                    app:thumbColor="#FFFFFF"
-                    app:haloColor="#FFFFFF"
-                    app:tickColor="#FFFFFF"
-                    app:thumbStrokeColor="#FFFFFF"
-                    app:tickColorActive="#FFFFFF"
-                    app:tickColorInactive="#FFFFFF"
+                    app:trackColor="#00FF00"
+                    app:thumbColor="#00FF00"
+                    app:haloColor="#00FF00"
+                    app:tickColor="#00FF00"
+                    app:thumbStrokeColor="#00FF00"
+                    app:tickColorActive="#00FF00"
+                    app:tickColorInactive="#00FF00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.41"
@@ -245,13 +155,13 @@
                     android:value="700"
                     android:valueFrom="500"
                     android:valueTo="1000"
-                    app:trackColor="#FFFFFF"
-                    app:thumbColor="#FFFFFF"
-                    app:haloColor="#FFFFFF"
-                    app:tickColor="#FFFFFF"
-                    app:thumbStrokeColor="#FFFFFF"
-                    app:tickColorActive="#FFFFFF"
-                    app:tickColorInactive="#FFFFFF"
+                    app:trackColor="#0000FF"
+                    app:thumbColor="#0000FF"
+                    app:haloColor="#0000FF"
+                    app:tickColor="#0000FF"
+                    app:thumbStrokeColor="#0000FF"
+                    app:tickColorActive="#0000FF"
+                    app:tickColorInactive="#00FF00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.41"

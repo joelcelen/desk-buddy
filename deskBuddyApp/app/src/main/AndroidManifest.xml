@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DeskBuddyApp">
         <activity
+            android:name=".temp"
+            android:exported="false" />
+        <activity
             android:name=".LightView"
             android:exported="false" />
         <activity
@@ -27,7 +30,7 @@
             android:exported="false" />
         <activity
             android:name=".TemperatureView"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
