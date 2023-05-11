@@ -3,9 +3,9 @@ image: openjdk:8-jdk
 
 #Declare variables that are used in the pipeline, in this project's case API 33
 variables:
-  ANDROID_COMPILE_SDK: "33"
-  ANDROID_BUILD_TOOLS: "33.0.0"
-  ANDROID_SDK_TOOLS:   "7583922"
+  ANDROID_COMPILE_SDK: "28"
+  ANDROID_BUILD_TOOLS: "28.0.2"
+  ANDROID_SDK_TOOLS:   "4333796"
 
 #Commands to run before any of the pipeline stages
 before_script:
