@@ -1,38 +1,20 @@
-#Specify docker image
 image: gradle:latest
 
-#Declare variables that are used in the pipeline, in this project's case API 33
+variables:
+  # Set the JAVA_HOME environment variable to the location of the Java installation
+  JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
 
-
-before_script:
-  - export GRADLE_USER_HOME=$(pwd)/.gradle
-  - chmod +x ./deskBuddyApp/gradlew
-
-
- 
-
-#The stages of the CI/CD and its order
 stages:
   - build
   - test
 
-#LintDebugger job (static code analysis, before it's run), runs in build stage
-lintDebug:
+build:
   stage: build
   script:
-    - ./deskBuddyApp/gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint #Command that runs the lint debugger with gradle wrapper
+    - ./gradlew build
 
-#AssembleDebugger job, runs in build stage
-assembleDebug:
-  stage: build
-  script:
-    - ./deskBuddyApp/gradlew assembleDebug #Command that runs the assembleDebugger with gradle wrapper
-  artifacts:
-    paths:
-    - app/build/outputs/ #Save contents in this directory as artifacts which can be used later
-
-#Debug tests, runs in test stage 
-debugTests:
+test:
   stage: test
   script:
-    - ./deskBuddyApp/gradlew -Pci --console=plain :app:testDebug #Command that runs this job with gradle wrapper
+    - ./gradlew test
+
