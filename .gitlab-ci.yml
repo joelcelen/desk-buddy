@@ -4,7 +4,9 @@ image: openjdk:8-jdk
 #Declare variables that are used in the pipeline, in this project's case API 33
 
 
-
+before_script:
+  - export GRADLE_USER_HOME=$(pwd)/.gradle
+  - chmod +x ./deskBuddyApp/gradlew
 
 
  
