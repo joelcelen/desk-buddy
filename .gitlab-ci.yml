@@ -1,32 +1,39 @@
+image: openjdk:8-jdk 
+
+cache:
+  paths:
+    - .m2/
+    - .gradle/
+
+variables:
+  ANDROID_COMPILE_SDK: "31"
+  ANDROID_BUILD_TOOLS: "31.0.3"
+  ANDROID_SDK_TOOLS: "7562133"
+
+before_script:
+  - export GRADLE_USER_HOME=$(pwd)/.gradle
+  - chmod +x ./deskBuddyApp/gradlew
+    # use yes to accept all licenses
+  - yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses || true
+
 stages:
   - build
+  - test
 
 build:
   stage: build
   tags:
     - docker
-  image: openjdk:8-jdk
-  variables:
-    SHELL: /bin/bash
-    ANDROID_COMPILE_SDK: "30"
-    ANDROID_BUILD_TOOLS: "30.0.3"
-    ANDROID_SDK_TOOLS:   "7583922"
-    ANDROID_HOME: "/sdk"
-    GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-  before_script:
-    - apt-get --quiet update --yes
-    - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-    - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-$%7BANDROID_SDK_TOOLS%7D_latest.zip
-    - mkdir ${ANDROID_HOME}
-    - unzip -d ${ANDROID_HOME} -q android-sdk.zip
-    - rm android-sdk.zip
-    - echo y | ${ANDROID_HOME}/cmdline-tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
-    - echo y | ${ANDROID_HOME}/cmdline-tools/bin/sdkmanager "platform-tools" >/dev/null
-    - echo y | ${ANDROID_HOME}/cmdline-tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
-    - export PATH="${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS}:${PATH}"
-    - chmod +x gradlew
   script:
-    - ./gradlew assembleDebug
+    - ./deskBuddyApp/gradlew assembleDebug
   artifacts:
     paths:
-      - app/build/outputs/apk/debug/
+      - app/build/outputs/
+
+unitTests:
+  stage: test
+  tags:
+    - docker
+  script:
+    - ./deskBuddyApp/gradlew test
+
