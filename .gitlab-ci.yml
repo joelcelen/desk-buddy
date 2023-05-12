@@ -5,8 +5,8 @@ build:
   stage: build
   image: openjdk:8-jdk
   variables:
-    ANDROID_COMPILE_SDK: "30"
-    ANDROID_BUILD_TOOLS: "30.0.3"
+    ANDROID_COMPILE_SDK: "33"
+    ANDROID_BUILD_TOOLS: "33.0.0"
     ANDROID_SDK_TOOLS:   "7583922"
     ANDROID_HOME: "/sdk"
     GRADLE_OPTS: "-Dorg.gradle.daemon=false"
