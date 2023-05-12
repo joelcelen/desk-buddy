@@ -1,15 +1,10 @@
 package com.example.deskbuddyapp;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
-
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -18,21 +13,18 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-
-
 import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class HumidityView extends AppCompatActivity {
     private MqttHandler client;
-    static ArrayList<Entry> humData = new ArrayList<>();
-    static LineChart humidityChart;
-    static LineDataSet humidityDataSet = new LineDataSet(humData,"Humidity Data Set");
-    static ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-    static LineData data = new LineData(dataSets);
+    ArrayList<Entry> humData = new ArrayList<>();
+    LineChart humidityChart;
+    LineDataSet humidityDataSet = new LineDataSet(humData,"Humidity Data Set");
+    ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+    LineData data = new LineData(dataSets);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +42,7 @@ public class HumidityView extends AppCompatActivity {
         humidityChart.setScaleEnabled(false);
 
 
-        humidityDataSet.setColor(Color.BLUE);
+        humidityDataSet.setColor(Color.GREEN);
         humidityDataSet.setLineWidth(2f);
         humidityDataSet.setDrawCircles(true);
         humidityDataSet.setCircleColor(Color.BLUE);
@@ -71,15 +63,15 @@ public class HumidityView extends AppCompatActivity {
 
         YAxis yAxis = humidityChart.getAxisLeft();
         yAxis.setTextSize(30);
-        yAxis.setTextColor(Color.BLACK);
+        yAxis.setTextColor(Color.WHITE);
         yAxis.setTypeface(Typeface.DEFAULT_BOLD);
         humidityChart.getAxisRight().setEnabled(false);
         humidityChart.getDescription().setEnabled(false);
 
         Legend legend = humidityChart.getLegend();
-        legend.setEnabled(false);
+        legend.setEnabled(true);
         legend.setTextSize(12);
-        legend.setTextColor(Color.BLACK);
+        legend.setTextColor(Color.WHITE);
 
         humidityChart.setDragEnabled(true);
         humidityChart.setScaleEnabled(true);
@@ -88,7 +80,6 @@ public class HumidityView extends AppCompatActivity {
     }
 
     private void subscribeTopic(String topic) {
-        Toast.makeText(this, "subscribing to topic: " + topic, Toast.LENGTH_SHORT).show();
         client.subscribe(topic, new IMqttMessageListener() {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -112,7 +103,6 @@ public class HumidityView extends AppCompatActivity {
                 humidityChart.notifyDataSetChanged();
                 humidityChart.setData(data);
                 humidityChart.invalidate();
-                System.out.println(humData);
             }
         });
     }
