@@ -1,0 +1,27 @@
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - echo "Building project..."
+
+
+unit-test:
+  stage: test
+  script:
+    - echo "Running all tests..."
+  only:
+    - main
+
+integration-test:
+  stage: test
+  script:
+    - echo "Running integration tests..."
+  only:
+    - branches
+  except:
+    - main
+
+

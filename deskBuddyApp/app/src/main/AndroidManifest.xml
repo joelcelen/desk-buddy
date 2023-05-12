@@ -17,9 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DeskBuddyApp">
         <activity
-            android:name=".temp"
-            android:exported="false" />
-        <activity
             android:name=".LightView"
             android:exported="false" />
         <activity

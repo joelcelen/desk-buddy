@@ -1,15 +1,10 @@
 package com.example.deskbuddyapp;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
-
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -18,21 +13,18 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-
-
 import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class HumidityView extends AppCompatActivity {
     private MqttHandler client;
-    static ArrayList<Entry> humData = new ArrayList<>();
-    static LineChart humidityChart;
-    static LineDataSet humidityDataSet = new LineDataSet(humData,"Humidity Data Set");
-    static ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-    static LineData data = new LineData(dataSets);
+    ArrayList<Entry> humData = new ArrayList<>();
+    LineChart humidityChart;
+    LineDataSet humidityDataSet = new LineDataSet(humData,"Humidity Data Set");
+    ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+    LineData data = new LineData(dataSets);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +37,6 @@ public class HumidityView extends AppCompatActivity {
     }
 
     public void generateGraph(){
-
         humidityChart.refreshDrawableState();
         humidityChart.setDragEnabled(true);
         humidityChart.setScaleEnabled(false);
@@ -71,15 +62,16 @@ public class HumidityView extends AppCompatActivity {
         xAxis.setEnabled(false);
 
         YAxis yAxis = humidityChart.getAxisLeft();
-        yAxis.setTextSize(12);
-        yAxis.setTextColor(Color.BLACK);
+        yAxis.setTextSize(30);
+        yAxis.setTextColor(Color.WHITE);
         yAxis.setTypeface(Typeface.DEFAULT_BOLD);
         humidityChart.getAxisRight().setEnabled(false);
+        humidityChart.getDescription().setEnabled(false);
 
         Legend legend = humidityChart.getLegend();
         legend.setEnabled(true);
         legend.setTextSize(12);
-        legend.setTextColor(Color.BLACK);
+        legend.setTextColor(Color.WHITE);
 
         humidityChart.setDragEnabled(true);
         humidityChart.setScaleEnabled(true);
@@ -88,11 +80,10 @@ public class HumidityView extends AppCompatActivity {
     }
 
     private void subscribeTopic(String topic) {
-        Toast.makeText(this, "subscribing to topic: " + topic, Toast.LENGTH_SHORT).show();
         client.subscribe(topic, new IMqttMessageListener() {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Log.d("Is the message arrived","will see");
+                //Log.d("Is the message arrived","will see");
                 String payload = new String(message.getPayload());
                 Float humidity = Float.parseFloat(payload);
 
@@ -112,18 +103,16 @@ public class HumidityView extends AppCompatActivity {
                 humidityChart.notifyDataSetChanged();
                 humidityChart.setData(data);
                 humidityChart.invalidate();
-                System.out.println(humData);
             }
         });
     }
 
-    public void mainActivity(View view){
-        Intent intent = new Intent(this,MainActivity.class);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    public void mainActivity(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-    private void dailyGraph(View view){
+    public void dailyGraph(View view){
     }
-    private void weeklyGraph(View view){
+    public void weeklyGraph(View view){
     }
 }

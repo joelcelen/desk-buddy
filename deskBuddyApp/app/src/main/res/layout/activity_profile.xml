@@ -34,9 +34,9 @@
                     android:id="@+id/btnProfile1"
                     android:layout_width="140dp"
                     android:layout_height="180dp"
-                    android:text="Profile 1"
-                    android:textColor="#FFFFFF"
                     android:background="@drawable/button_shape_createprofile"
+                    android:text="Alfons"
+                    android:textColor="#FFFFFF"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
