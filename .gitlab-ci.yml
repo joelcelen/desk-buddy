@@ -17,11 +17,11 @@ before_script:
   - apt-get --quiet update --yes
   - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
   - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
-  - unzip -d ${ANDROID_HOME} android-sdk.zip
-  - echo "y" | ${ANDROID_HOME}/tools/bin/sdkmanager "platform-tools" "platforms;android-30" > /dev/null
-  - echo "y" | ${ANDROID_HOME}/tools/bin/sdkmanager --licenses > /dev/null
+  - unzip -d $CI_PROJECT_DIR/android-sdk android-sdk.zip
+  - echo "y" | $CI_PROJECT_DIR/android-sdk/tools/bin/sdkmanager "platform-tools" "platforms;android-30" > /dev/null
+  - echo "y" | $CI_PROJECT_DIR/android-sdk/tools/bin/sdkmanager --licenses > /dev/null
   # Print the Android SDK and Gradle versions for debugging
-  - echo "Android SDK version: $(cat ${ANDROID_HOME}/tools/source.properties | grep Pkg.Revision | cut -d'=' -f2)"
+  - echo "Android SDK version: $(cat $CI_PROJECT_DIR/android-sdk/tools/source.properties | grep Pkg.Revision | cut -d'=' -f2)"
   - echo "Gradle version: $(./gradlew --version | grep Gradle | cut -d' ' -f2)"
 
 build:
