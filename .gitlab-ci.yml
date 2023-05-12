@@ -1,20 +1,36 @@
-image: gradle:latest
-
-variables:
-  # Set the JAVA_HOME environment variable to the location of the Java installation
-  JAVA_HOME: /usr/lib/jvm/java-8-openjdk-amd64
+image: openjdk:11-jdk-slim
 
 stages:
   - build
   - test
 
+variables:
+  # Define the GRADLE_USER_HOME to be the cache directory
+  # This helps speed up subsequent builds that use the same dependencies
+  GRADLE_USER_HOME: "${CI_PROJECT_DIR}/.gradle-cache"
+  # Set the Android SDK license to accept automatically
+  ANDROID_SDK_LICENSE: "android-sdk-license-.+"
+  # Enable Gradle Daemon to speed up builds
+  GRADLE_OPTS: "-Dorg.gradle.daemon=true"
+
+before_script:
+  # Set up the Android SDK components and licenses
+  - apt-get --quiet update --yes
+  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+  - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+  - unzip -d ${ANDROID_HOME} android-sdk.zip
+  - echo "y" | ${ANDROID_HOME}/tools/bin/sdkmanager "platform-tools" "platforms;android-30" > /dev/null
+  - echo "y" | ${ANDROID_HOME}/tools/bin/sdkmanager --licenses > /dev/null
+  # Print the Android SDK and Gradle versions for debugging
+  - echo "Android SDK version: $(cat ${ANDROID_HOME}/tools/source.properties | grep Pkg.Revision | cut -d'=' -f2)"
+  - echo "Gradle version: $(./gradlew --version | grep Gradle | cut -d' ' -f2)"
+
 build:
   stage: build
   script:
-    - ./gradlew build
+    - ./gradlew assembleDebug
 
 test:
   stage: test
   script:
-    - ./gradlew test
-
+    - ./gradlew testDebug
