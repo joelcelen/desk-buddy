@@ -12,7 +12,6 @@ build:
     ANDROID_HOME: "/sdk"
     GRADLE_OPTS: "-Dorg.gradle.daemon=false"
   before_script:
-    - apk add bash
     - apt-get --quiet update --yes
     - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
     - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-$%7BANDROID_SDK_TOOLS%7D_latest.zip
@@ -23,6 +22,7 @@ build:
     - echo y | ${ANDROID_HOME}/cmdline-tools/bin/sdkmanager "platform-tools" >/dev/null
     - echo y | ${ANDROID_HOME}/cmdline-tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
     - export PATH="${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS}:${PATH}"
+    - export PATH=$PATH:/usr/bin:/usr/local/bin
     - chmod +x gradlew
   script:
     - ./gradlew assembleDebug
