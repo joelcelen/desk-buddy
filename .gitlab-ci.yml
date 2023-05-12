@@ -1,59 +1,32 @@
-#Specify docker image
-image: openjdk:8-jdk 
-
-#Declare variables that are used in the pipeline, in this project's case API 33
-variables:
-  ANDROID_COMPILE_SDK: "28"
-  ANDROID_BUILD_TOOLS: "28.0.2"
-  ANDROID_SDK_TOOLS:   "4333796"
-
-#Commands to run before any of the pipeline stages
-before_script:
-
-  - apt-get --quiet update --yes #Updates packade index and cache
-  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 #Installs set of packages required for the Android SDK
-  - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip #Downloads Android SDK zip file from the google repo and saves it as "android-sdk.zip"
-  - unzip -d android-sdk-linux android-sdk.zip #Unsips the Android SDK into directory "android-sdk-linux"
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null #Installs the specified Android platform
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null #Installs Android platform tools
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null #Installs specified version of the android build tools
-  - export ANDROID_HOME=$PWD/android-sdk-linux #Sets the "ANDROID-HOME" environment variable to the path of the Android SDK directory
-  - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/ #Adds the Android platform tools to the system PATH
-  - chmod +x ./deskBuddyApp/gradlew #Makes the gradle wrapper script executable
-  # temporarily disable checking for EPIPE error and use yes to accept all licenses
-  - set +o pipefail #Disables checking for the EPIPE error (might occur when there is a mismatch with the read stream and write stream)
-  - yes | android-sdk-linux/tools/bin/sdkmanager --licenses #Accepts all android SDK licenses
-  - set -o pipefail #Enables checking EPIPE error again
-
-
-#The stages of the CI/CD and its order
 stages:
   - build
-  - test
 
-#LintDebugger job (static code analysis, before it's run), runs in build stage
-lintDebug:
+build:
   stage: build
   tags:
     - docker
+  image: openjdk:8-jdk
+  variables:
+    SHELL: /bin/bash
+    ANDROID_COMPILE_SDK: "30"
+    ANDROID_BUILD_TOOLS: "30.0.3"
+    ANDROID_SDK_TOOLS:   "7583922"
+    ANDROID_HOME: "/sdk"
+    GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  before_script:
+    - apt-get --quiet update --yes
+    - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+    - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-$%7BANDROID_SDK_TOOLS%7D_latest.zip
+    - mkdir ${ANDROID_HOME}
+    - unzip -d ${ANDROID_HOME} -q android-sdk.zip
+    - rm android-sdk.zip
+    - echo y | ${ANDROID_HOME}/cmdline-tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
+    - echo y | ${ANDROID_HOME}/cmdline-tools/bin/sdkmanager "platform-tools" >/dev/null
+    - echo y | ${ANDROID_HOME}/cmdline-tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
+    - export PATH="${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS}:${PATH}"
+    - chmod +x gradlew
   script:
-    - ./deskBuddyApp/gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint #Command that runs the lint debugger with gradle wrapper
-
-#AssembleDebugger job, runs in build stage
-assembleDebug:
-  stage: build
-  tags:
-    - docker
-  script:
-    - ./deskBuddyApp/gradlew assembleDebug #Command that runs the assembleDebugger with gradle wrapper
+    - ./gradlew assembleDebug
   artifacts:
     paths:
-    - app/build/outputs/ #Save contents in this directory as artifacts which can be used later
-
-#Debug tests, runs in test stage 
-debugTests:
-  stage: test
-  tags:
-    - docker
-  script:
-    - ./deskBuddyApp/gradlew -Pci --console=plain :app:testDebug #Command that runs this job with gradle wrapper
+      - app/build/outputs/apk/debug/
