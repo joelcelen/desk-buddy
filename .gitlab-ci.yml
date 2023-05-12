@@ -5,17 +5,15 @@ build:
   stage: build
   image: openjdk:8-jdk
   variables:
-    ANDROID_COMPILE_SDK: "33"
-    ANDROID_BUILD_TOOLS: "33.0.0"
+    SHELL: /bin/bash
+    ANDROID_COMPILE_SDK: "30"
+    ANDROID_BUILD_TOOLS: "30.0.3"
     ANDROID_SDK_TOOLS:   "7583922"
     ANDROID_HOME: "/sdk"
     GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-    PATH: $PATH:/usr/bin/pwsh
   before_script:
     - apt-get --quiet update --yes
     - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-    - apt-get install -y powershell
-    - source /etc/profile.d/rvm.sh
     - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-$%7BANDROID_SDK_TOOLS%7D_latest.zip
     - mkdir ${ANDROID_HOME}
     - unzip -d ${ANDROID_HOME} -q android-sdk.zip
@@ -29,4 +27,4 @@ build:
     - ./gradlew assembleDebug
   artifacts:
     paths:
-      - app/build/outputs/apk/deb
+      - app/build/outputs/apk/debug/
