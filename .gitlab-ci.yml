@@ -37,7 +37,7 @@ lintDebug:
   tags:
     - docker
   script:
-    - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint #Command that runs the lint debugger with gradle wrapper
+    - ./deskBuddyApp/gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint #Command that runs the lint debugger with gradle wrapper
 
 #AssembleDebugger job, runs in build stage
 assembleDebug:
@@ -45,7 +45,7 @@ assembleDebug:
   tags:
     - docker
   script:
-    - ./gradlew assembleDebug #Command that runs the assembleDebugger with gradle wrapper
+    - ./deskBuddyApp/gradlew assembleDebug #Command that runs the assembleDebugger with gradle wrapper
   artifacts:
     paths:
     - app/build/outputs/ #Save contents in this directory as artifacts which can be used later
@@ -56,4 +56,4 @@ debugTests:
   tags:
     - docker
   script:
-    - ./gradlew -Pci --console=plain :app:testDebug #Command that runs this job with gradle wrapper
+    - ./deskBuddyApp/gradlew -Pci --console=plain :app:testDebug #Command that runs this job with gradle wrapper
