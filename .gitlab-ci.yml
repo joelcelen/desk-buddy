@@ -3,6 +3,7 @@ stages:
 
 build:
   stage: build
+  tags: docker
   image: openjdk:8-jdk
   variables:
     SHELL: /bin/bash
