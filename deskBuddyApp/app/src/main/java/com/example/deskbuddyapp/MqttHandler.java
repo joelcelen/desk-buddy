@@ -10,6 +10,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.io.InputStream;
+import java.util.Random;
 import java.util.Scanner;
 
 //Credit to author of this class which we used: https://www.youtube.com/@CoffeeProgrammer
@@ -18,8 +19,7 @@ public class MqttHandler {
 
     private static MqttHandler singleInstance;
     private MqttClient client;
-
-    private final String CLIENT_ID = "androidDeskBuddy";
+    private final String CLIENT_ID;
     private String brokerUrl;
     private String username;
     private String password;
@@ -32,7 +32,12 @@ public class MqttHandler {
 
     // Credit to this article: https://www.geeksforgeeks.org/singleton-class-java/
     // for info on how to implement singleton pattern
-    private MqttHandler(){}
+    private MqttHandler(){
+        // need to create a unique client ID -- so that multiple developers can test/use app
+        Random randInt = new Random();
+        // there is a one in a million chance to generate the same client ID
+        CLIENT_ID =  "androidDeskBuddy" + (randInt.nextInt(1000000));
+    }
 
     //creates instance of Mqtthandler if one is not already existing,
     // otherwise returns the instance already created
