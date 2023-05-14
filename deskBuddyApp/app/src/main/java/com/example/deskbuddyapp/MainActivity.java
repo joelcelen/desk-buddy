@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 
 public class MainActivity extends AppCompatActivity {
     private MqttHandler client;
@@ -28,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tempView;
     private TextView lightView;
     private TextView humView;
-
+    private DatabaseReference databaseReadings;
 
     //method for creating and starting the app
     @SuppressLint("MissingInflatedId")
@@ -120,18 +123,28 @@ public class MainActivity extends AppCompatActivity {
             //Conditions for handling incoming topic payloads depending on the current subscribed-to topic
             switch (topic1) {
                 case "deskBuddy/temperature":
+                    recordMeasurementData(Double.parseDouble(payload),"temperature_data","temperature_value");
                     payload = payload + " \u00B0C";
                     tempView.setText(payload);
                     break;
                 case "deskBuddy/humidity":
+                    recordMeasurementData(Double.parseDouble(payload),"humidity_data","humidity_value");
                     payload = payload + " %";
                     humView.setText(payload);
                     break;
                 case "deskBuddy/light":
+                    recordMeasurementData(Double.parseDouble(payload),"light_data","light_value");
                     payload = payload + " lx";
                     lightView.setText(payload);
                     break;
             }
         });
+    }
+    private void recordMeasurementData(Double measurement, String root, String entryPoint){
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        databaseReadings = FirebaseDatabase.getInstance().getReference().child(root);
+        String measurementId = databaseReadings.push().getKey();  //Create a measurement Id for each data point
+        databaseReadings.child(measurementId).child("timeStamp").setValue(timestamp);
+        databaseReadings.child(measurementId).child(entryPoint).setValue(measurement);
     }
 }

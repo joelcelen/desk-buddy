@@ -47,6 +47,7 @@ public class HumidityView extends AppCompatActivity {
         humidityDataSet.setDrawCircles(true);
         humidityDataSet.setCircleColor(Color.BLUE);
         humidityDataSet.setCircleRadius(5f);
+        humidityDataSet.setValueTextColor(Color.WHITE);
 
 
         dataSets.add(humidityDataSet);
@@ -83,7 +84,6 @@ public class HumidityView extends AppCompatActivity {
         client.subscribe(topic, new IMqttMessageListener() {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                //Log.d("Is the message arrived","will see");
                 String payload = new String(message.getPayload());
                 Float humidity = Float.parseFloat(payload);
 
