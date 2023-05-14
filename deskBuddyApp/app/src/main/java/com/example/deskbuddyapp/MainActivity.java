@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void openProfilesView() {
         Intent intentProfiles = new Intent(this, ProfileActivity.class);
-        //intentProfiles.putExtra("start_time", startTime);
         startActivity(intentProfiles);
     }
 
@@ -141,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
     // INSERT operation to Firebase Realtime DB
     private void addSensorData(String pathString, double sensorValue) {
         String key = databaseNode.push().getKey(); // Generate a new unique key
-        String timeStamp = String.valueOf(System.currentTimeMillis());
-        databaseNode.child(key).child("timestamp").setValue(timeStamp);
-        databaseNode.child(key).child(pathString).setValue(sensorValue);
+        String timeStamp = String.valueOf(System.currentTimeMillis()); // Generate UNIX timestamp
+        databaseNode.child(key).child("timestamp").setValue(timeStamp); //insert child timestamp
+        databaseNode.child(key).child(pathString).setValue(sensorValue); //insert child sensor_value
     }
 }
