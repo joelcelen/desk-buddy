@@ -6,15 +6,15 @@ stages:
   - build
 cache:
   paths:
-    - ./deskBuddyApp/gradle/wrapper
-    - ./deskBuddyApp/gradle/caches
+    - .deskBuddyApp/gradle/wrapper
+    - .deskBuddyApp/gradle/caches
 assembleDebug:
   stage: build
   tags: 
     - docker
   script:
     - ./deskBuddyApp/gradlew assembleDebug
-    - cp app/build/outputs/apk/debug/app-debug.apk app-debug.apk
-  artifacts:
-    paths:
-      - app-debug.apk
+    #- cp app/build/outputs/apk/debug/app-debug.apk app-debug.apk
+  #artifacts:
+    #paths:
+      #- app-debug.apk
