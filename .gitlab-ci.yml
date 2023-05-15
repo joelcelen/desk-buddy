@@ -12,4 +12,4 @@ build:
     paths:
       - app/build/outputs/
   only:
-    - master
+    - main
