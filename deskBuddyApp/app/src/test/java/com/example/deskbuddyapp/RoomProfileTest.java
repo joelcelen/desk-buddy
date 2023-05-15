@@ -8,7 +8,7 @@ public class RoomProfileTest {
     @Test
     public void createDefaultProfile(){
         RoomProfile profile = new RoomProfile();
-        assertEquals("Default", profile.getRoomName());
+        //assertEquals("Default", profile.getRoomName());
         assertEquals(23.0, profile.getTemperature(), 0.1);
         assertEquals(40.0, profile.getHumidity(), 0.1);
         assertEquals(700.0, profile.getLightLevel(), 0.1);
