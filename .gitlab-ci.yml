@@ -1,4 +1,4 @@
-image: javiersantos/android-ci:28.0.3
+image: alpine latest
   
 before_script:
   - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
