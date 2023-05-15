@@ -1,13 +1,18 @@
 image: openjdk:11-jdk
 
+before_script:
+    - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
+
 stages:
   - build
 
 build:
   stage: build
+  tags:
+    - docker
   script:
     - chmod +x gradlew
-    - ./gradlew assembleDebug
+    - ./gradlew build
   artifacts:
     paths:
       - app/build/outputs/
