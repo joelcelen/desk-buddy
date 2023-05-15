@@ -8,14 +8,14 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-#include <Arduino.h> // need this library to include millis() for timing
+#include <Arduino.h>                   // need this library to include millis() for timing
 
 class Event {
   private:
-    String eventMessage;         //event message
-    unsigned long intervalEvent;      //time interval to send event to user (default: 3600000)
-    unsigned long lastEvent;          //last event send time
-    int countEvents;                  //event counter
+    String eventMessage;               // event message
+    unsigned long intervalEvent;       // time interval to send event to user (default: 3600000)
+    unsigned long lastEvent;           // last event send time
+    int countEvents;                   // event counter
 
   public:
     // Constructors

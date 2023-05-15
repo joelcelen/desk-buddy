@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileActivity">
+    tools:context=".ProfileActivity"
+    android:background="@drawable/background_gradient"
+    android:theme="@style/ProfileTheme">
 
     <ViewFlipper
         android:id="@+id/view_flipper"
@@ -44,7 +46,9 @@
                     android:id="@+id/btnProfile1"
                     android:layout_width="140dp"
                     android:layout_height="180dp"
+                    android:background="@drawable/button_shape_createprofile"
                     android:text="Alfons"
+                    android:textColor="#FFFFFF"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,7 +56,9 @@
                     android:id="@+id/btnProfile2"
                     android:layout_width="140dp"
                     android:layout_height="180dp"
+                    android:background="@drawable/button_shape_createprofile"
                     android:text="empty"
+                    android:textColor="#FFFFFF"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -60,7 +66,9 @@
                     android:id="@+id/btnProfile3"
                     android:layout_width="140dp"
                     android:layout_height="180dp"
+                    android:background="@drawable/button_shape_createprofile"
                     android:text="empty"
+                    android:textColor="#FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -68,7 +76,9 @@
                     android:id="@+id/btnProfile4"
                     android:layout_width="140dp"
                     android:layout_height="180dp"
+                    android:background="@drawable/button_shape_createprofile"
                     android:text="empty"
+                    android:textColor="#FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
@@ -79,6 +89,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Settings"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/button_shape_profile"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
@@ -92,6 +104,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:text="Home"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/button_shape_profile"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -138,6 +152,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+
                 app:layout_constraintVertical_bias="0.059">
 
 
@@ -146,13 +161,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="30dp"
-                    android:text="Profile Name"
-                    app:layout_constraintBottom_toTopOf="@+id/sldTemp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#CCCCCC"
+                    android:hint="Enter the profile name"
+                    android:textStyle="italic"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="1.0"/>
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+
 
                 <com.google.android.material.slider.Slider
                     android:id="@+id/sldTemp"
@@ -162,6 +182,13 @@
                     android:value="22"
                     android:valueFrom="15"
                     android:valueTo="30"
+                    app:tickColor="#FFFFFF"
+                    app:tickColorActive="#FFFFFF"
+                    app:tickColorInactive="#FFFFFF"
+                    app:thumbColor="#FFFFFF"
+                    app:haloColor="#FFFFFF"
+                    app:trackColor="#FFFFFF"
+                    app:thumbStrokeColor="#FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.41"
@@ -169,11 +196,13 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.355" />
 
+
                 <TextView
                     android:id="@+id/txtHum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Humidity"
+                    android:textColor="#FFFFFF"
                     app:layout_constraintBottom_toTopOf="@+id/sldHum"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"
@@ -189,6 +218,13 @@
                     android:value="40"
                     android:valueFrom="20"
                     android:valueTo="60"
+                    app:trackColor="#FFFFFF"
+                    app:thumbColor="#FFFFFF"
+                    app:haloColor="#FFFFFF"
+                    app:tickColor="#FFFFFF"
+                    app:thumbStrokeColor="#FFFFFF"
+                    app:tickColorActive="#FFFFFF"
+                    app:tickColorInactive="#FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.41"
@@ -196,11 +232,15 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.602" />
 
+
+
+
                 <TextView
                     android:id="@+id/txtLight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Light Level"
+                    android:textColor="#FFFFFF"
                     app:layout_constraintBottom_toTopOf="@+id/sldLight"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"
@@ -216,12 +256,30 @@
                     android:value="700"
                     android:valueFrom="500"
                     android:valueTo="1000"
+                    app:trackColor="#FFFFFF"
+                    app:thumbColor="#FFFFFF"
+                    app:haloColor="#FFFFFF"
+                    app:tickColor="#FFFFFF"
+                    app:thumbStrokeColor="#FFFFFF"
+                    app:tickColorActive="#FFFFFF"
+                    app:tickColorInactive="#FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.41"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.835" />
+
+                <TextView
+                    android:id="@+id/txttemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="144dp"
+                    android:textColor="#FFFFFF"
+                    android:text="Temperature"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editName" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

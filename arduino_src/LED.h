@@ -4,7 +4,7 @@
 #ifndef LED_H
 #define LED_H
 
-#include <Arduino.h> // need this library to include delay()
+#include <Arduino.h>           // need this library to include delay()
 
 //LED class with initialization of methods and variables, private and public where appropriate.
 class LED {
@@ -14,7 +14,7 @@ public:
   void turnOff();
   void strobe(int time);
 private:
-  int ledPin; // pin for LED (such as D3)
+  int ledPin;                  // pin for LED (such as D3)
 };
 
 #endif
