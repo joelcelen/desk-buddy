@@ -23,7 +23,7 @@ before_script:
 
   - export ANDROID_HOME=$PWD/android-sdk-linux
   - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
-  - chmod +x ./deskBuddyApp/gradlew
+  - chmod +x ./gradlew
 
   
 
