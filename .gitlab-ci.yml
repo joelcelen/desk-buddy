@@ -6,8 +6,8 @@ stages:
   - build
 cache:
   paths:
-    - .gradle/wrapper
-    - .gradle/caches
+    - ./deskBuddyApp/gradle/wrapper
+    - ./deskBuddyApp/gradle/caches
 assembleDebug:
   stage: build
   tags: 
