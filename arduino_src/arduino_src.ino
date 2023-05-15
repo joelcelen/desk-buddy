@@ -20,13 +20,13 @@
 //MQTT libraries. See API info here: https://pubsubclient.knolleary.net/api
 #include <PubSubClient.h>                     // MQTT library
 #include <WiFiClientSecure.h>                 // secure Wifi client for PubSub library
-#include "BrokerInfo.h"                       //secrets file for mqtt broker (.gitignore)
-#include "MqttTopics.h"                       //secrets file for mqtt broker topics (.gitignore)
+#include "BrokerInfo.h"                       // secrets file for mqtt broker (.gitignore)
+#include "MqttTopics.h"                       // secrets file for mqtt broker topics (.gitignore)
 
 // Sensor libraries (deskBuddy)
 #include "DHT.h"                              //DHT sensor library (temperature and humidity)   
-#include "Sensor.h"                           //Sensor class (deskBuddy)
-#include "Button.h"                           //Button class (deskBuddy)
+#include "Sensor.h"                           //Sensor class
+#include "Button.h"                           //Button class
 
 // Actuator libraries(deskBuddy)
 #include "Buzzer.h"                           //Buzzer class
@@ -40,11 +40,11 @@
 
 /*******************************************************************************************************************/
 // pins for sensors and actuators
-const int DHT_PIN = A0;                     // DHT: Temperature and Humidity sensor pin
-const int LIGHT_PIN = A2;                   // Light sensor pin
-const int LED_PIN = D3;                     // Color LED pin
-const int BUTTON_PIN = WIO_5S_PRESS;        // Wio 5-switch button pin
-const int BUZZER_PIN = WIO_BUZZER;          // Wio buzzer pin
+const int DHT_PIN = A0;                       // DHT: Temperature and Humidity sensor pin
+const int LIGHT_PIN = A2;                     // Light sensor pin
+const int LED_PIN = D3;                       // Color LED pin
+const int BUTTON_PIN = WIO_5S_PRESS;          // Wio 5-switch button pin
+const int BUZZER_PIN = WIO_BUZZER;            // Wio buzzer pin
 
 // initializing WIFI conection
 WIFI myWifi(SSID, PASSWORD);                  //Create Wi-Fi Instance with SSID & Password
@@ -56,8 +56,8 @@ const int MQTT_BUFFER_SIZE = 256;             //MQTT payload buffer size (defaul
 char message[MQTT_BUFFER_SIZE];               //MQTT message buffer
 
 // initializing Sensors
-DHT dht(DHT_PIN, DHT11);                     //Create an instance of DHT (temperature and humidity) sensor
-Button button;                               //Create an instance of button
+DHT dht(DHT_PIN, DHT11);                      //Create an instance of DHT (temperature and humidity) sensor
+Button button;                                //Create an instance of button
 
 // initializing Sensor objects, measurement variables, string conversions
 Sensor temperature(TFT_GREEN);                //holds published temperature readings and dashboard indicator color
@@ -78,11 +78,11 @@ unsigned long timerEnd;                      // timer for debugging purposes
 unsigned long delayStart;                    // timer for custom nonblocking delay method (so MQTT can keep looping)
 
 // GUI update intervals are intentionally short for demo purposes --------------------------------  values for Demo:
-unsigned long intervalStandUp = 3600000;     // time interval to display stand up messages          3600000 (default: 97000)
-unsigned long intervalMotivate = 1800000;    // time interval to display motivational messages      1800000 (default: 43000)
-unsigned long intervalPublish = 3000;        // time interval to publish sensor data                3000    (default: 3000)
-unsigned long intervalDisplay = 5000;        // time interval to refresh dashboard display          5000    (default: 5000)
-unsigned long intervalNotification = 86400000; // time interval to send notification to user        86400000 (default: 3600000  = 1 hour)
+unsigned long intervalStandUp = 3600000;       // time interval to display stand up messages          3600000 (default: 1 hour)
+unsigned long intervalMotivate = 1800000;      // time interval to display motivational messages      1800000 (default: 30 minutes)
+unsigned long intervalPublish = 3000;          // time interval to publish sensor data                3000    (default: 3 seconds)
+unsigned long intervalDisplay = 5000;          // time interval to refresh dashboard display          5000    (default: 5 seconds)
+unsigned long intervalNotification = 86400000; // time interval to send notification to user          86400000(default: 24 hours)
 /* ADD YOUR OWN EVENT INTERVALS HERE */
 
 // Events (deskBuddy core features)
@@ -205,7 +205,7 @@ void standUpEventSequence(){
   tft.drawGoodJobMsg(standUp.getCount());         // display good job message (encourages user, positive reinforcement)
   nonBlockingDelay(3000);
   colorLED.turnOff();                             // turn off color LED
-  standUp.setInterval(intervalStandUp);           //return to default standUp message interval
+  standUp.setInterval(intervalStandUp);           //return to default/user-defined standUp message interval
 }
 
 // STATE: Motivate (trigger: default/ user defined timing interval) 
@@ -213,7 +213,7 @@ void standUpEventSequence(){
 void motivationEventSequence(){
   tft.drawMotivationMsg((motivate.getMessage())); //user-defined motivational message
   nonBlockingDelay(2500);
-  motivate.setInterval(intervalMotivate);         //return to default motivate message interval
+  motivate.setInterval(intervalMotivate);         //return to default/user-defined motivate message interval
   motivate.setLastEvent(millis());                //reset timer
 }
 
@@ -251,7 +251,7 @@ void notificationEventSequence(){
     nonBlockingDelay(300);
     tft.drawGoodJobMsg();                              // display good job message (encourages user, positive reinforcement)
     nonBlockingDelay(3000);
-    notification.setInterval(intervalNotification);    //return to default notification interval
+    notification.setInterval(intervalNotification);    //return to default/user-defined notification interval
     notification.setLastEvent(millis());
 }
 
@@ -288,7 +288,9 @@ void parser(const char* topic, const char* message) {
     parseNotification(message);
   } else if (strcmp(topic, TOPIC_SUB_STANDUP) == 0) {       // StandUp messages topic parser
     parseStandUp(message);
-  } 
+  } else if (strcmp(topic, TOPIC_SUB_TIMING) == 0) {        // Timing intervals topic parser
+    parseTiming(message);
+  }
   // PARSER: <New feature 1>
   // Call your own parser here in the if else block
   
@@ -321,26 +323,109 @@ uint16_t parseColor(const char* message) {
 
 void parseMotivation(const char* message){
   motivate.setMessage(message);
-  motivate.setInterval(0);                              // motivation should display almost immediately
-  //Serial.println("A new motivation has arrived!");    //for debugging
+  motivate.setInterval(1000);                              // motivation should display almost immediately
+  //Serial.println("A new motivation has arrived!");       //for debugging
 }
 
 void parseNotification(const char* message){
   notification.setMessage(message);
-  notification.setInterval(0);                          // notification should display almost immediately
-  //Serial.println("A new notification has arrived!");  //for debugging  
+  notification.setInterval(1000);                          // notification should display almost immediately
+  //Serial.println("A new notification has arrived!");     //for debugging  
 }
 
 void parseStandUp(const char* message){
-  standUp.setInterval(0);                                  // notification should display almost immediately
+  standUp.setInterval(1000);                               // standUp event should display almost immediately
   //Serial.println("A new standup message has arrived!");  //for debugging  
+}
+
+void parseTiming(const char* message){
+  char messageType = message[0];
+  Serial.println("A new timing message has arrived!");    //for debugging 
+  Serial.println("Before: ");
+  Serial.print("intervalStandUp= ");
+  Serial.println(standUp.getInterval());
+  Serial.print("intervalMotivate= ");
+  Serial.println(motivate.getInterval());
+  Serial.print("intervalNotification= ");
+  Serial.println(notification.getInterval());
+
+  switch (messageType) {
+    case '0':
+      // restore default values
+      intervalStandUp = 3600000;                         // (default: 1 hour)
+      intervalMotivate = 1800000;                        // (default: 30 minutes)
+      intervalNotification = 86400000;                   // (default: 24 hours)
+      standUp.setInterval(intervalStandUp);
+      motivate.setInterval(intervalMotivate);
+      notification.setInterval(intervalNotification);
+      break;
+
+    case '1':
+      // modify intervalStandUp
+      intervalStandUp = atol(message + 1);               // parse to long
+      standUp.setInterval(intervalStandUp);              // set standUp interval
+      break;
+
+    case '2':
+      // modify intervalMotivate
+      intervalMotivate = atol(message + 1);              // parse to long
+      motivate.setInterval(intervalMotivate);            // set motivate interval
+      break;
+
+    case '3':
+      // modify intervalNotification
+      intervalNotification = atol(message + 1);          // parse to long
+      notification.setInterval(intervalNotification);    // set notification interval
+      break;
+
+    case '4':
+      // turn off standUp events
+      intervalStandUp = ULONG_MAX;                       // assign to largest unsigned integer (4294967295) = 49.710269 days
+      standUp.setInterval(intervalStandUp);              // set standUp interval
+      break;
+
+    case '5':
+      // turn off motivational messages
+      intervalMotivate = ULONG_MAX;                      // assign to largest unsigned integer (4294967295) = 49.710269 days
+      motivate.setInterval(intervalMotivate);            // set motivate interval
+      break;
+
+    case '6':
+      // turn off notifications
+      intervalNotification = ULONG_MAX;                  // assign to largest unsigned integer (4294967295) = 49.710269 days
+      notification.setInterval(intervalNotification);    // set notification interval
+      break;
+
+    case '7':
+      // turn off all events by setting everything to the largest unsigned integer
+      intervalStandUp = ULONG_MAX;                       // assign to largest unsigned integer (4294967295) = 49.710269 days
+      intervalMotivate = ULONG_MAX;                      // assign to largest unsigned integer (4294967295) = 49.710269 days
+      intervalNotification = ULONG_MAX;                  // assign to largest unsigned integer (4294967295) = 49.710269 days
+      standUp.setInterval(intervalStandUp);              // set standUp interval
+      motivate.setInterval(intervalMotivate);            // set motivate interval
+      notification.setInterval(intervalNotification);    // set notification interval
+      break;
+
+    default:
+      // handle error case
+      Serial.print("Received unexpected message: ");
+      Serial.println(message);
+      break;
+  }
+  Serial.println("After: ");                             //for debugging 
+  Serial.print("intervalStandUp= ");
+  Serial.println(standUp.getInterval());
+  Serial.print("intervalMotivate= ");
+  Serial.println(motivate.getInterval());
+  Serial.print("intervalNotification= ");
+  Serial.println(notification.getInterval());
 }
 
 // PARSER: <New feature 1>
 // Create your own parser method here
 
 // PARSER: <New feature 2>
-// Create your own parser nethod here
+// Create your own parser method here
 
 /*******************************************************************************************************************/
 // MQTT methods - Lookup API documentation here: https://pubsubclient.knolleary.net/api
@@ -424,7 +509,9 @@ void mqttSubscribeToAppTopics() {
   mqttClient.subscribe(TOPIC_SUB_LIGHT);          //lightSubscriber();
   mqttClient.subscribe(TOPIC_SUB_MOTIVATION);     //motivationSubscriber();
   mqttClient.subscribe(TOPIC_SUB_NOTIFICATION);   //notificationSubscriber();
-  mqttClient.subscribe(TOPIC_SUB_STANDUP);   //notificationSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_STANDUP);        //standUpSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_TIMING);         //timingSubscriber();
+
   // SUBSCRIBER: <New feature 1>
   // Subscribe to your own topic here
 

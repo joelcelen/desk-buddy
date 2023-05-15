@@ -57,7 +57,11 @@ void Event::setMessage(const char* message) {
 }
 
 void Event::setInterval(unsigned long interval) {
+  if(interval > 0){
   intervalEvent = interval;
+  }else{
+    Serial.println("Unexpected argument type passed to setInterval.");
+  }
 }
 
 void Event::setLastEvent(unsigned long lastEvent) {
