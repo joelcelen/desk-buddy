@@ -1,4 +1,4 @@
-image: openjdk:11-jdk
+image: gradle
 
 before_script:
   - chmod +x ./deskBuddyApp/gradlew
