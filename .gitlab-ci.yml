@@ -28,6 +28,7 @@ variables:
 
 # Packages installation before running script
 before_script:
+  - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
   - apt-get --quiet update --yes
   - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
 
@@ -63,6 +64,8 @@ before_script:
 lintDebug:
   interruptible: true
   stage: build
+  tags:
+    - docker
   script:
     - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
 
@@ -70,6 +73,8 @@ lintDebug:
 assembleDebug:
   interruptible: true
   stage: build
+  tags:
+    - docker
   script:
     - ./gradlew assembleDebug
   artifacts:
@@ -80,5 +85,7 @@ assembleDebug:
 debugTests:
   interruptible: true
   stage: test
+  tags:
+    - docker
   script:
     - ./gradlew -Pci --console=plain :app:testDebug
