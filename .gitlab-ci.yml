@@ -1,4 +1,4 @@
-image: alpine latest
+image: openjdk:8-jdk
   
 before_script:
   - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
