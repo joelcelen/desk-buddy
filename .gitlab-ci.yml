@@ -1,6 +1,8 @@
 image: gradle
   
 before_script:
+  - export ANDROID_HOME=$PWD/android-sdk-linux #Sets the "ANDROID-HOME" environment variable to the path of the Android SDK directory
+  - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/ #Adds the Android platform tools to the system PATH
   - chmod +x ./deskBuddyApp/gradlew
   
 
