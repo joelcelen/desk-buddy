@@ -10,8 +10,8 @@ before_script:
   - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
   - chmod +x ./gradlew
 
-  - apk --quiet update --yes
-  - apk --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+  - apk add --quiet update --yes
+  - apk add --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
   
   - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
   - unzip -q android-sdk.zip -d android-sdk-linux
