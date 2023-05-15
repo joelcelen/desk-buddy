@@ -2,26 +2,26 @@
 
 // Constructors
 Event::Event() {
-  eventMessage = "";     			      //default event msg (empty string)
-  intervalEvent = 3600000;          //default interval: 1 hour
-  lastEvent = 0;				            //last event time
+  eventMessage = "";     			      // default event msg (empty string)
+  intervalEvent = 3600000;          // default interval: 1 hour
+  lastEvent = 0;				            // last event time
   countEvents = 0;                  // event counter
 }
 
 Event::Event(const char* message, unsigned long interval) {
-  eventMessage = message;          //user defined event msg
-  intervalEvent = interval;		     //user defined event interval
-  lastEvent = 0;				           //last event time
-  countEvents = 0;                 // event counter
+  eventMessage = message;           // user defined event msg
+  intervalEvent = interval;		      // user defined event interval
+  lastEvent = 0;				            // last event time
+  countEvents = 0;                  // event counter
 }
 
 Event::Event(const char*message){
-  Event();                        //call default constructor first
+  Event();                          // call default constructor first
   setMessage(message);
 }
 
 Event::Event(unsigned long interval){
-  Event();                        //call default constructor first
+  Event();                          // call default constructor first
   setInterval(interval);
 }
 

@@ -1,11 +1,11 @@
 /**************************************************************
- * Project: Desk Buddy - Wio Controller v1.0 (Sprint 2 Demo)
+ * Project: Desk Buddy - Wio Controller v1.0
  * Description: A smart desk assistant built with Arduino and connected to the cloud. It helps you monitor your environment and stay productive.
  * 
  * Gitlab Home Page: https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/home
  * Authors: Nasit Vurgun, Rizwan Rafique, Joel Celen, Ahmad Haj Ahmad, Malte Bengtsson, Karl Eriksson
  * Contact: gus***na@student.gu.se - replace *** with the first three letters of the first author's last name
- * Date: May 1, 2023
+ * Date: May 15, 2023
  * 
  * Copyright (c) 2023 Desk Buddy
  * 
@@ -13,69 +13,69 @@
  **************************************************************/
 
 //WiFi libraries
-#include "WIFI.h"                             //Wi-Fi Custom library (deskBuddy)
-#include <rpcWiFi.h>                          //Wi-Fi System library
-#include "NetworkInfo.h"                      //contains wifi SSID and PASSWORD
+#include "WIFI.h"                              // Wi-Fi Custom library (deskBuddy)
+#include <rpcWiFi.h>                           // Wi-Fi System library
+#include "NetworkInfo.h"                       // secrets file contains wifi SSID and PASSWORD (.gitignore)
 
 //MQTT libraries. See API info here: https://pubsubclient.knolleary.net/api
-#include <PubSubClient.h>                     // MQTT library
-#include <WiFiClientSecure.h>                 // secure Wifi client for PubSub library
-#include "BrokerInfo.h"                       // secrets file for mqtt broker (.gitignore)
-#include "MqttTopics.h"                       // secrets file for mqtt broker topics (.gitignore)
+#include <PubSubClient.h>                      // MQTT library
+#include <WiFiClientSecure.h>                  // secure Wifi client for PubSub library
+#include "MqttTopics.h"                        // MQTT broker topics
+#include "BrokerInfo.h"                        // secrets file for mqtt broker (.gitignore)
 
-// Sensor libraries (deskBuddy)
-#include "DHT.h"                              //DHT sensor library (temperature and humidity)   
-#include "Sensor.h"                           //Sensor class
-#include "Button.h"                           //Button class
+// Sensor libraries
+#include "DHT.h"                               // DHT sensor library (temperature and humidity)   
+#include "Sensor.h"                            // Sensor class for storing sensor values, preferences, indicator colors
+#include "Button.h"                            // Button class
 
-// Actuator libraries(deskBuddy)
-#include "Buzzer.h"                           //Buzzer class
-#include "LED.h"                              //LED class
+// Actuator libraries
+#include "Buzzer.h"                            // Buzzer class
+#include "LED.h"                               // LED class
 
-// Display libraries (deskBuddy)
-#include "Display.h"                          //Display class
+// Display libraries
+#include "Display.h"                           // Display class
 
-// Event libraries (deskBuddy)
-#include "Event.h"                            //Events class
+// Event libraries
+#include "Event.h"                             // Events class
 
 /*******************************************************************************************************************/
 // pins for sensors and actuators
-const int DHT_PIN = A0;                       // DHT: Temperature and Humidity sensor pin
-const int LIGHT_PIN = A2;                     // Light sensor pin
-const int LED_PIN = D3;                       // Color LED pin
-const int BUTTON_PIN = WIO_5S_PRESS;          // Wio 5-switch button pin
-const int BUZZER_PIN = WIO_BUZZER;            // Wio buzzer pin
+const int DHT_PIN = A0;                        // DHT: Temperature and Humidity sensor pin
+const int LIGHT_PIN = A2;                      // Light sensor pin
+const int LED_PIN = D3;                        // Color LED pin
+const int BUTTON_PIN = WIO_5S_PRESS;           // Wio 5-switch button pin
+const int BUZZER_PIN = WIO_BUZZER;             // Wio buzzer pin
 
 // initializing WIFI conection
-WIFI myWifi(SSID, PASSWORD);                  //Create Wi-Fi Instance with SSID & Password
+WIFI myWifi(SSID, PASSWORD);                   // Create Wi-Fi Instance with SSID & Password
 
 // initializing MQTT connection
-WiFiClientSecure wifiSSLClient;               //wifi client for PubSub with SSL/TLS cryptographic protocols
-PubSubClient mqttClient(wifiSSLClient);       //MQTT client with SSL/TLS communication protocols
-const int MQTT_BUFFER_SIZE = 256;             //MQTT payload buffer size (default is 256)
-char message[MQTT_BUFFER_SIZE];               //MQTT message buffer
+WiFiClientSecure wifiSSLClient;                // WIFI client for PubSub with SSL/TLS cryptographic protocols
+PubSubClient mqttClient(wifiSSLClient);        // MQTT client with SSL/TLS communication protocols
+const int MQTT_BUFFER_SIZE = 256;              // MQTT payload buffer size (default is 256)
+char message[MQTT_BUFFER_SIZE];                // MQTT message buffer
 
 // initializing Sensors
-DHT dht(DHT_PIN, DHT11);                      //Create an instance of DHT (temperature and humidity) sensor
-Button button;                                //Create an instance of button
+DHT dht(DHT_PIN, DHT11);                       // Create an instance of DHT (temperature and humidity) sensor
+Button button;                                 // Create an instance of button
 
 // initializing Sensor objects, measurement variables, string conversions
-Sensor temperature(TFT_GREEN);                //holds published temperature readings and dashboard indicator color
-Sensor humidity(TFT_ORANGE);                  //holds published temperature readings and dashboard indicator color
-Sensor light(TFT_RED);                        //holds published light level readings and dashboard indicator color
-float temperatureValue;                       //stores temperature sensor readings
-float humidityValue;                          //stores humidity sensor readings
-int lightValue;                               //stores light sensor readings
-char tempStr[8], humidStr[8], lightStr[8];    //used in conversion of sensor data to string form
+Sensor temperature("25.0", 1.5, 3.0);          // Create Sensor object with preference 25.0 degC, green indicator within 1.5 degC, orange within 1.5-3.0 degC, and red if >3.0 degC
+Sensor humidity("35.0", 5.0, 10.0);            // Create Sensor object with preference 35.0 %, green indicator within 5.0 %, orange within 5.0-10.0 %, and red if >10.0 %
+Sensor light("900.0", 200.0, 400.0);           // Create Sensor object with preference 900.0 lx, green indicator within 200.0 lx, orange within 200.0-400.0 lx, and red if >400.0 lx
+float temperatureValue;                        // stores raw temperature sensor readings
+float humidityValue;                           // stores raw humidity sensor readings
+int lightValue;                                // stores raw light sensor readings
+char tempStr[8], humidStr[8], lightStr[8];     // used in conversion of sensor data to string form
 
 // initializing Actuators
-LED colorLED(LED_PIN);                       //Create an intance of color LED
-Buzzer buzzer;                               //Create an instance of buzzer
+LED colorLED(LED_PIN);                         // Create an intance of color LED
+Buzzer buzzer;                                 // Create an instance of buzzer
 
 // Event timer - for loop
-unsigned long timerStart;                    // timer for debugging purposes
-unsigned long timerEnd;                      // timer for debugging purposes
-unsigned long delayStart;                    // timer for custom nonblocking delay method (so MQTT can keep looping)
+unsigned long timerStart;                      // timer for debugging purposes
+unsigned long timerEnd;                        // timer for debugging purposes
+unsigned long delayStart;                      // timer for custom nonblocking delay method (so MQTT can keep looping)
 
 // GUI update intervals are intentionally short for demo purposes --------------------------------  values for Demo:
 unsigned long intervalStandUp = 3600000;       // time interval to display stand up messages          3600000 (default: 1 hour)
@@ -86,11 +86,11 @@ unsigned long intervalNotification = 86400000; // time interval to send notifica
 /* ADD YOUR OWN EVENT INTERVALS HERE */
 
 // Events (deskBuddy core features)
-Event standUp(intervalStandUp);              // define stand up event/view
-Event notification(intervalNotification);    // define notification event/view
-Event motivate(intervalMotivate);            // define motivation event/view
-Event publish(intervalPublish);              // define publish event/view
-Event refreshDisplay(intervalDisplay);       // define refresh GUI dashboard event/view
+Event standUp(intervalStandUp);                // define stand up event/VIEW
+Event notification(intervalNotification);      // define notification event/VIEW
+Event motivate(intervalMotivate);              // define motivation event/VIEW
+Event publish(intervalPublish);                // define publish event/VIEW
+Event refreshDisplay(intervalDisplay);         // define refresh GUI dashboard event/VIEW
 /* ADD YOUR OWN EVENTS HERE */
 
 // initialize TFT LCD display
@@ -145,7 +145,7 @@ void setup() {
 }
 
 void loop() {
-  timerStart = millis();                          //start timing the loop for debugging purposes -- takes about 500-600ms to get through a loop right now!
+  timerStart = millis();                          // start timing the loop for debugging purposes -- takes about 500-600ms to get through a loop right now!
 
   //Connect MQTT - Verify connection
   mqttConnect();                                  // verify MQTT connection
@@ -166,31 +166,31 @@ void loop() {
   humidity.setValue(humidStr);
   light.setValue(lightStr);
 
-  // Controller: Updates View based on Model (uses non-blocking timers and mqtt event listeners)
+  // Controller: Updates Views based on Model (uses non-blocking timers and mqtt event listeners)
   if (standUp.shouldExecute()) {
-    standUpEventSequence();                       //STATE: StandUp
+    standUpEventSequence();                       // VIEW: StandUp
     
   } else if (motivate.shouldExecute()) {
-    motivationEventSequence();                    //STATE: Motivate
+    motivationEventSequence();                    // VIEW: Motivate
 
   } else if (publish.shouldExecute()) {
-    publishSensorsEventSequence();                //STATE: Publish
+    publishSensorsEventSequence();                // VIEW: Publish
 
   } else if (refreshDisplay.shouldExecute()) {
-    updateDashboardEventSequence();               //STATE: UpdateDashboard
+    updateDashboardEventSequence();               // VIEW: UpdateDashboard
 
   } else if (notification.shouldExecute()) {
-    notificationEventSequence();                  //STATE: Notify
+    notificationEventSequence();                  // VIEW: Notify
   }
 
-  timerEnd = millis();                            //end timing the loop for debugging
-  //Serial.println((timerEnd - timerStart));        //print serial port msg for debugging -- loop takes around 500 ms
+  timerEnd = millis();                            // end timing the loop for debugging
+  //Serial.println((timerEnd - timerStart));      // print serial port msg for debugging -- loop takes around 500-600 ms
 }
 
 /*******************************************************************************************************************/
-// EVENT METHODS: We are using the main as a controller to check for triggers to transition between states
+// EVENT METHODS: We are using the main as a controller to check for triggers to transition between views
 
-// STATE: StandUp (trigger: default/ user defined timing interval) 
+// VIEW: StandUp (trigger: default/ user defined timing interval) 
 // prompts user to stand up, internal transitions do not proceed until user presses button to confirm
 void standUpEventSequence(){
   tft.drawStandUpMsg();                           // display standup messsage, user will be prompted to click button
@@ -205,43 +205,43 @@ void standUpEventSequence(){
   tft.drawGoodJobMsg(standUp.getCount());         // display good job message (encourages user, positive reinforcement)
   nonBlockingDelay(3000);
   colorLED.turnOff();                             // turn off color LED
-  standUp.setInterval(intervalStandUp);           //return to default/user-defined standUp message interval
+  standUp.setInterval(intervalStandUp);           // return to default/user-defined standUp message interval
 }
 
-// STATE: Motivate (trigger: default/ user defined timing interval) 
+// VIEW: Motivate (trigger: default/ user defined timing interval) 
 // displays user defined motivational message (or default if null/empty string)
 void motivationEventSequence(){
-  tft.drawMotivationMsg((motivate.getMessage())); //user-defined motivational message
+  tft.drawMotivationMsg((motivate.getMessage())); // user-defined motivational message
   nonBlockingDelay(2500);
-  motivate.setInterval(intervalMotivate);         //return to default/user-defined motivate message interval
-  motivate.setLastEvent(millis());                //reset timer
+  motivate.setInterval(intervalMotivate);         // return to default/user-defined motivate message interval
+  motivate.setLastEvent(millis());                // reset timer
 }
 
-// STATE: Publish (trigger: default/ user defined timing interval) 
+// VIEW: Publish (trigger: default/ user defined timing interval) 
 // Publishes readings from environmental sensors to MQTT broker
 void publishSensorsEventSequence(){
-  mqttPublishSensorData();                        //publish sensor data
-  publish.setLastEvent(millis());                 //reset timer
+  mqttPublishSensorData();                        // publish sensor data
+  publish.setLastEvent(millis());                 // reset timer
 }
 
-// STATE: UpdateDashboard (trigger: default/ user defined timing interval)
+// VIEW: UpdateDashboard (trigger: default/ user defined timing interval)
 // Updates dashboard on device with environmental sensor readings and indicators that change color based on user preferences
 void updateDashboardEventSequence(){
   //update dashboard of sensor readings and indicators based on user preferences
   tft.drawDashboard(
-    temperature.getValue(),                       //displays live temperature sensor reading
-    humidity.getValue(),                          //displays live humidity sensor reading
-    light.getValue(),                             //displays live light sensor reading
-    temperature.getIndicatorColor(),              //updates temperature indicator based on user defined target sent by MQTT from App
-    humidity.getIndicatorColor(),                 //updates humidity indicator based on user defined target sent by MQTT from App
-    light.getIndicatorColor());                   //updates light indicator based on user defined target sent by MQTT from App
-  refreshDisplay.setLastEvent(millis());          //reset timer
+    temperature.getValue(),                       // displays live temperature sensor reading
+    humidity.getValue(),                          // displays live humidity sensor reading
+    light.getValue(),                             // displays live light sensor reading
+    temperature.getIndicatorColor(),              // updates temperature indicator based on user defined target sent by MQTT from App
+    humidity.getIndicatorColor(),                 // updates humidity indicator based on user defined target sent by MQTT from App
+    light.getIndicatorColor());                   // updates light indicator based on user defined target sent by MQTT from App
+  refreshDisplay.setLastEvent(millis());          // reset timer
 }
 
-// STATE: Notify (trigger: default/ user defined timing interval)
+// VIEW: Notify (trigger: default/ user defined timing interval)
 // Notifies users with user defined notification - internal transitions are on hold until user presses button to confirm
 void notificationEventSequence(){
-  tft.drawNotificationMsg(notification.getMessage());  //display notification message
+  tft.drawNotificationMsg(notification.getMessage());  // display notification message
     for(int i=0; i<4; i++){
       buzzer.notifyLoudly();                           // buzz notification
       nonBlockingDelay(300);
@@ -251,24 +251,24 @@ void notificationEventSequence(){
     nonBlockingDelay(300);
     tft.drawGoodJobMsg();                              // display good job message (encourages user, positive reinforcement)
     nonBlockingDelay(3000);
-    notification.setInterval(intervalNotification);    //return to default/user-defined notification interval
+    notification.setInterval(intervalNotification);    // return to default/user-defined notification interval
     notification.setLastEvent(millis());
 }
 
-// STATE: <New feature 1>
+// VIEW: <New feature 1>
 // Create your own void method below which describes the event sequence (such as to play music, or change timing intervals)
 
-// STATE: <New feature 2>
+// VIEW: <New feature 2>
 // Create your own void method below which describes the event sequence (such as to play music, or change timing intervals)
 
 /*******************************************************************************************************************/
-// ***Nonblocking delay method***: a crucial method for creating delays that do not stop all processes on the arduino*
+// ***Nonblocking delay method***: a crucial method for creating delays that do not stop all processes on the arduino
 
 void nonBlockingDelay(unsigned int delayInterval){
   delayStart = millis();
   while(millis() - delayStart < delayInterval){
-    mqttConnect();                // verify MQTT connection, and more importantly
-    mqttClient.loop();            // check for messages while we wait!!! (SUPER IMPORTANT)
+    mqttConnect();                                          // verify MQTT connection, and more importantly
+    mqttClient.loop();                                      // check for messages while we wait!!!
   }
 }
 
@@ -299,48 +299,38 @@ void parser(const char* topic, const char* message) {
 }
 
 void parseTemperature(const char* message){
-  temperature.setIndicatorColor(parseColor(message));
+  temperature.setPrefValue(message);                       // Set temperature preference
 }
 
 void parseHumid(const char* message){
-  humidity.setIndicatorColor(parseColor(message));
+  humidity.setPrefValue(message);                          // Set humidity preference
 }
 
 void parseLight(const char* message){
-  light.setIndicatorColor(parseColor(message));
-}
-
-// helper method parses indicator colors
-uint16_t parseColor(const char* message) {
-  if (strcmp(message, "TFT_GREEN") == 0) {
-    return TFT_GREEN;
-  } else if (strcmp(message, "TFT_ORANGE") == 0) {
-    return TFT_ORANGE;
-  } else if (strcmp(message, "TFT_RED") == 0) {
-    return TFT_RED;
-  }
+  light.setPrefValue(message);                             // Set light preference
 }
 
 void parseMotivation(const char* message){
   motivate.setMessage(message);
   motivate.setInterval(1000);                              // motivation should display almost immediately
-  //Serial.println("A new motivation has arrived!");       //for debugging
+  //Serial.println("A new motivation has arrived!");       // for debugging
 }
 
 void parseNotification(const char* message){
   notification.setMessage(message);
   notification.setInterval(1000);                          // notification should display almost immediately
-  //Serial.println("A new notification has arrived!");     //for debugging  
+  //Serial.println("A new notification has arrived!");     // for debugging  
 }
 
 void parseStandUp(const char* message){
   standUp.setInterval(1000);                               // standUp event should display almost immediately
-  //Serial.println("A new standup message has arrived!");  //for debugging  
+  //Serial.println("A new standup message has arrived!");  // for debugging  
 }
 
 void parseTiming(const char* message){
   char messageType = message[0];
-  Serial.println("A new timing message has arrived!");    //for debugging 
+  /**
+  Serial.println("A new timing message has arrived!");     // for debugging 
   Serial.println("Before: ");
   Serial.print("intervalStandUp= ");
   Serial.println(standUp.getInterval());
@@ -348,13 +338,14 @@ void parseTiming(const char* message){
   Serial.println(motivate.getInterval());
   Serial.print("intervalNotification= ");
   Serial.println(notification.getInterval());
+  */
 
   switch (messageType) {
     case '0':
       // restore default values
-      intervalStandUp = 3600000;                         // (default: 1 hour)
-      intervalMotivate = 1800000;                        // (default: 30 minutes)
-      intervalNotification = 86400000;                   // (default: 24 hours)
+      intervalStandUp = 3600000;                           // (default: 1 hour)
+      intervalMotivate = 1800000;                          // (default: 30 minutes)
+      intervalNotification = 86400000;                     // (default: 24 hours)
       standUp.setInterval(intervalStandUp);
       motivate.setInterval(intervalMotivate);
       notification.setInterval(intervalNotification);
@@ -362,63 +353,65 @@ void parseTiming(const char* message){
 
     case '1':
       // modify intervalStandUp
-      intervalStandUp = atol(message + 1);               // parse to long
-      standUp.setInterval(intervalStandUp);              // set standUp interval
+      intervalStandUp = atol(message + 1);                 // parse to long
+      standUp.setInterval(intervalStandUp);                // set standUp interval
       break;
 
     case '2':
       // modify intervalMotivate
-      intervalMotivate = atol(message + 1);              // parse to long
-      motivate.setInterval(intervalMotivate);            // set motivate interval
+      intervalMotivate = atol(message + 1);                // parse to long
+      motivate.setInterval(intervalMotivate);              // set motivate interval
       break;
 
     case '3':
       // modify intervalNotification
-      intervalNotification = atol(message + 1);          // parse to long
-      notification.setInterval(intervalNotification);    // set notification interval
+      intervalNotification = atol(message + 1);            // parse to long
+      notification.setInterval(intervalNotification);      // set notification interval
       break;
 
     case '4':
       // turn off standUp events
-      intervalStandUp = ULONG_MAX;                       // assign to largest unsigned integer (4294967295) = 49.710269 days
-      standUp.setInterval(intervalStandUp);              // set standUp interval
+      intervalStandUp = ULONG_MAX;                         // assign to largest unsigned long (4294967295) = 49.710269 days
+      standUp.setInterval(intervalStandUp);                // set standUp interval
       break;
 
     case '5':
       // turn off motivational messages
-      intervalMotivate = ULONG_MAX;                      // assign to largest unsigned integer (4294967295) = 49.710269 days
-      motivate.setInterval(intervalMotivate);            // set motivate interval
+      intervalMotivate = ULONG_MAX;                        // assign to largest unsigned long (4294967295) = 49.710269 days
+      motivate.setInterval(intervalMotivate);              // set motivate interval
       break;
 
     case '6':
       // turn off notifications
-      intervalNotification = ULONG_MAX;                  // assign to largest unsigned integer (4294967295) = 49.710269 days
-      notification.setInterval(intervalNotification);    // set notification interval
+      intervalNotification = ULONG_MAX;                    // assign to largest unsigned long (4294967295) = 49.710269 days
+      notification.setInterval(intervalNotification);      // set notification interval
       break;
 
     case '7':
-      // turn off all events by setting everything to the largest unsigned integer
-      intervalStandUp = ULONG_MAX;                       // assign to largest unsigned integer (4294967295) = 49.710269 days
-      intervalMotivate = ULONG_MAX;                      // assign to largest unsigned integer (4294967295) = 49.710269 days
-      intervalNotification = ULONG_MAX;                  // assign to largest unsigned integer (4294967295) = 49.710269 days
-      standUp.setInterval(intervalStandUp);              // set standUp interval
-      motivate.setInterval(intervalMotivate);            // set motivate interval
-      notification.setInterval(intervalNotification);    // set notification interval
+      // turn off all events by setting everything to the largest unsigned long
+      intervalStandUp = ULONG_MAX;                         // assign to largest unsigned long (4294967295) = 49.710269 days
+      intervalMotivate = ULONG_MAX;                        // assign to largest unsigned long (4294967295) = 49.710269 days
+      intervalNotification = ULONG_MAX;                    // assign to largest unsigned long (4294967295) = 49.710269 days
+      standUp.setInterval(intervalStandUp);                // set standUp interval
+      motivate.setInterval(intervalMotivate);              // set motivate interval
+      notification.setInterval(intervalNotification);      // set notification interval
       break;
 
     default:
-      // handle error case
+      // handle unexpected messages
       Serial.print("Received unexpected message: ");
       Serial.println(message);
       break;
   }
-  Serial.println("After: ");                             //for debugging 
+  /**
+  Serial.println("After: ");                               // for debugging 
   Serial.print("intervalStandUp= ");
   Serial.println(standUp.getInterval());
   Serial.print("intervalMotivate= ");
   Serial.println(motivate.getInterval());
   Serial.print("intervalNotification= ");
   Serial.println(notification.getInterval());
+  */
 }
 
 // PARSER: <New feature 1>
@@ -449,13 +442,13 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
 
 // MQTT connection method: check MQTT connection. If lost, check WIFI connection & restore WIFI connection. Then restore MQTT connection.
 void mqttConnect(){
-  if (!mqttClient.connected()) {               // check MQTT connection first
-    //Serial.println("MQTT connection lost."); //for debugging
-    if (!myWifi.isConnected()) {               // check WIFI connection
-      Serial.println("WIFI connection lost."); //for debugging
-      myWifi.connect();                        // restore WIFI connection
+  if (!mqttClient.connected()) {                           // check MQTT connection first
+    //Serial.println("MQTT connection lost.");             // for debugging
+    if (!myWifi.isConnected()) {                           // check WIFI connection
+      Serial.println("WIFI connection lost.");             // for debugging
+      myWifi.connect();                                    // restore WIFI connection
     }
-    mqttReconnect();                           //restore MQTT connection
+    mqttReconnect();                                       // restore MQTT connection
   }
 }
 
@@ -463,15 +456,15 @@ void mqttConnect(){
 void mqttReconnect() {
   // Loop until we're reconnected
   while (!mqttClient.connected()) {
-    Serial.println("Connecting to MQTT broker...");                          //for debugging
+    Serial.println("Connecting to MQTT broker...");                          // for debugging
     // Attempt to connect to broker
-    if (mqttClient.connect(CLIENT_ID, CLIENT_USERNAME, CLIENT_PASSWORD)) {   //connect to broker with client ID (unique for each connection instance), username and password
+    if (mqttClient.connect(CLIENT_ID, CLIENT_USERNAME, CLIENT_PASSWORD)) {   // connect to broker with client ID (unique for each connection instance), username and password
       // Once connected, publish an announcement to broker...
-      Serial.println("Connected to MQTT broker!");                           //for debugging
+      Serial.println("Connected to MQTT broker!");                           // for debugging
 
       //publish a message from the Wio Terminal
       mqttClient.publish(TOPIC_PUBSUB, "{\"message\": \"Wio Terminal is connected!\"}");
-      Serial.println("Published connection message successfully!");          //for debugging
+      Serial.println("Published connection message successfully!");          // for debugging
 
       // Subscribe to all topics that the deskBuddy Android App publishes to, defined in MqttTopics.h
       mqttSubscribeToAppTopics();
@@ -480,19 +473,19 @@ void mqttReconnect() {
       //if not connected:
       Serial.println("... connection to MQTT broker failed! ");
       Serial.print("rc= ");
-      Serial.print(mqttClient.state());                          // display error message from PubSubClient library
+      Serial.print(mqttClient.state());                                      // display error message from PubSubClient library
       Serial.println(". Trying again in 1 second");
-      delay(1000);                                               // Wait 1 second before retrying
+      delay(1000);                                                           // Wait 1 second before retrying
     }
   }
 }
 
-// MQTT method for publishing sensor data
+// MQTT method for publishing sensor data to topics defined in MqttTopics.h
 void mqttPublishSensorData() {
-  mqttClient.publish(TOPIC_PUB_TEMP, temperature.getValue());   //temperaturePublisher();
-  mqttClient.publish(TOPIC_PUB_HUMID, humidity.getValue());     //humidityPublisher();
-  mqttClient.publish(TOPIC_PUB_LIGHT, light.getValue());        //lightPublisher();
-  //Serial.println("Sensor readings published.");               //debugging
+  mqttClient.publish(TOPIC_PUB_TEMP, temperature.getValue());                // temperaturePublisher();
+  mqttClient.publish(TOPIC_PUB_HUMID, humidity.getValue());                  // humidityPublisher();
+  mqttClient.publish(TOPIC_PUB_LIGHT, light.getValue());                     // lightPublisher();
+  //Serial.println("Sensor readings published.");                            // debugging
 
   // PUBLISHER: <New feature 1>
   // PUBLISH to your own topic here
@@ -503,14 +496,13 @@ void mqttPublishSensorData() {
 
 // MQTT method for subscribing to all topics defined in mqttTopics.h-- called by the connect() / reconnect() methods
 void mqttSubscribeToAppTopics() {
-  // subscribe to deskBuddy App topics
-  mqttClient.subscribe(TOPIC_SUB_TEMP);           //temperatureSubscriber();
-  mqttClient.subscribe(TOPIC_SUB_HUMID);          //humiditySubscriber();
-  mqttClient.subscribe(TOPIC_SUB_LIGHT);          //lightSubscriber();
-  mqttClient.subscribe(TOPIC_SUB_MOTIVATION);     //motivationSubscriber();
-  mqttClient.subscribe(TOPIC_SUB_NOTIFICATION);   //notificationSubscriber();
-  mqttClient.subscribe(TOPIC_SUB_STANDUP);        //standUpSubscriber();
-  mqttClient.subscribe(TOPIC_SUB_TIMING);         //timingSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_TEMP);                                      // temperatureSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_HUMID);                                     // humiditySubscriber();
+  mqttClient.subscribe(TOPIC_SUB_LIGHT);                                     // lightSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_MOTIVATION);                                // motivationSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_NOTIFICATION);                              // notificationSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_STANDUP);                                   // standUpSubscriber();
+  mqttClient.subscribe(TOPIC_SUB_TIMING);                                    // timingSubscriber();
 
   // SUBSCRIBER: <New feature 1>
   // Subscribe to your own topic here
