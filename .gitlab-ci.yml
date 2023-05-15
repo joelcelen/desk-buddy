@@ -1,4 +1,4 @@
-image: openjdk:13-jdk
+image: openjdk:13-jdk slim
 
 variables:
   ANDROID_COMPILE_SDK: "33"
@@ -10,12 +10,9 @@ before_script:
   - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
   - chmod +x ./gradlew
 
-  #- apk add --quiet update --yes
-  #- apk add --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-  - yum update
-  - yum install --yes wget tar unzip lib32stdc++6 lib32z1
-  - yum load-transaction /tmp/
-
+  - apt-get --quiet update --yes
+  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+ 
   
   - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
   - unzip -q android-sdk.zip -d android-sdk-linux
