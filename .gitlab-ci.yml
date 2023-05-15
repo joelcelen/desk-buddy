@@ -1,46 +1,17 @@
-image: openjdk:13-jdk
-
+image: unitedclassifiedsapps/gitlab-ci-android-fastlane
 variables:
   ANDROID_COMPILE_SDK: "33"
   ANDROID_BUILD_TOOLS: "33.0.0"
-  ANDROID_SDK_TOOLS:   "9477386"
-  
+  ANDROID_SDK_TOOLS: "9477386"
+
 before_script:
-  - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
+  - export GRADLE_USER_HOME=$(pwd)/.gradle
   - chmod +x ./gradlew
-
-  - apt-get --quiet update --yes
-  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-  
-  - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
-  - unzip -q android-sdk.zip -d android-sdk-linux
-
-  - mkdir android-sdk-linux/licenses
-  - printf "8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > android-sdk-linux/licenses/android-sdk-license
-  - printf "84831b9409646a918e30573bab4c9c91346d8abd" > android-sdk-linux/licenses/android-sdk-preview-license
-  - android-sdk-linux/tools/bin/sdkmanager --update > update.log
-  - android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" "extras;google;m2repository" "extras;android;m2repository" > installPlatform.log
-
-  - export ANDROID_HOME=$PWD/android-sdk-linux
-  - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
-  - chmod +x ./gradlew
-
-  
-
+    # use yes to accept all licenses
+  - yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses || true
 stages:
   - build
-cache:
-  paths:
-    - .gradle/wrapper
-    - .gradle/caches
-
-assembleDebug:
+build:
   stage: build
-  tags: 
-    - docker
   script:
     - ./gradlew assembleDebug
-    #- cp app/build/outputs/apk/debug/app-debug.apk app-debug.apk
-  #artifacts:
-    #paths:
-      #- app-debug.apk
