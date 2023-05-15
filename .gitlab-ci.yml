@@ -25,4 +25,7 @@ before_script:
 build:
   stage: build
   script:
-    - bash ./deskBuddyApp/gradlew assembleDebug
+    - |
+      #!/bin/bash
+      set -e
+      ./gradlew assembleDebug
