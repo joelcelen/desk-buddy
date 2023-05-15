@@ -13,7 +13,7 @@ dependencyResolutionManagement {
         maven {
             url "https://repo.eclipse.org/content/repositories/paho-snapshots/"
         }
-        jcenter() // Warning: this repository is going to shut down soon
+        //jcenter() // Warning: this repository is going to shut down soon
         maven { url 'https://jitpack.io' } //Add this line in your settings.gradle
     }
 }
