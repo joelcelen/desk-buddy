@@ -1,9 +1,8 @@
 image: gradle
   
 before_script:
-  - export ANDROID_HOME=$PWD/android-sdk-linux #Sets the "ANDROID-HOME" environment variable to the path of the Android SDK directory
-  - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/ #Adds the Android platform tools to the system PATH
-  - chmod +x ./deskBuddyApp/gradlew
+  - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
+  - chmod +x ./gradlew
   
 
 stages:
@@ -17,7 +16,6 @@ assembleDebug:
   tags: 
     - docker
   script:
-    - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
     - ./gradlew assembleDebug
     #- cp app/build/outputs/apk/debug/app-debug.apk app-debug.apk
   #artifacts:
