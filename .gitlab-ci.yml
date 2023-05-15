@@ -10,8 +10,8 @@ stages:
 setup:
   stage: setup
   script:
-    - mkdir -p /root/.android/
-    - touch /root/.android/repositories.cfg
+    - mkdir -p /user/.android/
+    - touch /user/.android/repositories.cfg
 
 build:
   stage: build
