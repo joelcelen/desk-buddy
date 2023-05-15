@@ -23,11 +23,17 @@ before_script:
   
 
 stages:
+  - setup
   - build
 cache:
   paths:
     - .gradle/wrapper
     - .gradle/caches
+setup:
+  stage: setup
+  script:
+    - mkdir -p /root/.android/
+    - touch /root/.android/repositories.cfg
 assembleDebug:
   stage: build
   tags: 
