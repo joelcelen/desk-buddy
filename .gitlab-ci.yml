@@ -1,4 +1,5 @@
-image: seanghay/android-ci
+image: openjdk:8-jdk
+
 before_script:
   - chmod +x ./gradlew
 stages:
