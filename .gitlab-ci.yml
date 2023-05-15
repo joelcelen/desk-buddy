@@ -1,7 +1,18 @@
 image: openjdk:17-jdk
 
+variables:
+  ANDROID_COMPILE_SDK: "30"
+  ANDROID_BUILD_TOOLS: "30.0.2"
+  ANDROID_SDK_ROOT: "/opt/android-sdk"
+
 before_script:
-    - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
+  - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
+  - apt-get --quiet update --yes
+  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+  - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
+  - unzip -d ${ANDROID_SDK_ROOT} android-sdk.zip
+  - yes | ${ANDROID_SDK_ROOT}/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses
+  - ${ANDROID_SDK_ROOT}/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platforms;android-${ANDROID_COMPILE_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}"
 
 stages:
   - build
