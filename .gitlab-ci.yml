@@ -9,6 +9,11 @@
 
 image: openjdk:11-jdk
 
+stages:
+  - clean
+  - build
+  - test
+
 variables:
 
   # ANDROID_COMPILE_SDK is the version of Android you're compiling with.
@@ -60,7 +65,7 @@ before_script:
   - chmod +x ./gradlew
 
 cleanup_build:
-  stage: build
+  stage: clean
   tags:
     - docker
   script:
