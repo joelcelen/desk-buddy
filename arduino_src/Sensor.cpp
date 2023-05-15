@@ -1,14 +1,12 @@
 #include "Sensor.h"
 
-// default constructor
-Sensor::Sensor() {
+// default constructor with black indicator color
+Sensor::Sensor(String defaultPrefValue, float defaultPrefGreen, float defaultPrefOrange) {
   value = "";
-  indicatorColor = 0;
-}
-
-Sensor::Sensor(uint16_t startProgramColor) {
-  value = "";
-  indicatorColor = startProgramColor;
+  prefValue = String(defaultPrefValue);
+  prefGreen = defaultPrefGreen;
+  prefOrange = defaultPrefOrange;
+  indicatorColor = 0;                                                  // default indicator color is black
 }
 
 const char* Sensor::getValue() {
@@ -21,12 +19,23 @@ uint16_t Sensor::getIndicatorColor() {
 
 void Sensor::setValue(const char* newValue) {
   value = String(newValue);
+  updateIndicatorColor();
 }
 
-void Sensor::setIndicatorColor(uint16_t indicatorColor) {
-  if (indicatorColor == 0x07E0 || indicatorColor == 0xFDA0 || indicatorColor == 0xF800) {   //primitive exception handling to check for unexpected colors
-    this->indicatorColor = indicatorColor;
-  }else{
-    Serial.println("Runtime exception while setting indicatorColor");                       //statement to help debug
+void Sensor::setPrefValue(const char* newPrefValue){
+  prefValue = String(newPrefValue);
+  updateIndicatorColor();
+}
+
+void Sensor::updateIndicatorColor() {
+  float floatValue = atof(value.c_str());
+  float floatPrefValue = atof(prefValue.c_str());
+
+  if (abs(floatValue - floatPrefValue)  <= prefGreen) {                // update indicator based on deviation from preferences
+    indicatorColor = 0x07E0;                                           // value of TFT_GREEN in TFT_eSPI library
+  } else if (abs(floatValue - floatPrefValue) <= prefOrange) {
+    indicatorColor = 0xFDA0;                                           // value of TFT_ORANGE in TFT_eSPI library
+  } else {
+    indicatorColor = 0xF800;                                           // value of TFT_RED in TFT_eSPI library
   }
 }
