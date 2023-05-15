@@ -128,12 +128,12 @@ public class MainActivity extends AppCompatActivity {
                     tempView.setText(payload);
                     break;
                 case "deskBuddy/humidity":
-                    recordMeasurementData(Double.parseDouble(payload),"humidity_data","humidity_value");
+                    //recordMeasurementData(Double.parseDouble(payload),"humidity_data","humidity_value");
                     payload = payload + " %";
                     humView.setText(payload);
                     break;
                 case "deskBuddy/light":
-                    recordMeasurementData(Double.parseDouble(payload),"light_data","light_value");
+                    //recordMeasurementData(Double.parseDouble(payload),"light_data","light_value");
                     payload = payload + " lx";
                     lightView.setText(payload);
                     break;
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         String timestamp = String.valueOf(System.currentTimeMillis());
         databaseReadings = FirebaseDatabase.getInstance().getReference().child(root);
         String measurementId = databaseReadings.push().getKey();  //Create a measurement Id for each data point
-        databaseReadings.child(measurementId).child("timeStamp").setValue(timestamp);
+        databaseReadings.child(measurementId).child("timestamp").setValue(timestamp);
         databaseReadings.child(measurementId).child(entryPoint).setValue(measurement);
     }
 }
