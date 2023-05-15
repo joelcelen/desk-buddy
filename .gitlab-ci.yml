@@ -1,4 +1,4 @@
-image: openjdk:13-jdk slim
+image: openjdk:13-jdk-slim
 
 variables:
   ANDROID_COMPILE_SDK: "33"
