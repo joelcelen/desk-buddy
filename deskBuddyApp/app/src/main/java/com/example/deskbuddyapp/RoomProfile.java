@@ -10,25 +10,15 @@ public class RoomProfile {
     private double temperature;
     private double humidity;
     private double lightLevel;
-
     private boolean isActive;
 
-    // Constructor with specific values
+    // Constructor
     public RoomProfile(int id, String profileName, double temperature, double humidity, double lightLevel){
         this.id = id;
         this.profileName = profileName;
         this.temperature = temperature;
         this.humidity = humidity;
         this.lightLevel = lightLevel;
-        this.isActive = false;
-    }
-
-    // Constructor with default values.
-    public RoomProfile(){
-        this.profileName = "Default";
-        this.temperature = 25.0;
-        this.humidity = 35.0;
-        this.lightLevel = 900.0;
         this.isActive = false;
     }
 

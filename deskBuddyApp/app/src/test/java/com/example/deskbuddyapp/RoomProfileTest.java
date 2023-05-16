@@ -5,15 +5,6 @@ import org.junit.Test;
 
 public class RoomProfileTest {
     @Test
-    public void createDefaultProfile(){
-        RoomProfile profile = new RoomProfile();
-        assertEquals("Default", profile.getProfileName());
-        assertEquals(25.0, profile.getTemperature(), 0.1);
-        assertEquals(35.0, profile.getHumidity(), 0.1);
-        assertEquals(900.0, profile.getLightLevel(), 0.1);
-    }
-
-    @Test
     public void createCustomProfile(){
         RoomProfile profile = new RoomProfile(9,"Custom", 35.0, 60.0, 1000.0);
         assertEquals("Custom", profile.getProfileName());
