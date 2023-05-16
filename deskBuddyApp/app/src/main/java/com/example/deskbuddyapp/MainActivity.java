@@ -32,11 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tempView;
     private TextView lightView;
     private TextView humView;
-
     DatabaseReference databaseNode;     //Firebase database
-
-    public MainActivity() {
-    }
 
     //method for creating and starting the app
     @SuppressLint("MissingInflatedId")
