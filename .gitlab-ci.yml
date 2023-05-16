@@ -80,7 +80,7 @@ assembleDebug:
   tags:
     - docker
   script:
-    - ./gradlew build
+    - ./gradlew assembleDebug
   artifacts:
     paths:
       - app/build/outputs/
