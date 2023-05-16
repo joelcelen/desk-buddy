@@ -12,9 +12,9 @@ before_script:
 
   #- apk add --quiet update --yes
   #- apk add --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-  - yum update
-  - yum install --yes wget tar unzip lib32stdc++6 lib32z1
-  - yum load-transaction /tmp/
+  - apt-get update
+  - apt-get install --yes wget tar unzip lib32stdc++6 lib32z1
+  - apt-get load-transaction /tmp/
 
   
   - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
