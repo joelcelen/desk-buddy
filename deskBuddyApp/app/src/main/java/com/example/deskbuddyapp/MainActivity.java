@@ -1,6 +1,7 @@
 package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 
 import android.annotation.SuppressLint;
@@ -28,11 +29,16 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView currentProfile;
 
+    private SwitchCompat switchButton;
+
     private TextView tempView;
     private TextView lightView;
     private TextView humView;
 
     DatabaseReference databaseNode;     //Firebase database
+
+    public MainActivity() {
+    }
 
     //method for creating and starting the app
     @SuppressLint("MissingInflatedId")
@@ -61,12 +67,14 @@ public class MainActivity extends AppCompatActivity {
         lightButton = findViewById(R.id.light_button);
         humButton = findViewById(R.id.hum_button);
         profilesButton = findViewById(R.id.profiles_button);
+        switchButton = findViewById(R.id.switch_button);
 
         //Initialise listeners for if button is clicked --> call corresponding method
         tempButton.setOnClickListener(view -> openTemperatureView());
         lightButton.setOnClickListener(view -> openLightView());
         humButton.setOnClickListener(view -> openHumidityView());
         profilesButton.setOnClickListener(view ->openProfilesView());
+        switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> handleSwitchStateChange(isChecked));
 
         //Current room profile
         RoomProfile roomProfile = new RoomProfile();
@@ -143,5 +151,18 @@ public class MainActivity extends AppCompatActivity {
         String timeStamp = String.valueOf(System.currentTimeMillis()); // Generate UNIX timestamp
         databaseNode.child(key).child("timestamp").setValue(timeStamp); //insert child timestamp
         databaseNode.child(key).child(pathString).setValue(sensorValue); //insert child sensor_value
+    }
+
+    //publishes message to Wio terminal depending on if silent mode is on/off, to set the timing interval of notifications received to on/off
+    public void handleSwitchStateChange(boolean isChecked) {
+        // Handle the switch button changes to publish message to Wio
+        if (isChecked) {
+            // Switch is ON
+            publishMsg(Topics.TIMING_PUB.getTopic(), "0");
+        } else {
+            // Switch is OFF
+            publishMsg(Topics.TIMING_PUB.getTopic(), "7");
+
+        }
     }
 }
