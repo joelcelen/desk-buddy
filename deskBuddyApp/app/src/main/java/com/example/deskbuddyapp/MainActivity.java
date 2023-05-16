@@ -1,6 +1,7 @@
 package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 
 import android.annotation.SuppressLint;
@@ -26,11 +27,11 @@ public class MainActivity extends AppCompatActivity {
     private Button lightButton;
     private Button humButton;
     private Button profilesButton;
+    private SwitchCompat switchButton;
     private ArrayList<RoomProfile> profileList;
     private TextView tempView;
     private TextView lightView;
     private TextView humView;
-
     DatabaseReference databaseNode;     //Firebase database
 
     //method for creating and starting the app
@@ -60,12 +61,14 @@ public class MainActivity extends AppCompatActivity {
         lightButton = findViewById(R.id.light_button);
         humButton = findViewById(R.id.hum_button);
         profilesButton = findViewById(R.id.profiles_button);
+        switchButton = findViewById(R.id.switch_button);
 
         //Initialise listeners for if button is clicked --> call corresponding method
         tempButton.setOnClickListener(view -> openTemperatureView());
         lightButton.setOnClickListener(view -> openLightView());
         humButton.setOnClickListener(view -> openHumidityView());
         profilesButton.setOnClickListener(view ->openProfilesView());
+        switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> handleSwitchStateChange(isChecked));
 
         //Fetch current profile from ProfileActivity and set active profile to publish values.
         ProfileActivity profileActivity = new ProfileActivity();
@@ -162,5 +165,18 @@ public class MainActivity extends AppCompatActivity {
         int currentProfileId = profileList.get(findActiveProfile().getId()).getId();
         databaseNode.child(key).child("profile").setValue(currentProfileId);
 
+    }
+
+    //publishes message to Wio terminal depending on if silent mode is on/off, to set the timing interval of notifications received to on/off
+    public void handleSwitchStateChange(boolean isChecked) {
+        // Handle the switch button changes to publish message to Wio
+        if (isChecked) {
+            // Switch is ON
+            publishMsg(Topics.TIMING_PUB.getTopic(), "0");
+        } else {
+            // Switch is OFF
+            publishMsg(Topics.TIMING_PUB.getTopic(), "7");
+
+        }
     }
 }
