@@ -2,7 +2,7 @@
 
 // Constructor
 LED::LED(int ledPin) {
-  this->ledPin = ledPin; // setPin
+  this->ledPin = ledPin;            // set pin for LED digital read/write operations
 }
 
 // turnOn method

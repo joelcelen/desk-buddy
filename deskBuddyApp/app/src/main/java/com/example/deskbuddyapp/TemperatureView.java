@@ -30,6 +30,8 @@ public class TemperatureView extends AppCompatActivity {
     DatabaseReference databaseReference;
     long timeInterval;
 
+    int currentProfile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,8 +58,9 @@ public class TemperatureView extends AppCompatActivity {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Double value = dataSnapshot.child("temperature_value").getValue(Double.class);
                     String generalTimeStamp = dataSnapshot.child("timestamp").getValue(String.class);
-
-                    if (value != null && generalTimeStamp!= null ){ //Avoid getting empty value from the database
+                    // Integer profileId = dataSnapshot.child("profile").getValue(Integer.class);
+                    
+                    if (value != null && generalTimeStamp!= null){ //Avoid getting empty value from the database
                         long timeStamp = Long.parseLong(generalTimeStamp);
                             if (timeStamp >= startTime){
                                 timeStamp = timeStamp -startTime;
