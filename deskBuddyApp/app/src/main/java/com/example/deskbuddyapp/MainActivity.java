@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import android.widget.TextView;
@@ -95,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
     //Specific behavior for each button that when clicked takes you to corresponding page in the app
     public void openTemperatureView() {
         Intent intentTemp = new Intent(this, TemperatureView.class);
+        int currentProfileId = profileList.get(findActiveProfile().getId()).getId();
+        intentTemp.putExtra("profileId", currentProfileId);
         startActivity(intentTemp);
     }
     public void openLightView() {
@@ -153,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     // INSERT operation to Firebase Realtime DB
     private void addSensorData(String pathString, double sensorValue) {
         String key = databaseNode.push().getKey(); // Generate a new unique key

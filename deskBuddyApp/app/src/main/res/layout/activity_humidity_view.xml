@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toTopOf="@+id/humChart" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/daily_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
@@ -31,7 +31,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/weekly_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="56dp"
@@ -45,7 +45,7 @@
         android:id="@+id/humChart"
         android:layout_width="400dp"
         android:layout_height="500dp"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintBottom_toTopOf="@+id/weekly_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -58,7 +58,7 @@
         android:layout_marginStart="56dp"
         android:onClick="mainActivity"
         android:text="Back"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/daily_button"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

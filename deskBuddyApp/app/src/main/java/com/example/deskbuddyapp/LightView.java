@@ -29,7 +29,7 @@ public class LightView extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(null);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_light_view);
         lightChart = findViewById(R.id.lightChart);
         client = MqttHandler.getInstance();
@@ -85,7 +85,6 @@ public class LightView extends AppCompatActivity {
         client.subscribe(topic, new IMqttMessageListener() {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                //Log.d("Is the message arrived","will see");
                 String payload = new String(message.getPayload());
                 Float light = Float.parseFloat(payload);
 
