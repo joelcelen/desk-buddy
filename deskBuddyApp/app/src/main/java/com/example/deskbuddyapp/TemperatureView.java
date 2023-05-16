@@ -3,7 +3,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +39,9 @@ public class TemperatureView extends AppCompatActivity {
         timeInterval = 60000; //1 minute = 60000 milliseconds. This is the default setting(Live reading + 1 minute ago data).
         temperatureChart = findViewById(R.id.tempChart);
 
+        Intent intent = getIntent();
+        currentProfile = intent.getIntExtra("profileId",0);
+
         tempData = new ArrayList<>();
 
         // Get reference to the temperature_data table in the Firebase Realtime Database
@@ -53,15 +55,14 @@ public class TemperatureView extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 tempData.clear(); //
-                Log.d("Database access","Reading the database");
                 long startTime = System.currentTimeMillis() - timeInterval;
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                     Double value = dataSnapshot.child("temperature_value").getValue(Double.class);
                     String generalTimeStamp = dataSnapshot.child("timestamp").getValue(String.class);
-                    // Integer profileId = dataSnapshot.child("profile").getValue(Integer.class);
+                    Integer profileId = dataSnapshot.child("profile").getValue(Integer.class);
                     
-                    if (value != null && generalTimeStamp!= null){ //Avoid getting empty value from the database
-                        long timeStamp = Long.parseLong(generalTimeStamp);
+                    if (value != null && generalTimeStamp!= null && profileId != null && profileId == currentProfile){ //Avoid getting empty value from the database
+                            long timeStamp = Long.parseLong(generalTimeStamp);
                             if (timeStamp >= startTime){
                                 timeStamp = timeStamp -startTime;
                                 float time = (float) timeStamp;
@@ -72,9 +73,6 @@ public class TemperatureView extends AppCompatActivity {
                     }
                 }
                 updateTemperatureChart();
-
-                System.out.println(tempData);
-                System.out.println(tempData.size());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
