@@ -6,6 +6,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -15,22 +16,19 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
     private MqttHandler client;
 
-    //Initialize buttons on homescreen
+    //Initialize buttons on home screen.
     private Button tempButton;
     private Button lightButton;
     private Button humButton;
     private Button profilesButton;
-
-    private RoomProfile roomProfile;
-
-    private TextView currentProfile;
-
     private SwitchCompat switchButton;
-
+    private ArrayList<RoomProfile> profileList;
     private TextView tempView;
     private TextView lightView;
     private TextView humView;
@@ -76,11 +74,26 @@ public class MainActivity extends AppCompatActivity {
         profilesButton.setOnClickListener(view ->openProfilesView());
         switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> handleSwitchStateChange(isChecked));
 
-        //Current room profile
-        RoomProfile roomProfile = new RoomProfile();
+        //Fetch current profile from ProfileActivity and set active profile to publish values.
+        ProfileActivity profileActivity = new ProfileActivity();
+        SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
+        profileList = profileActivity.loadData(sharedPreferences, profileList);
         TextView currentProfile = findViewById(R.id.current_profile);
-        String nameOfProfile = roomProfile.getProfileName();
+        String nameOfProfile = findActiveProfile().getProfileName();
         currentProfile.setText(nameOfProfile);
+        publishMsg(Topics.TEMP_PUB.getTopic(), String.valueOf(findActiveProfile().getTemperature()));
+        publishMsg(Topics.HUMIDITY_PUB.getTopic(), String.valueOf(findActiveProfile().getHumidity()));
+        publishMsg(Topics.LIGHT_PUB.getTopic(), String.valueOf(findActiveProfile().getLightLevel()));
+    }
+
+    /** Method for finding the current active profile. **/
+    protected RoomProfile findActiveProfile(){
+        for(RoomProfile profile : profileList){
+            if(profile.isActive()){
+                return profile;
+            }
+        }
+        return null;
     }
 
     //Specific behavior for each button that when clicked takes you to corresponding page in the app
@@ -151,6 +164,11 @@ public class MainActivity extends AppCompatActivity {
         String timeStamp = String.valueOf(System.currentTimeMillis()); // Generate UNIX timestamp
         databaseNode.child(key).child("timestamp").setValue(timeStamp); //insert child timestamp
         databaseNode.child(key).child(pathString).setValue(sensorValue); //insert child sensor_value
+
+        // Save the current profile in the database with the sensor readings.
+        int currentProfileId = profileList.get(findActiveProfile().getId()).getId();
+        databaseNode.child(key).child("profile").setValue(currentProfileId);
+
     }
 
     //publishes message to Wio terminal depending on if silent mode is on/off, to set the timing interval of notifications received to on/off

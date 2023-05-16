@@ -5,27 +5,31 @@ package com.example.deskbuddyapp;
 
 public class RoomProfile {
 
-    private String profileName;
     private int id;
+    private String profileName;
     private double temperature;
     private double humidity;
     private double lightLevel;
 
+    private boolean isActive;
+
     // Constructor with specific values
-    public RoomProfile(String profileName, double temperature, double humidity, double lightLevel, int id){
+    public RoomProfile(int id, String profileName, double temperature, double humidity, double lightLevel){
+        this.id = id;
         this.profileName = profileName;
         this.temperature = temperature;
         this.humidity = humidity;
         this.lightLevel = lightLevel;
-        this.id = id;
+        this.isActive = false;
     }
 
     // Constructor with default values.
     public RoomProfile(){
-        this.profileName = "Alfons";
-        this.temperature = 23.0;
-        this.humidity = 40.0;
-        this.lightLevel = 700;
+        this.profileName = "Default";
+        this.temperature = 25.0;
+        this.humidity = 35.0;
+        this.lightLevel = 900.0;
+        this.isActive = false;
     }
 
     // Getters and setters.
@@ -35,35 +39,25 @@ public class RoomProfile {
     public Integer getId() {
         return id;
     }
-
-    public double getTemperature() {
-        return temperature;
-    }
-
+    public double getTemperature() {return temperature;}
     public double getHumidity() {
         return humidity;
     }
-
     public double getLightLevel() {
         return lightLevel;
     }
-
+    public boolean isActive() {return isActive;}
     public void setProfileName(String profileName) {
         this.profileName = profileName;
     }
-
     public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
-
     public void setHumidity(double humidity) {
         this.humidity = humidity;
     }
-
     public void setLightLevel(double lightLevel) {
         this.lightLevel = lightLevel;
     }
-    public void setId(Integer ID) {
-        this.id = ID;
-    }
+    public void setActive(boolean active) {isActive = active;}
 }

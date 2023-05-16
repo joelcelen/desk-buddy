@@ -3,183 +3,212 @@ package com.example.deskbuddyapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ViewFlipper;
 import com.google.android.material.slider.Slider;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private ViewFlipper viewFlipper;
-    private RoomProfile currentRoomProfile;
-    private RoomProfile roomProfile1;
-    private RoomProfile roomProfile2;
-    private RoomProfile roomProfile3;
-    private RoomProfile roomProfile4;
-    private double sliderTemp;
-    private double sliderHum;
-    private double sliderLight;
-
-    private Button selectedButton = null;
-
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference profilesRef = database.getReference("Profiles");
-
-    private HashMap<RoomProfile, Button> profileList;
-
-    Slider slider;
-
-
+    private Button saveButton;
+    private Button settingsButton;
+    private Button backButton;
+    private Button homeButton;
+    private Slider tempSlider;
+    private Slider humSlider;
+    private Slider lightSlider;
+    private EditText nameEditor;
+    private ArrayList<RoomProfile> profileList;
+    private ArrayList<Button> buttonList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
-        //slider = findViewById(R.id.sldTemp);
-       // slider.setSty(R.style.Widget_MaterialComponents_Slider);
-
-        // Get a reference to the ViewFlipper
         viewFlipper = findViewById(R.id.view_flipper);
+        profileList = new ArrayList<>();
+        buttonList = new ArrayList<>();
 
-        profileList = new HashMap<>();
-        createProfiles();
+        loadData();
+        initializeUiElements();
+        updateButtonText();
 
+        // Set onClick listeners for the profile buttons to switch profile.
+        buttonList.get(1).setOnClickListener(v -> switchProfile(profileList.get(1)));
+        buttonList.get(2).setOnClickListener(v -> switchProfile(profileList.get(2)));
+        buttonList.get(3).setOnClickListener(v -> switchProfile(profileList.get(3)));
+        buttonList.get(4).setOnClickListener(v -> switchProfile(profileList.get(4)));
 
-        // Buttons to toggle between settings and profile page.
-        Button settingsButton = findViewById(R.id.btnSettings);
-        Button backButton = findViewById(R.id.back_button);
-        Button homeButton = findViewById(R.id.btnHome);
-
+        // Set onClick listener that flips the active view to settings view.
         settingsButton.setOnClickListener(v -> {
-            Slider tempSlider = findViewById(R.id.sldTemp);
-            Slider humSlider = findViewById(R.id.sldHum);
-            Slider lightSlider = findViewById(R.id.sldLight);
-            EditText nameEditor = findViewById(R.id.editName);
 
-            nameEditor.setText(currentRoomProfile.getProfileName());
-            tempSlider.setValue((float) currentRoomProfile.getTemperature());
-            humSlider.setValue((float) currentRoomProfile.getHumidity());
-            lightSlider.setValue((float) currentRoomProfile.getLightLevel());
+            nameEditor.setText(findActiveProfile().getProfileName());
+            tempSlider.setValue((float) findActiveProfile().getTemperature());
+            humSlider.setValue((float) findActiveProfile().getHumidity());
+            lightSlider.setValue((float) findActiveProfile().getLightLevel());
             viewFlipper.showNext();
         });
+
+        // Set onClick listener to save the changes applied in the settings view.
+        saveButton.setOnClickListener(v -> {
+
+            // Set the profile values to the slider values.
+            findActiveProfile().setProfileName(nameEditor.getText().toString());
+            findActiveProfile().setTemperature((double)tempSlider.getValue());
+            findActiveProfile().setHumidity((double)humSlider.getValue());
+            findActiveProfile().setLightLevel((double)lightSlider.getValue());
+            buttonList.get(findActiveProfile().getId()).setText(updateButtonTxt(findActiveProfile()));
+            saveData();
+
+            viewFlipper.showPrevious();
+
+        });
+
+        // Set onClick listener to go back to the profile view.
         backButton.setOnClickListener(v -> viewFlipper.showPrevious());
+
+        // Set onClick listener to go back to the main menu.
         homeButton.setOnClickListener(v -> {
             Intent home = new Intent(ProfileActivity.this, MainActivity.class);
             startActivity(home);
         });
+    }
+
+    /** This method uses the SharedPreferences class in combination with Gson class
+     * to save the RoomProfile objects to a local json file. **/
+    private void saveData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(profileList);
+        editor.putString("Profile list", json);
+        editor.apply();
+    }
+
+    /** This method uses the SharedPreferences class in combination with Gson class
+     * to retrieve the RoomProfile objects from a local json file.
+     * If the json file is currently empty, it will initialize a new ArrayList
+     * with five default profiles to prevent any NullPointerExceptions. **/
+    private void loadData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("Profile list", null);
+        Type type = new TypeToken<ArrayList<RoomProfile>>() {}.getType();
+        profileList = gson.fromJson(json, type);
+
+        if(profileList == null){
+            profileList = new ArrayList<>();
+            profileList.add(new RoomProfile());
+            profileList.add(new RoomProfile());
+            profileList.add(new RoomProfile());
+            profileList.add(new RoomProfile());
+            profileList.add(new RoomProfile());
+            profileList.get(1).setActive(true);
+        }
+    }
+
+    /** Overloaded method to access method from other activity. **/
+    public ArrayList<RoomProfile> loadData(SharedPreferences sharedPreferences, ArrayList<RoomProfile> profiles) {
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("Profile list", null);
+        Type type = new TypeToken<ArrayList<RoomProfile>>() {}.getType();
+        profiles = gson.fromJson(json, type);
+
+        if(profiles == null){
+            profiles = new ArrayList<>();
+            profiles.add(new RoomProfile());
+            profiles.add(new RoomProfile());
+            profiles.add(new RoomProfile());
+            profiles.add(new RoomProfile());
+            profiles.add(new RoomProfile());
+            profiles.get(1).setActive(true);
+        }
+        return profiles;
+    }
+
+    /** Initializes all buttons in the UI and binds them to the correct ID's. **/
+    private void initializeUiElements(){
+
+        /* Add buttons to list.
+        Button list has first index filled with a null value to pad it,
+        this makes it so that the buttons and profile share indices*/
+        buttonList.add(null);
+        buttonList.add(findViewById(R.id.btnProfile1));
+        buttonList.add(findViewById(R.id.btnProfile2));
+        buttonList.add(findViewById(R.id.btnProfile3));
+        buttonList.add(findViewById(R.id.btnProfile4));
+
+        // Update color to indicate which profile that is active.
+        buttonList.get(findActiveProfile().getId()).setBackgroundColor(Color.RED);
+
+        // Utility buttons.
+        saveButton = findViewById(R.id.btnSave);
+        settingsButton = findViewById(R.id.btnSettings);
+        backButton = findViewById(R.id.back_button);
+        homeButton = findViewById(R.id.btnHome);
 
         // Sliders and adjusters.
-        Slider tempSlider = findViewById(R.id.sldTemp);
-        Slider humSlider = findViewById(R.id.sldHum);
-        Slider lightSlider = findViewById(R.id.sldLight);
-        EditText nameEditor = findViewById(R.id.editName);
-
-        // Methods to store the slider values in temporary variables
-        tempSlider.addOnChangeListener((slider, value, fromUser) -> sliderTemp = value);
-        humSlider.addOnChangeListener((slider, value, fromUser) -> sliderHum = value);
-        lightSlider.addOnChangeListener((slider, value, fromUser) -> sliderLight = value);
-
-        // Button to save changes to current profile and go back to profiles view.
-        Button saveButton = findViewById(R.id.btnSave);
-        saveButton.setOnClickListener(v -> {
-
-            currentRoomProfile.setTemperature(sliderTemp);
-            currentRoomProfile.setHumidity(sliderHum);
-            currentRoomProfile.setLightLevel(sliderLight);
-            currentRoomProfile.setProfileName(nameEditor.getText().toString());
-            profilesRef.child(currentRoomProfile.getId().toString()).setValue(currentRoomProfile);
-            profileList.get(currentRoomProfile).setText(updateButtonTxt(currentRoomProfile));
-            viewFlipper.showPrevious();
-        });
+        tempSlider = findViewById(R.id.sldTemp);
+        humSlider = findViewById(R.id.sldHum);
+        lightSlider = findViewById(R.id.sldLight);
+        nameEditor = findViewById(R.id.editName);
     }
 
-    // Create profiles, later it will be replaced by reading from database.
-    public void createProfiles(){
-        profilesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Iterate over the profiles
-                int index = 0;
-                for (DataSnapshot profileSnapshot : dataSnapshot.getChildren()) {
-                    // Get the profile data
-                    int humidity = profileSnapshot.child("humidity").getValue(Integer.class);
-                    int lightLevel = profileSnapshot.child("lightLevel").getValue(Integer.class);
-                    String profileName = profileSnapshot.child("profileName").getValue(String.class);
-                    int temperature = profileSnapshot.child("temperature").getValue(Integer.class);
-
-                    // Create a new Profile object and add it to the appropriate list
-                    RoomProfile roomProfile = new RoomProfile(profileName,temperature, humidity, lightLevel,index+1);
-
-                    // Assign profile to the appropriate index
-                    switch (index) {
-                        case 0:
-                            roomProfile1 = roomProfile;
-                            break;
-                        case 1:
-                            roomProfile2 = roomProfile;
-                            break;
-                        case 2:
-                            roomProfile3 = roomProfile;
-                            break;
-                        case 3:
-                            roomProfile4 = roomProfile;
-                            break;
-                    }
-                    index++;
-                }
-
-                // Buttons to set active profile
-                Button profile1Button = findViewById(R.id.btnProfile1);
-                Button profile2Button = findViewById(R.id.btnProfile2);
-                Button profile3Button = findViewById(R.id.btnProfile3);
-                Button profile4Button = findViewById(R.id.btnProfile4);
-                profile1Button.setText(updateButtonTxt(roomProfile1));
-                profile2Button.setText(updateButtonTxt(roomProfile2));
-                profile3Button.setText(updateButtonTxt(roomProfile3));
-                profile4Button.setText(updateButtonTxt(roomProfile4));
-
-                // Assign buttons to their respective profiles
-                profileList.put(roomProfile1, profile1Button);
-                profileList.put(roomProfile2, profile2Button);
-                profileList.put(roomProfile3, profile3Button);
-                profileList.put(roomProfile4, profile4Button);
-
-                // Current profile is set to a button on start
-                profileList.put(currentRoomProfile, profile1Button);
-
-                // Set current profile to the profile associated with the button pressed
-                profileList.get(roomProfile1).setOnClickListener(v -> currentRoomProfile = roomProfile1);
-                profileList.get(roomProfile2).setOnClickListener(v -> currentRoomProfile = roomProfile2);
-                profileList.get(roomProfile3).setOnClickListener(v -> currentRoomProfile = roomProfile3);
-                profileList.get(roomProfile4).setOnClickListener(v -> currentRoomProfile = roomProfile4);
+    /** This method finds the currently active profile by going through the profileList
+     * and returning the profile that is active. **/
+    protected RoomProfile findActiveProfile(){
+        for(RoomProfile profile : profileList){
+            if(profile.isActive()){
+                return profile;
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Handle database error
-            }
-        });
+        }
+        return null;
     }
 
+    /** This method goes through the buttonList and updates every entry to the current text. **/
+    public void updateButtonText(){
+        for(int i = 1; i < buttonList.size(); i ++){
+            buttonList.get(i).setText(updateButtonTxt(profileList.get(i)));
+        }
+    }
 
+    /** This method is responsible for switching what profile is active.**/
+    private void switchProfile(RoomProfile profile){
 
+        // Go through the profileList to set all profiles to inactive.
+        for(RoomProfile profileEntry : profileList){
+            profileEntry.setActive(false);
+        }
+        // Reset button color.
+        for(int i = 1; i<buttonList.size(); i++){
+            //TODO change background color to default button color, grey is just placeholder.
+            buttonList.get(i).setBackgroundColor(Color.LTGRAY);
+        }
+        // Set intended profile to active and switch button color to indicate active profile.
+        profile.setActive(true);
+        //TODO set color to whatever you want to represent the current active profile.
+        buttonList.get(profile.getId()).setBackgroundColor(Color.RED);
+        saveData();
+    }
 
-    // Method to update the values and display them on the button.
+    /** Method to update the values and display them on the button. **/
     public String updateButtonTxt(RoomProfile roomProfile){
         return roomProfile.getProfileName() + "\n Temp: " + roomProfile.getTemperature()
                 + "\n Hum: " + roomProfile.getHumidity() + "\n Lux: " + roomProfile.getLightLevel();
     }
 
+    /** These methods keep track of the different views in the XML file.
+     * Although they are marked as not used, they are necessary for the
+     * ViewFlipper class to switch between the views in the XML file. **/
     public void goToViewOne(View view) {
         viewFlipper.setDisplayedChild(0);
     }
@@ -188,7 +217,7 @@ public class ProfileActivity extends AppCompatActivity {
         viewFlipper.setDisplayedChild(1);
     }
 
+    public ArrayList<RoomProfile> getProfileList() {return profileList;}
 
-
-
+    public ArrayList<Button> getButtonList() {return buttonList;}
 }
