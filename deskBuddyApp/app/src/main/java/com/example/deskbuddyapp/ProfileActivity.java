@@ -107,12 +107,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         if(profileList == null){
             profileList = new ArrayList<>();
-            profileList.add(new RoomProfile());
-            profileList.add(new RoomProfile());
-            profileList.add(new RoomProfile());
-            profileList.add(new RoomProfile());
-            profileList.add(new RoomProfile());
+            profileList.add(new RoomProfile(0, "Default Profile", 25.0,35.0,900.0));
+            profileList.add(new RoomProfile(1, "Profile 1", 25.0,35.0,900.0));
+            profileList.add(new RoomProfile(2, "Profile 2", 25.0,35.0,900.0));
+            profileList.add(new RoomProfile(3, "Profile 3", 25.0,35.0,900.0));
+            profileList.add(new RoomProfile(4, "Profile 4", 25.0,35.0,900.0));
             profileList.get(1).setActive(true);
+            saveData();
         }
     }
 
@@ -125,11 +126,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         if(profiles == null){
             profiles = new ArrayList<>();
-            profiles.add(new RoomProfile());
-            profiles.add(new RoomProfile());
-            profiles.add(new RoomProfile());
-            profiles.add(new RoomProfile());
-            profiles.add(new RoomProfile());
+            profiles.add(new RoomProfile(0, "Default Profile", 25.0,35.0,900.0));
+            profiles.add(new RoomProfile(1, "Profile 1", 25.0,35.0,900.0));
+            profiles.add(new RoomProfile(2, "Profile 2", 25.0,35.0,900.0));
+            profiles.add(new RoomProfile(3, "Profile 3", 25.0,35.0,900.0));
+            profiles.add(new RoomProfile(4, "Profile 4", 25.0,35.0,900.0));
             profiles.get(1).setActive(true);
         }
         return profiles;
