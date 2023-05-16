@@ -30,8 +30,10 @@ variables:
 # Packages installation before running script
 before_script:
   - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
-  - apt-get --quiet update --yes
-  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+  #- apt-get --quiet update --yes
+  #- apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+  - yum --quiet update --yes
+  - yum --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
 
   # Setup path as android_home for moving/exporting the downloaded sdk into it
   - export ANDROID_HOME="${PWD}/android-home"
