@@ -16,8 +16,8 @@ buildscript {
 
 
 plugins {
-    id 'com.android.application' version '7.2.5' apply true
-    id 'com.android.library' version '7.2.5' apply true
+    id 'com.android.application' version latest apply false
+    id 'com.android.library' version '7.2.5' apply false
 }
 
 task clean(type: Delete) {
