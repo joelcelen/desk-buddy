@@ -1,32 +1,51 @@
-image: openjdk:17-jdk-slim
+image: openjdk:17-jdk
 
 variables:
   ANDROID_COMPILE_SDK: "33"
-  ANDROID_BUILD_TOOLS: "31.0.0"
-  ANDROID_SDK_ROOT: "/opt/android-sdk"
+  ANDROID_BUILD_TOOLS: "33.0.0"
+  ANDROID_SDK_TOOLS:   "7583922"
 
+  
 before_script:
   - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
-  - apt-get --quiet update --yes
-  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-  - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
-  - unzip -d android-sdk-linux android-sdk.zip
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-$ANDROID_COMPILE_SDK"
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools"
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "build-tools;$ANDROID_BUILD_TOOLS"
+  - chmod +x ./gradlew
+
+  #- apk add --quiet update --yes
+  #- apk add --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+  - yum update
+  - yum install --yes wget tar unzip lib32stdc++6 lib32z1
+  - yum load-transaction /tmp/
+
+  
+  - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
+  - unzip -q android-sdk.zip -d android-sdk-linux
+
+  - mkdir android-sdk-linux/licenses
+  - printf "8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > android-sdk-linux/licenses/android-sdk-license
+  - printf "84831b9409646a918e30573bab4c9c91346d8abd" > android-sdk-linux/licenses/android-sdk-preview-license
+  - android-sdk-linux/tools/bin/sdkmanager --update > update.log
+  - android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" "extras;google;m2repository" "extras;android;m2repository" > installPlatform.log
+
   - export ANDROID_HOME=$PWD/android-sdk-linux
   - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
+  - chmod +x ./gradlew
+
+  
 
 stages:
   - build
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
 
-build:
+assembleDebug:
   stage: build
-  tags:
+  tags: 
     - docker
   script:
-    - chmod +x gradlew
     - ./gradlew assembleDebug
+    - cp app/build/outputs/apk/debug/app-debug.apk app-debug.apk
   artifacts:
     paths:
-      - app/build/outputs/
+      - app-debug.apk
