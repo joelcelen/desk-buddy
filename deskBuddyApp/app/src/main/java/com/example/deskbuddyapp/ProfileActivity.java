@@ -9,15 +9,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.ViewFlipper;
 import com.google.android.material.slider.Slider;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -117,6 +114,25 @@ public class ProfileActivity extends AppCompatActivity {
             profileList.add(new RoomProfile());
             profileList.get(1).setActive(true);
         }
+    }
+
+    /** Overloaded method to access method from other activity. **/
+    public ArrayList<RoomProfile> loadData(SharedPreferences sharedPreferences, ArrayList<RoomProfile> profiles) {
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("Profile list", null);
+        Type type = new TypeToken<ArrayList<RoomProfile>>() {}.getType();
+        profiles = gson.fromJson(json, type);
+
+        if(profiles == null){
+            profiles = new ArrayList<>();
+            profiles.add(new RoomProfile());
+            profiles.add(new RoomProfile());
+            profiles.add(new RoomProfile());
+            profiles.add(new RoomProfile());
+            profiles.add(new RoomProfile());
+            profiles.get(1).setActive(true);
+        }
+        return profiles;
     }
 
     /** Initializes all buttons in the UI and binds them to the correct ID's. **/

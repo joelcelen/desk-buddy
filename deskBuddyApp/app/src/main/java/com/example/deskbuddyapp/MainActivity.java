@@ -1,10 +1,12 @@
 package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -14,24 +16,22 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
     private MqttHandler client;
 
-    //Initialize buttons on homescreen
+    //Initialize buttons on home screen.
     private Button tempButton;
     private Button lightButton;
     private Button humButton;
     private Button profilesButton;
-
-    private RoomProfile roomProfile;
-
-    private TextView currentProfile;
-
+    private SwitchCompat switchButton;
+    private ArrayList<RoomProfile> profileList;
     private TextView tempView;
     private TextView lightView;
     private TextView humView;
-
     DatabaseReference databaseNode;     //Firebase database
 
     //method for creating and starting the app
@@ -61,18 +61,35 @@ public class MainActivity extends AppCompatActivity {
         lightButton = findViewById(R.id.light_button);
         humButton = findViewById(R.id.hum_button);
         profilesButton = findViewById(R.id.profiles_button);
+        switchButton = findViewById(R.id.switch_button);
 
         //Initialise listeners for if button is clicked --> call corresponding method
         tempButton.setOnClickListener(view -> openTemperatureView());
         lightButton.setOnClickListener(view -> openLightView());
         humButton.setOnClickListener(view -> openHumidityView());
         profilesButton.setOnClickListener(view ->openProfilesView());
+        switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> handleSwitchStateChange(isChecked));
 
-        //Current room profile
-        RoomProfile roomProfile = new RoomProfile();
+        //Fetch current profile from ProfileActivity and set active profile to publish values.
+        ProfileActivity profileActivity = new ProfileActivity();
+        SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
+        profileList = profileActivity.loadData(sharedPreferences, profileList);
         TextView currentProfile = findViewById(R.id.current_profile);
-        String nameOfProfile = roomProfile.getProfileName();
+        String nameOfProfile = findActiveProfile().getProfileName();
         currentProfile.setText(nameOfProfile);
+        publishMsg(Topics.TEMP_PUB.getTopic(), String.valueOf(findActiveProfile().getTemperature()));
+        publishMsg(Topics.HUMIDITY_PUB.getTopic(), String.valueOf(findActiveProfile().getHumidity()));
+        publishMsg(Topics.LIGHT_PUB.getTopic(), String.valueOf(findActiveProfile().getLightLevel()));
+    }
+
+    /** Method for finding the current active profile. **/
+    protected RoomProfile findActiveProfile(){
+        for(RoomProfile profile : profileList){
+            if(profile.isActive()){
+                return profile;
+            }
+        }
+        return null;
     }
 
     //Specific behavior for each button that when clicked takes you to corresponding page in the app
@@ -142,5 +159,23 @@ public class MainActivity extends AppCompatActivity {
         String timeStamp = String.valueOf(System.currentTimeMillis()); // Generate UNIX timestamp
         databaseNode.child(key).child("timestamp").setValue(timeStamp); //insert child timestamp
         databaseNode.child(key).child(pathString).setValue(sensorValue); //insert child sensor_value
+
+        // Save the current profile in the database with the sensor readings.
+        int currentProfileId = profileList.get(findActiveProfile().getId()).getId();
+        databaseNode.child(key).child("profile").setValue(currentProfileId);
+
+    }
+
+    //publishes message to Wio terminal depending on if silent mode is on/off, to set the timing interval of notifications received to on/off
+    public void handleSwitchStateChange(boolean isChecked) {
+        // Handle the switch button changes to publish message to Wio
+        if (isChecked) {
+            // Switch is ON
+            publishMsg(Topics.TIMING_PUB.getTopic(), "0");
+        } else {
+            // Switch is OFF
+            publishMsg(Topics.TIMING_PUB.getTopic(), "7");
+
+        }
     }
 }

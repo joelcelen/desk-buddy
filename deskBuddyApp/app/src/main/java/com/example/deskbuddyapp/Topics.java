@@ -8,9 +8,10 @@ public enum Topics {
     LIGHT_SUB("deskBuddy/light"), //subscribe to light sensor readings from Wio terminal
     LIGHT_PUB("deskBuddy/app/setLight"),  //publish light preferences to Wio terminal
     TEMP_PUB("deskBuddy/app/setTemperature"), //publish temperature preferences to Wio terminal
-    HUMIDITY_PUB("deskBuddy/setHumidity"), //publish humidity preferences to Wio terminal
+    HUMIDITY_PUB("deskBuddy/app/setHumidity"), //publish humidity preferences to Wio terminal
     NOTIFICATION_PUB("deskBuddy/app/setNotification"), //publish notification preferences to Wio terminal
-    MOTIVATION_PUB("deskBuddy/app/setMotivation"); //publish motivation message preferences to Wio terminal
+    MOTIVATION_PUB("deskBuddy/app/setMotivation"), //publish motivation message preferences to Wio terminal
+    TIMING_PUB("deskBuddy/app/setTiming"); //sets notifications to on or off
     //MOOD_PUB("deskBuddy/app/setMood"); //publish mood preferences to Wio terminal might be needed in future but not for now
  //   TIMING_PUB("deskBuddy/app/setTiming"); //publish timing to Wio terminal, might be needed in future but not for now
     private final String topic;
