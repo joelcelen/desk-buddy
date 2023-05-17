@@ -149,7 +149,7 @@ public class ProfileActivity extends AppCompatActivity {
         buttonList.add(findViewById(R.id.btnProfile4));
 
         // Update color to indicate which profile that is active.
-        buttonList.get(findActiveProfile().getId()).setBackgroundColor(Color.RED);
+        buttonList.get(findActiveProfile().getId()).setBackgroundResource(R.drawable.button_shape_active_profile);
 
         // Utility buttons.
         saveButton = findViewById(R.id.btnSave);
@@ -191,13 +191,12 @@ public class ProfileActivity extends AppCompatActivity {
         }
         // Reset button color.
         for(int i = 1; i<buttonList.size(); i++){
-            //TODO change background color to default button color, grey is just placeholder.
-            buttonList.get(i).setBackgroundColor(Color.LTGRAY);
+            buttonList.get(i).setBackgroundResource(R.drawable.button_shape_createprofile);
         }
         // Set intended profile to active and switch button color to indicate active profile.
         profile.setActive(true);
         //TODO set color to whatever you want to represent the current active profile.
-        buttonList.get(profile.getId()).setBackgroundColor(Color.RED);
+        buttonList.get(profile.getId()).setBackgroundResource(R.drawable.button_shape_active_profile);
         saveData();
     }
 
