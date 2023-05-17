@@ -116,7 +116,7 @@ void Display::drawNotificationMsg(const char* notificationMsg) {
   tft.println("ATTENTION!!!");
   //if string is empty, display default notification message, otherwise print user defined msg
   if (strlen(notificationMsg) <= 2) { // empty string can have /0 terminator character on some systems, which can be length 2
-    notificationMsg = "Your laundry is ready!\n\n\n  Come and get it.";
+    notificationMsg = "Your workday is ending!\n\n\n  Commit your changes.";
   }
   tft.setCursor(30, 110);
   tft.println(notificationMsg);
