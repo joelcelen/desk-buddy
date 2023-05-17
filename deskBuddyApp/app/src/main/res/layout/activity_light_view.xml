@@ -20,21 +20,21 @@
         app:layout_constraintBottom_toTopOf="@+id/lightChart" />
 
     <Button
-        android:id="@+id/daily_button"
+        android:id="@+id/daily_button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
         android:onClick="dailyGraph"
         android:text="Daily"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/weekly_button1" />
 
     <Button
-        android:id="@+id/weekly_button"
+        android:id="@+id/weekly_button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="56dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
         android:onClick="weeklyGraph"
         android:text="Weekly"
@@ -45,7 +45,7 @@
         android:id="@+id/lightChart"
         android:layout_width="400dp"
         android:layout_height="500dp"
-        app:layout_constraintBottom_toTopOf="@+id/weekly_button"
+        app:layout_constraintBottom_toTopOf="@+id/weekly_button1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -55,10 +55,33 @@
         android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
+        android:layout_marginStart="160dp"
+        android:layout_marginBottom="20dp"
         android:onClick="mainActivity"
         android:text="Back"
-        app:layout_constraintBottom_toTopOf="@+id/daily_button"
+        app:layout_constraintBottom_toTopOf="@+id/daily_button1"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/hourly_button1"
+        android:layout_width="86dp"
+        android:layout_height="47dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="hourlyGraph"
+        android:text="Hourly"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/daily_button1" />
+
+    <Button
+        android:id="@+id/live_button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="liveGraph"
+        android:text="Live"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/hourly_button1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

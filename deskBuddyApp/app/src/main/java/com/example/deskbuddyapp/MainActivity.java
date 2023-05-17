@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
     }
     public void openLightView() {
         Intent intentLight = new Intent(MainActivity.this, LightView.class);
+        int currentProfileId = profileList.get(findActiveProfile().getId()).getId();
+        intentLight.putExtra("profileId", currentProfileId);
         startActivity(intentLight);
     }
 
@@ -190,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
                     if (lightCounter == 60){
                         databaseNode = FirebaseDatabase.getInstance().getReference().child("light_aggregateData");
                         addSensorData("light_value", lightSum / lightCounter);
+                        lightCounter = 0;
+                        lightSum = 0;
 
                     }
                     // update textview in live dashboard of main activity
