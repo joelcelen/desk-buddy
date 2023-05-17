@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 import com.google.android.material.slider.Slider;
 import com.google.gson.Gson;
@@ -29,6 +30,11 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText nameEditor;
     private ArrayList<RoomProfile> profileList;
     private ArrayList<Button> buttonList;
+    private Button suggestionsButton;
+
+    private TextView suggestionsTextView;
+
+    private boolean isSuggestionsTextVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +86,23 @@ public class ProfileActivity extends AppCompatActivity {
         homeButton.setOnClickListener(v -> {
             Intent home = new Intent(ProfileActivity.this, MainActivity.class);
             startActivity(home);
+        });
+
+        //Set onClick listener for when the suggestions (questionmark) button is pressed,
+        //when pressed, set the visibility of the corresponding textview to VISIBLE
+        //When pressed again, set the visibility of the corresponding textview to INVISIBLE
+        suggestionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isSuggestionsTextVisible){
+                    suggestionsTextView.setVisibility(View.VISIBLE);
+                    isSuggestionsTextVisible = true;
+                }
+                else {
+                    suggestionsTextView.setVisibility(View.INVISIBLE);
+                    isSuggestionsTextVisible = false;
+                }
+            }
         });
     }
 
@@ -156,12 +179,16 @@ public class ProfileActivity extends AppCompatActivity {
         settingsButton = findViewById(R.id.btnSettings);
         backButton = findViewById(R.id.back_button);
         homeButton = findViewById(R.id.btnHome);
+        suggestionsButton = findViewById(R.id.suggestionsButton);
 
         // Sliders and adjusters.
         tempSlider = findViewById(R.id.sldTemp);
         humSlider = findViewById(R.id.sldHum);
         lightSlider = findViewById(R.id.sldLight);
         nameEditor = findViewById(R.id.editName);
+
+        //textView for Suggestions
+        suggestionsTextView = findViewById(R.id.suggestionsTextView);
     }
 
     /** This method finds the currently active profile by going through the profileList
@@ -216,6 +243,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void goToViewTwo(View view) {
         viewFlipper.setDisplayedChild(1);
+    }
+
+    public String suggestionsText() {
+        String suggestionsText = "Humidity: Maintaining optimal humidity levels (40-60%) is crucial for a comfortable and healthy workplace. It prevents dry skin, respiratory issues, and mold growth while reducing static electricity and improving air quality.\n" +
+                "\n" +
+                "Temperature: The ideal temperature range (20-24°C or 68-75°F) promotes productivity and well-being. Individual temperature control options and flexible solutions like fans or space heaters accommodate preferences and ensure employees can adjust their surroundings for comfort.\n" +
+                "\n" +
+                "Light levels: Balanced lighting, preferably natural light, enhances productivity and well-being. Adequate artificial lighting should be used when natural light is limited, minimizing glare and eye strain. Aim for 500-1,000 lux for general office work and provide adjustable lighting options for individual needs, incorporating ergonomic design principles for optimal conditions.";
+        return suggestionsText;
     }
 
     public ArrayList<RoomProfile> getProfileList() {return profileList;}
