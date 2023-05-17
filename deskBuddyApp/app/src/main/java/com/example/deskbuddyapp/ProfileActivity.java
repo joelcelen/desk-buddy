@@ -31,10 +31,8 @@ public class ProfileActivity extends AppCompatActivity {
     private ArrayList<RoomProfile> profileList;
     private ArrayList<Button> buttonList;
     private Button suggestionsButton;
-
     private TextView suggestionsTextView;
-
-    private boolean isSuggestionsTextVisible = false;
+    private boolean isSuggestionsTextVisible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,18 +89,15 @@ public class ProfileActivity extends AppCompatActivity {
         //Set onClick listener for when the suggestions (questionmark) button is pressed,
         //when pressed, set the visibility of the corresponding textview to VISIBLE
         //When pressed again, set the visibility of the corresponding textview to INVISIBLE
-        suggestionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(isSuggestionsTextVisible){
-                    suggestionsTextView.setVisibility(View.VISIBLE);
-                    isSuggestionsTextVisible = true;
-                }
-                else {
-                    suggestionsTextView.setVisibility(View.INVISIBLE);
-                    suggestionsTextView.setText(getSuggestionsText());
-                    isSuggestionsTextVisible = false;
-                }
+        suggestionsButton.setOnClickListener(v -> {
+            if(isSuggestionsTextVisible){
+                suggestionsTextView.setVisibility(View.INVISIBLE);
+                isSuggestionsTextVisible = false;
+            }
+            else {
+                suggestionsTextView.setVisibility(View.VISIBLE);
+                suggestionsTextView.setText(getSuggestionsText());
+                isSuggestionsTextVisible = true;
             }
         });
     }
@@ -246,13 +241,16 @@ public class ProfileActivity extends AppCompatActivity {
         viewFlipper.setDisplayedChild(1);
     }
 
+    
     public String getSuggestionsText() {
-        String suggestionsText = "Humidity: Maintaining optimal humidity levels (40-60%) is crucial for a comfortable and healthy workplace. It prevents dry skin, respiratory issues, and mold growth while reducing static electricity and improving air quality.\n" +
+        return "Suggestions and recommendations\n" +
                 "\n" +
-                "Temperature: The ideal temperature range (20-24°C or 68-75°F) promotes productivity and well-being. Individual temperature control options and flexible solutions like fans or space heaters accommodate preferences and ensure employees can adjust their surroundings for comfort.\n" +
+                "Humidity: Maintaining optimal humidity levels (40-60%) is crucial for a comfortable and healthy workplace. It prevents dry skin, respiratory issues, and mold growth while reducing static electricity and improving air quality.\n" +
                 "\n" +
-                "Light levels: Balanced lighting, preferably natural light, enhances productivity and well-being. Adequate artificial lighting should be used when natural light is limited, minimizing glare and eye strain. Aim for 500-1,000 lux for general office work and provide adjustable lighting options for individual needs, incorporating ergonomic design principles for optimal conditions.";
-        return suggestionsText;
+                "Temperature: The ideal temperature range (20-24°C) promotes productivity and well-being. Individual temperature control options and flexible solutions like fans or space heaters accommodate preferences and ensure employees can adjust their surroundings for comfort.\n" +
+                "\n" +
+                "Light levels: Balanced lighting, preferably natural light, enhances productivity and well-being. Adequate artificial lighting should be used when natural light is limited, minimizing glare and eye strain. Aim for 500-1,000 lux for general office work and provide adjustable lighting options for individual needs, incorporating ergonomic design principles for optimal conditions.\n" +
+                "\n";
     }
 
     public ArrayList<RoomProfile> getProfileList() {return profileList;}

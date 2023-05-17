@@ -111,34 +111,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/suggestionsButton"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:background="@drawable/icons8_question_mark_64"
-                android:clickable="true"
-                android:stateListAnimator="@null"
-                app:backgroundTint="#E91E63"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.682"
-                app:layout_constraintStart_toEndOf="@+id/btnHome"
-                app:layout_constraintTop_toBottomOf="@+id/btnHome"
-                app:layout_constraintVertical_bias="0.145"
-                app:rippleColor="#E91E63"
-                app:srcCompat="@drawable/button_pressed" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/questionMark"
                 android:layout_width="39dp"
                 android:layout_height="37dp"
                 android:elevation="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/suggestionsButton"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/suggestionsButton"
-                app:layout_constraintTop_toBottomOf="@+id/btnHome"
-                app:layout_constraintVertical_bias="0.142"
+                app:layout_constraintBottom_toBottomOf="@+id/suggestionsButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.862"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/suggestionsButton"
                 app:srcCompat="@drawable/icons8_question_mark_64" />
 
             <TextView
@@ -153,6 +136,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:background="@color/white"/>
+
+            <Button
+                android:id="@+id/suggestionsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button"
+                app:layout_constraintBottom_toBottomOf="@+id/suggestionsTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.904"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnSettings"
+                app:layout_constraintVertical_bias="0.9" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
