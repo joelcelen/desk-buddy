@@ -14,27 +14,15 @@
         android:layout_height="match_parent">
 
         <!-- First view -->
-
-        <!-- Second view -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".ProfileActivity">
 
-            <TextView
-                android:id="@+id/textCurrent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/frameLayout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/frameLayout"
-                android:layout_width="299dp"
-                android:layout_height="384dp"
+                android:layout_width="349dp"
+                android:layout_height="427dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -44,8 +32,8 @@
 
                 <Button
                     android:id="@+id/btnProfile1"
-                    android:layout_width="140dp"
-                    android:layout_height="180dp"
+                    android:layout_width="165dp"
+                    android:layout_height="200dp"
                     android:background="@drawable/button_shape_createprofile"
                     android:text="Alfons"
                     android:textColor="#FFFFFF"
@@ -54,8 +42,8 @@
 
                 <Button
                     android:id="@+id/btnProfile2"
-                    android:layout_width="140dp"
-                    android:layout_height="180dp"
+                    android:layout_width="165dp"
+                    android:layout_height="200dp"
                     android:background="@drawable/button_shape_createprofile"
                     android:text="empty"
                     android:textColor="#FFFFFF"
@@ -64,8 +52,8 @@
 
                 <Button
                     android:id="@+id/btnProfile3"
-                    android:layout_width="140dp"
-                    android:layout_height="180dp"
+                    android:layout_width="165dp"
+                    android:layout_height="200dp"
                     android:background="@drawable/button_shape_createprofile"
                     android:text="empty"
                     android:textColor="#FFFFFF"
@@ -74,8 +62,8 @@
 
                 <Button
                     android:id="@+id/btnProfile4"
-                    android:layout_width="140dp"
-                    android:layout_height="180dp"
+                    android:layout_width="165dp"
+                    android:layout_height="200dp"
                     android:background="@drawable/button_shape_createprofile"
                     android:text="empty"
                     android:textColor="#FFFFFF"
@@ -86,11 +74,10 @@
 
             <Button
                 android:id="@+id/btnSettings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Settings"
-                android:textColor="#FFFFFF"
+                android:layout_width="147dp"
+                android:layout_height="49dp"
                 android:background="@drawable/button_shape_profile"
+                android:text="Settings"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
@@ -104,7 +91,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:text="Home"
-                android:textColor="#FFFFFF"
                 android:background="@drawable/button_shape_profile"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -112,6 +98,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- Second view -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -123,6 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Go back"
+                android:background="@drawable/button_shape_profile"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -133,21 +121,22 @@
 
             <Button
                 android:id="@+id/btnSave"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="148dp"
+                android:layout_height="47dp"
                 android:layout_marginTop="15dp"
+                android:background="@drawable/button_shape_profile"
                 android:text="Save changes"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-                app:layout_constraintVertical_bias="0.293" />
+                app:layout_constraintVertical_bias="0.152" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="371dp"
-                android:layout_height="461dp"
+                android:layout_height="553dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -160,19 +149,28 @@
                     android:id="@+id/editName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="30dp"
+                    android:background="@null"
+                    android:gravity="center"
+                    android:hint="Enter the profile name"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#CCCCCC"
-                    android:hint="Enter the profile name"
                     android:textStyle="italic"
+                    app:layout_constraintBottom_toTopOf="@+id/sldTemp"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
-
-
-
+                <TextView
+                    android:id="@+id/txtTemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Temperature"
+                    android:textColor="#FFFFFF"
+                    app:layout_constraintBottom_toTopOf="@+id/sldTemp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <com.google.android.material.slider.Slider
                     android:id="@+id/sldTemp"
@@ -182,20 +180,19 @@
                     android:value="22"
                     android:valueFrom="15"
                     android:valueTo="30"
-                    app:tickColor="#FFFFFF"
-                    app:tickColorActive="#FFFFFF"
-                    app:tickColorInactive="#FFFFFF"
-                    app:thumbColor="#FFFFFF"
                     app:haloColor="#FFFFFF"
-                    app:trackColor="#FFFFFF"
-                    app:thumbStrokeColor="#FFFFFF"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:labelBehavior="visible"
+                    app:layout_constraintBottom_toTopOf="@+id/sldHum"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.41"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.355" />
-
+                    app:layout_constraintTop_toBottomOf="@+id/editName"
+                    app:thumbColor="@color/teal_700"
+                    app:thumbStrokeColor="@color/teal_700"
+                    app:tickColor="@color/teal_200"
+                    app:tickColorActive="@color/teal_200"
+                    app:tickColorInactive="@color/teal_200"
+                    app:trackColor="@color/teal_700" />
 
                 <TextView
                     android:id="@+id/txtHum"
@@ -205,10 +202,8 @@
                     android:textColor="#FFFFFF"
                     app:layout_constraintBottom_toTopOf="@+id/sldHum"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.96" />
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <com.google.android.material.slider.Slider
                     android:id="@+id/sldHum"
@@ -218,22 +213,19 @@
                     android:value="40"
                     android:valueFrom="20"
                     android:valueTo="60"
-                    app:trackColor="#FFFFFF"
-                    app:thumbColor="#FFFFFF"
                     app:haloColor="#FFFFFF"
-                    app:tickColor="#FFFFFF"
-                    app:thumbStrokeColor="#FFFFFF"
-                    app:tickColorActive="#FFFFFF"
-                    app:tickColorInactive="#FFFFFF"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:labelBehavior="visible"
+                    app:layout_constraintBottom_toTopOf="@+id/sldLight"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.41"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.602" />
-
-
-
+                    app:layout_constraintTop_toBottomOf="@+id/sldTemp"
+                    app:thumbColor="@color/teal_700"
+                    app:thumbStrokeColor="@color/teal_700"
+                    app:tickColor="@color/teal_200"
+                    app:tickColorActive="@color/teal_200"
+                    app:tickColorInactive="@color/teal_200"
+                    app:trackColor="@color/teal_700" />
 
                 <TextView
                     android:id="@+id/txtLight"
@@ -243,10 +235,8 @@
                     android:textColor="#FFFFFF"
                     app:layout_constraintBottom_toTopOf="@+id/sldLight"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.972" />
+                    app:layout_constraintHorizontal_bias="0.481"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <com.google.android.material.slider.Slider
                     android:id="@+id/sldLight"
@@ -256,30 +246,19 @@
                     android:value="700"
                     android:valueFrom="500"
                     android:valueTo="1000"
-                    app:trackColor="#FFFFFF"
-                    app:thumbColor="#FFFFFF"
                     app:haloColor="#FFFFFF"
-                    app:tickColor="#FFFFFF"
-                    app:thumbStrokeColor="#FFFFFF"
-                    app:tickColorActive="#FFFFFF"
-                    app:tickColorInactive="#FFFFFF"
+                    app:labelBehavior="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.41"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.835" />
-
-                <TextView
-                    android:id="@+id/txttemp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="144dp"
-                    android:textColor="#FFFFFF"
-                    android:text="Temperature"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editName" />
+                    app:layout_constraintTop_toBottomOf="@+id/sldHum"
+                    app:thumbColor="@color/teal_700"
+                    app:thumbStrokeColor="@color/teal_700"
+                    app:tickColor="@color/teal_200"
+                    app:tickColorActive="@color/teal_200"
+                    app:tickColorInactive="@color/teal_200"
+                    app:trackColor="@color/teal_700" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
