@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button lightButton;
     private Button humButton;
     private Button profilesButton;
+    private Button reminderButton;
     private SwitchCompat switchButton;
     private ArrayList<RoomProfile> profileList;
     private TextView tempView;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         humButton = findViewById(R.id.hum_button);
         profilesButton = findViewById(R.id.profiles_button);
         switchButton = findViewById(R.id.switch_button);
+        reminderButton = findViewById(R.id.reminders_button);
+
 
         //Initialise listeners for if button is clicked --> call corresponding method
         tempButton.setOnClickListener(view -> openTemperatureView());
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         humButton.setOnClickListener(view -> openHumidityView());
         profilesButton.setOnClickListener(view ->openProfilesView());
         switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> handleSwitchStateChange(isChecked));
+        reminderButton.setOnClickListener(view -> openReminderView());
 
         //Fetch current profile from ProfileActivity and set active profile to publish values.
         ProfileActivity profileActivity = new ProfileActivity();
@@ -181,5 +185,9 @@ public class MainActivity extends AppCompatActivity {
             publishMsg(Topics.TIMING_PUB.getTopic(), "7");
 
         }
+    }
+    public void openReminderView(){
+        Intent intentReminder = new Intent(this, ReminderActivity.class);
+        startActivity(intentReminder);
     }
 }
