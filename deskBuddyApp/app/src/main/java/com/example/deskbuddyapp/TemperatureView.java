@@ -23,13 +23,15 @@ import java.util.ArrayList;
 //Credits to https://www.youtube.com/watch?v=DD1CxoVONFE&ab_channel=KGPTalkie
 
 public class TemperatureView extends AppCompatActivity {
-    ArrayList<Entry> tempData;
-    LineChart temperatureChart;
-    LineData data;
-    DatabaseReference databaseReference;
-    long timeInterval;
+    private ArrayList<Entry> tempData;
+    private LineChart temperatureChart;
+    private LineData data;
+    private DatabaseReference databaseReference;
+    private long timeInterval;
+    private int currentProfile;
 
-    int currentProfile;
+    ValueEventListener valueEventListener; // Store the ValueEventListener instance
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +46,14 @@ public class TemperatureView extends AppCompatActivity {
 
         tempData = new ArrayList<>();
 
-        // Get reference to the temperature_data table in the Firebase Realtime Database
-        databaseReference = FirebaseDatabase.getInstance().getReference("temperature_data");
-
-        readData();
+        readDataLive();
     }
 
-    public void readData(){
-        databaseReference.addValueEventListener(new ValueEventListener() {
+    public void readDataLive(){
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("temperature_liveData");
+        removeDataListener();
+        valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 tempData.clear(); //
@@ -60,16 +62,16 @@ public class TemperatureView extends AppCompatActivity {
                     Double value = dataSnapshot.child("temperature_value").getValue(Double.class);
                     String generalTimeStamp = dataSnapshot.child("timestamp").getValue(String.class);
                     Integer profileId = dataSnapshot.child("profile").getValue(Integer.class);
-                    
+
                     if (value != null && generalTimeStamp!= null && profileId != null && profileId == currentProfile){ //Avoid getting empty value from the database
-                            long timeStamp = Long.parseLong(generalTimeStamp);
-                            if (timeStamp >= startTime){
-                                timeStamp = timeStamp -startTime;
-                                float time = (float) timeStamp;
-                                float entryData = value.floatValue();
-                                Entry entry = new Entry(time,entryData);
-                                tempData.add(entry);
-                            }
+                        long timeStamp = Long.parseLong(generalTimeStamp);
+                        if (timeStamp >= startTime){
+                            timeStamp = timeStamp -startTime;
+                            float time = (float) timeStamp;
+                            float entryData = value.floatValue();
+                            Entry entry = new Entry(time,entryData);
+                            tempData.add(entry);
+                        }
                     }
                 }
                 updateTemperatureChart();
@@ -78,8 +80,45 @@ public class TemperatureView extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 //TODO: Add logic for this method
             }
-        });
+        };
+        databaseReference.addValueEventListener(valueEventListener);
     }
+
+    public void readDataAggregate(){
+
+        databaseReference =  FirebaseDatabase.getInstance().getReference("temperature_aggregateData");
+        removeDataListener();
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                tempData.clear(); //
+                long startTime = System.currentTimeMillis() - timeInterval;
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Double value = dataSnapshot.child("temperature_value").getValue(Double.class);
+                    String generalTimeStamp = dataSnapshot.child("timestamp").getValue(String.class);
+                    Integer profileId = dataSnapshot.child("profile").getValue(Integer.class);
+
+                    if (value != null && generalTimeStamp!= null && profileId != null && profileId == currentProfile){ //Avoid getting empty value from the database
+                        long timeStamp = Long.parseLong(generalTimeStamp);
+                        if (timeStamp >= startTime){
+                            timeStamp = timeStamp -startTime;
+                            float time = (float) timeStamp;
+                            float entryData = value.floatValue();
+                            Entry entry = new Entry(time,entryData);
+                            tempData.add(entry);
+                        }
+                    }
+                }
+                updateTemperatureChart();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                //TODO: Add logic for this method
+            }
+        };
+        databaseReference.addValueEventListener(valueEventListener);
+    }
+
 
     public void updateTemperatureChart(){
         data = new LineData(getTemperatureDataSet());
@@ -132,6 +171,20 @@ public class TemperatureView extends AppCompatActivity {
 
         return temperatureDataSet;
     }
+    // Add a method to remove the event listener
+    private void removeDataListener() {
+        if (valueEventListener != null) {
+            databaseReference.removeEventListener(valueEventListener);
+            valueEventListener = null;
+        }
+    }
+
+    // Override the onDestroy() method to remove the event listener
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeDataListener();
+    }
 
     public void mainActivity(View view) {
         Intent intent = new Intent(this, MainActivity.class);
@@ -139,18 +192,22 @@ public class TemperatureView extends AppCompatActivity {
     }
     public void liveGraph(View view){
         timeInterval = 60000; // 1 minute = 60000 milliseconds
-        readData();
+        removeDataListener();
+        readDataLive();
     }
     public void hourlyGraph(View view){
         timeInterval = 3600000; // 1 hour = 3600000 milliseconds
-        readData();
+        removeDataListener();
+        readDataAggregate();
     }
     public void dailyGraph(View view){
-        timeInterval = 86400000; // 1 day = 86400000 milliseconds
-        readData();
+        timeInterval = 3600000 * 24; // 1 day = 86400000 milliseconds
+        removeDataListener();
+        readDataAggregate();
     }
     public void weeklyGraph(View view){
-        timeInterval= 604800000; // 1 week = 604800000 milliseconds
-        readData();
+        timeInterval= 3600000 * 24 * 7; // 1 week = 604800000 milliseconds
+        removeDataListener();
+        readDataAggregate();
     }
 }

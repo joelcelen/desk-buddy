@@ -2,21 +2,14 @@ package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
-
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
 
 
@@ -33,6 +26,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView tempView;
     private TextView lightView;
     private TextView humView;
+    private double temperatureCounter =0;
+    private double lightCounter=0;
+    private double humidityCounter =0;
+    private double temperatureSum=0;
+    private double lightSum=0;
+    private double humiditySum=0;
+
     DatabaseReference databaseNode;     //Firebase database
     
 
@@ -137,20 +137,62 @@ public class MainActivity extends AppCompatActivity {
             //Conditions for handling incoming topic payloads depending on the current subscribed-to topic
             switch (topic1) {
                 case "deskBuddy/temperature":
-                    databaseNode = FirebaseDatabase.getInstance().getReference().child("temperature_data");
+                    temperatureCounter++;
+                    temperatureSum+= Double.parseDouble(payload);
+
+                    // populate database every second (live)
+                    databaseNode = FirebaseDatabase.getInstance().getReference().child("temperature_liveData");
                     addSensorData("temperature_value", Double.parseDouble(payload));
+
+                    // populate database averaging every minute (aggregate)
+                    if(temperatureCounter == 60){
+                        databaseNode = FirebaseDatabase.getInstance().getReference().child("temperature_aggregateData");
+                        addSensorData("temperature_value", temperatureSum/ temperatureCounter);
+                        temperatureCounter = 0;
+                        temperatureSum = 0;
+                    }
+
+                    // update textview in live dashboard of main activity
                     payload = payload + " \u00B0C";
                     tempView.setText(payload);
                     break;
+
                 case "deskBuddy/humidity":
-                    databaseNode = FirebaseDatabase.getInstance().getReference().child("humidity_data");
+                    humidityCounter++;
+                    humiditySum+=Double.parseDouble(payload);
+
+                    // populate database every second (live)
+                    databaseNode = FirebaseDatabase.getInstance().getReference().child("humidity_liveData");
                     addSensorData("humidity_value", Double.parseDouble(payload));
+
+                    // populate database averaging every minute (aggregate)
+                    if (humidityCounter == 60){
+                    databaseNode = FirebaseDatabase.getInstance().getReference().child("humidity_aggregateData");
+                    addSensorData("humidity_value", humiditySum/humidityCounter);
+                    humidityCounter = 0;
+                    humiditySum = 0;
+                    }
+
+                    // update textview in live dashboard of main activity
                     payload = payload + " %";
                     humView.setText(payload);
                     break;
+
                 case "deskBuddy/light":
-                    databaseNode = FirebaseDatabase.getInstance().getReference().child("light_data");
+                    lightCounter++;
+                    lightSum+=Double.parseDouble(payload);
+
+                    // populate database every second (live)
+                    databaseNode = FirebaseDatabase.getInstance().getReference().child("light_liveData");
                     addSensorData("light_value", Double.parseDouble(payload));
+
+                    // populate database averaging every minute (aggregate)
+                    if (lightCounter == 60){
+                        databaseNode = FirebaseDatabase.getInstance().getReference().child("light_aggregateData");
+                        addSensorData("light_value", lightSum / lightCounter);
+
+                    }
+                    // update textview in live dashboard of main activity
                     payload = payload + " lx";
                     lightView.setText(payload);
                     break;
