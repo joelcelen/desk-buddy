@@ -100,6 +100,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 else {
                     suggestionsTextView.setVisibility(View.INVISIBLE);
+                    suggestionsTextView.setText(getSuggestionsText());
                     isSuggestionsTextVisible = false;
                 }
             }
@@ -245,7 +246,7 @@ public class ProfileActivity extends AppCompatActivity {
         viewFlipper.setDisplayedChild(1);
     }
 
-    public String suggestionsText() {
+    public String getSuggestionsText() {
         String suggestionsText = "Humidity: Maintaining optimal humidity levels (40-60%) is crucial for a comfortable and healthy workplace. It prevents dry skin, respiratory issues, and mold growth while reducing static electricity and improving air quality.\n" +
                 "\n" +
                 "Temperature: The ideal temperature range (20-24°C or 68-75°F) promotes productivity and well-being. Individual temperature control options and flexible solutions like fans or space heaters accommodate preferences and ensure employees can adjust their surroundings for comfort.\n" +
