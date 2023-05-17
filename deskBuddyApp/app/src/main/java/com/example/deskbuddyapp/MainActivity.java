@@ -34,10 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView lightView;
     private TextView humView;
     DatabaseReference databaseNode;     //Firebase database
-
-    int countTemperature;
-    int countHumidity;
-    int countLight;
+    
 
     //method for creating and starting the app
     @SuppressLint("MissingInflatedId")
