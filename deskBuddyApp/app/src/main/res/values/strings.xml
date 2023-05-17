@@ -3,4 +3,11 @@
     <string name="on">ON</string>
     <string name="off">OFF</string>
     <string name="silent_mode">Silent Mode:</string>
+    <string name="reminder_msg">Select Reminder Interval (In Minutes)</string>
+    <string name="motivation">Select Motivations Interval (In Minutes)</string>
+    <string name="standup">Select Stand-Up Interval (In Minutes)</string>
+    <string name="reset">Reset</string>
+    <string name="save">Save</string>
+    <string name="reminder">Enter Reminder Message</string>
+    <string name="home">Home</string>
 </resources>
