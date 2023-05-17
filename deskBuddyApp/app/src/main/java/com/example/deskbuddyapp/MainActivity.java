@@ -35,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView humView;
     DatabaseReference databaseNode;     //Firebase database
 
+    int countTemperature;
+    int countHumidity;
+    int countLight;
+
     //method for creating and starting the app
     @SuppressLint("MissingInflatedId")
     @Override
@@ -95,23 +99,23 @@ public class MainActivity extends AppCompatActivity {
 
     //Specific behavior for each button that when clicked takes you to corresponding page in the app
     public void openTemperatureView() {
-        Intent intentTemp = new Intent(this, TemperatureView.class);
+        Intent intentTemp = new Intent(MainActivity.this, TemperatureView.class);
         int currentProfileId = profileList.get(findActiveProfile().getId()).getId();
         intentTemp.putExtra("profileId", currentProfileId);
         startActivity(intentTemp);
     }
     public void openLightView() {
-        Intent intentLight = new Intent(this, LightView.class);
+        Intent intentLight = new Intent(MainActivity.this, LightView.class);
         startActivity(intentLight);
     }
 
     public void openHumidityView() {
-        Intent intentHumidity = new Intent(this, HumidityView.class);
+        Intent intentHumidity = new Intent(MainActivity.this, HumidityView.class);
         startActivity(intentHumidity);
     }
 
     public void openProfilesView() {
-        Intent intentProfiles = new Intent(this, ProfileActivity.class);
+        Intent intentProfiles = new Intent(MainActivity.this, ProfileActivity.class);
         startActivity(intentProfiles);
     }
 
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
     //method for publishing a message to a topic and showing a message when the method has run
     private void publishMsg(String topic, String message) {
-        Toast.makeText(this, "publishing message: " + message, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "publishing message: " + message, Toast.LENGTH_LONG).show();
         client.publish(topic, message);
 
     }
