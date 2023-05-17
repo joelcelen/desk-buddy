@@ -241,7 +241,7 @@ public class ProfileActivity extends AppCompatActivity {
         viewFlipper.setDisplayedChild(1);
     }
 
-    
+
     public String getSuggestionsText() {
         return "Suggestions and recommendations\n" +
                 "\n" +

@@ -139,9 +139,12 @@
 
             <Button
                 android:id="@+id/suggestionsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="61dp"
+                android:layout_height="47dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/button_suggestions"
                 android:text="Button"
+                android:textSize="0dp"
                 app:layout_constraintBottom_toBottomOf="@+id/suggestionsTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.904"
