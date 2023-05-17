@@ -12,7 +12,7 @@ Through environmental monitoring, motivational messaging, and user defined notif
 
 ## Installation
 
-To be able to use this system, you need a [Wio Terminal](https://www.seeedstudio.com/Wio-Terminal-p-4509.html) and the following sensors:
+To be able to use this system, you need a [Wio Terminal](https://www.seeedstudio.com/Wio-Terminal-p-4509.html), the contents of this repository built and installed, and the following sensors:
 
 1. [Grove - Temperature & Humidity Sensor (DHT11)](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
 2. [Grove - Light Sensor v1.2](https://wiki.seeedstudio.com/Grove-Light_Sensor/)
