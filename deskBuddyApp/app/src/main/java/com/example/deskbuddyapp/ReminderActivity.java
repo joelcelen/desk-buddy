@@ -1,38 +1,41 @@
 package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.android.material.slider.Slider;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
 public class ReminderActivity extends AppCompatActivity {
 
-  private MqttHandler client;
-  private Slider sliderRemind;
-  private Slider sliderStandUp;
-  private Slider sliderMotivation;
-  private Button saveButtonReminder;
-  private Button saveButtonMotivation;
-  private Button saveButtonStandUp;
-  private Button resetButtonReminder;
-  private Button resetButtonStandUp;
-  private Button resetButtonMotivation;
-  private Button homeButton;
-  private EditText reminderText;
-  String reminderMsg = "";
+    private MqttHandler client;
+    private Slider sliderRemind;
+    private Slider sliderStandUp;
+    private Slider sliderMotivation;
+    private Button saveButtonReminder;
+    private Button saveButtonMotivation;
+    private Button saveButtonStandUp;
+    private Button resetButtonReminder;
+    private Button resetButtonStandUp;
+    private Button resetButtonMotivation;
+    private Button homeButton;
+    private SwitchCompat switchButton;
+    private EditText reminderText;
+    String reminderMsg = "";
     final private int MIN_TO_MILLI_SEC = 60_000;
     final private int REMINDER_DEFAULT = 360 * MIN_TO_MILLI_SEC;
     final private int MOTIVATION_DEFAULT = 30 * MIN_TO_MILLI_SEC;
     final private int STAND_UP_DEFAULT = 60 * MIN_TO_MILLI_SEC;
-    private float reminderInterval = 360;
-    private float motivationInterval = 30;
-    private float standUpInterval = 60;
-
+    static float reminderInterval = 360;
+    static float motivationInterval = 30;
+    static float standUpInterval = 60;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,16 +56,15 @@ public class ReminderActivity extends AppCompatActivity {
         resetButtonStandUp = findViewById(R.id.reset_btn_stand_up);
         resetButtonMotivation = findViewById(R.id.reset_btn_motivation);
         homeButton = findViewById(R.id.back_button);
+        switchButton = findViewById(R.id.switch_button);
 
         //saves initial default values and loads them
         saveData();
         loadData();
-
         //sets initial values of the sliders to what was saved and loaded previously
-            sliderRemind.setValue(reminderInterval);
-            sliderMotivation.setValue(motivationInterval);
-            sliderStandUp.setValue(standUpInterval);
-
+        sliderRemind.setValue(reminderInterval);
+        sliderMotivation.setValue(motivationInterval);
+        sliderStandUp.setValue(standUpInterval);
         //if user clicks any of the save buttons for the sliders, save data and publish new time interval to Wio
         saveButtonReminder.setOnClickListener(v -> {
             reminderMsg = reminderText.getText().toString();
@@ -82,6 +84,8 @@ public class ReminderActivity extends AppCompatActivity {
             handleSaveStandUp(standUpInterval);
             saveStandUpData(standUpInterval);
         });
+
+        switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> handleSwitchStateChange(isChecked));
 
         //if user clicks on the reset button for any slider, default value is saved and publish new time interval to Wio
         resetButtonReminder.setOnClickListener(v -> {
@@ -194,5 +198,22 @@ public class ReminderActivity extends AppCompatActivity {
         reminderInterval = sharedPreferences.getFloat("reminder_saved", (float)STAND_UP_DEFAULT / MIN_TO_MILLI_SEC);
         motivationInterval = sharedPreferences.getFloat("motivation_saved", (float)MOTIVATION_DEFAULT / MIN_TO_MILLI_SEC);
         standUpInterval = sharedPreferences.getFloat("stand_up_saved", (float)STAND_UP_DEFAULT / MIN_TO_MILLI_SEC);
+    }
+
+    //publishes message to Wio terminal depending on if silent mode is on/off,
+    // to set the timing interval of notifications received to on/off,
+    //if turned off it loads user saved data and sets the values back to these in the wio
+    public void handleSwitchStateChange(boolean isChecked) {
+        // Handle the switch button changes to publish message to Wio
+        if (isChecked) {
+            // Switch is ON
+            client.publish(Topics.TIMING_PUB.getTopic(), "7");
+        } else {
+            // Switch is OFF
+            loadData();
+            client.publish(Topics.TIMING_PUB.getTopic(), "1" + (int)(standUpInterval * MIN_TO_MILLI_SEC));
+            client.publish(Topics.TIMING_PUB.getTopic(), "2" + (int)(motivationInterval * MIN_TO_MILLI_SEC));
+            client.publish(Topics.TIMING_PUB.getTopic(), "3" + (int)(reminderInterval * MIN_TO_MILLI_SEC));
+        }
     }
 }

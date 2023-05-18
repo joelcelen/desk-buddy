@@ -64,16 +64,13 @@ public class MainActivity extends AppCompatActivity {
         lightButton = findViewById(R.id.light_button);
         humButton = findViewById(R.id.hum_button);
         profilesButton = findViewById(R.id.profiles_button);
-        switchButton = findViewById(R.id.switch_button);
         reminderButton = findViewById(R.id.reminders_button);
-
 
         //Initialise listeners for if button is clicked --> call corresponding method
         tempButton.setOnClickListener(view -> openTemperatureView());
         lightButton.setOnClickListener(view -> openLightView());
         humButton.setOnClickListener(view -> openHumidityView());
         profilesButton.setOnClickListener(view ->openProfilesView());
-        switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> handleSwitchStateChange(isChecked));
         reminderButton.setOnClickListener(view -> openReminderView());
 
         //Fetch current profile from ProfileActivity and set active profile to publish values.
@@ -121,7 +118,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intentProfiles = new Intent(MainActivity.this, ProfileActivity.class);
         startActivity(intentProfiles);
     }
-
+    public void openReminderView(){
+        Intent intentReminder = new Intent(this, ReminderActivity.class);
+        startActivity(intentReminder);
+    }
     protected void onDestroy() {
         super.onDestroy();
         client.disconnect();
@@ -218,22 +218,5 @@ public class MainActivity extends AppCompatActivity {
         int currentProfileId = profileList.get(findActiveProfile().getId()).getId();
         databaseNode.child(key).child("profile").setValue(currentProfileId);
 
-    }
-
-    //publishes message to Wio terminal depending on if silent mode is on/off, to set the timing interval of notifications received to on/off
-    public void handleSwitchStateChange(boolean isChecked) {
-        // Handle the switch button changes to publish message to Wio
-        if (isChecked) {
-            // Switch is ON
-            publishMsg(Topics.TIMING_PUB.getTopic(), "0");
-        } else {
-            // Switch is OFF
-            publishMsg(Topics.TIMING_PUB.getTopic(), "7");
-
-        }
-    }
-    public void openReminderView(){
-        Intent intentReminder = new Intent(this, ReminderActivity.class);
-        startActivity(intentReminder);
     }
 }
