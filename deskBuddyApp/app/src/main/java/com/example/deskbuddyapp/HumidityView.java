@@ -30,6 +30,11 @@ public class HumidityView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_humidity_view);
+
+        // Initiate background animation.
+        BackgroundAnimator animator = new BackgroundAnimator();
+        animator.animateBackground(findViewById(R.id.humidity_view));
+
         humidityChart = findViewById(R.id.humChart);
         client = MqttHandler.getInstance();
         subscribeTopic(Topics.HUMIDITY_SUB.getTopic());

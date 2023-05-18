@@ -1,10 +1,12 @@
 package com.example.deskbuddyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +36,11 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        // Initiate background animation.
+        BackgroundAnimator animator = new BackgroundAnimator();
+        animator.animateBackground(findViewById(R.id.activity_profile));
+
         viewFlipper = findViewById(R.id.view_flipper);
         profileList = new ArrayList<>();
         buttonList = new ArrayList<>();
