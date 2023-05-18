@@ -1,10 +1,26 @@
 #include "Display.h"
 
-Display::Display(){};
+Display::Display(){
+  lastTempStr = "";
+  lastHumidStr = "";
+  lastLightStr = "";
+  refreshCounter = 0;
+};
 
 //initialize TFT LCD display
 void Display::init(){
   tft.begin();
+}
+
+void Display::clearScreen(){
+  tft.fillScreen(TFT_BLACK);
+}
+
+void Display::clearScreenOnce(){
+  if(refreshCounter == 0){
+    tft.fillScreen(TFT_BLACK);
+    refreshCounter++;
+  }
 }
 
 void Display::drawLaunchScreen(){
@@ -55,18 +71,26 @@ void Display::drawDashboard(
   uint16_t tempColor, 
   uint16_t humidColor, 
   uint16_t lightColor) {
+
   //clear screen and set text properties
-  tft.fillScreen(TFT_BLACK);                  //clear screen
   tft.setTextSize(2);                         //set text size
   tft.setTextColor(TFT_WHITE);                //set text color
-  
+
   //draw temperature box and text
   tft.fillRect(10, 15, 20, 20, tempColor);
   tft.setTextFont(2);
   tft.setCursor(40, 10);
   tft.print("Temperature");
   tft.setTextFont(4);
+  //this is to stop flickering of the screen by coloring old value black:
   tft.setCursor(40, 40);
+  if(strcmp(lastTempStr.c_str(), tempStr) !=0){
+    tft.setTextColor(TFT_BLACK);
+    tft.print(lastTempStr);
+  }
+  //resume drawing, color new value with white:
+  tft.setCursor(40, 40);
+  tft.setTextColor(TFT_WHITE);
   tft.print(tempStr);
   tft.print(" C");
 
@@ -76,7 +100,15 @@ void Display::drawDashboard(
   tft.setCursor(40, 85);
   tft.print("Humidity");
   tft.setTextFont(4);
+  //this is to stop flickering of the screen by coloring old value black:
   tft.setCursor(40, 115);
+  if(strcmp(lastHumidStr.c_str(), humidStr) !=0){
+    tft.setTextColor(TFT_BLACK);
+    tft.print(lastHumidStr);
+  }
+  //resume drawing, color new value with white:
+  tft.setCursor(40, 115);
+  tft.setTextColor(TFT_WHITE);
   tft.print(humidStr);
   tft.print(" %");
 
@@ -86,9 +118,24 @@ void Display::drawDashboard(
   tft.setCursor(40, 160);
   tft.print("Light level");
   tft.setTextFont(4);
+  //this is to stop flickering of the screen by coloring old value black:
   tft.setCursor(40, 190);
+  tft.setTextColor(TFT_BLACK);
+  if(strcmp(lastLightStr.c_str(), lightStr) !=0){
+    tft.print(lastLightStr);
+  }
+  if(lastLightStr.length() != strlen(lightStr)){
+    tft.print(" lx");
+  }
+  //resume drawing, color new value with white:
+  tft.setCursor(40, 190);
+  tft.setTextColor(TFT_WHITE);
   tft.print(lightStr);
   tft.print(" lx");
+
+  lastTempStr = tempStr;
+  lastHumidStr = humidStr;
+  lastLightStr = lightStr;
 }
 
 void Display::drawStandUpMsg() {
@@ -116,7 +163,7 @@ void Display::drawNotificationMsg(const char* notificationMsg) {
   tft.println("ATTENTION!!!");
   //if string is empty, display default notification message, otherwise print user defined msg
   if (strlen(notificationMsg) <= 2) { // empty string can have /0 terminator character on some systems, which can be length 2
-    notificationMsg = "Your laundry is ready!\n\n\n  Come and get it.";
+    notificationMsg = "Your workday is ending!\n\n\n  Commit your changes.";
   }
   tft.setCursor(30, 110);
   tft.println(notificationMsg);

@@ -10,8 +10,7 @@ The Wio device continuously monitors temperature, humidity, and light levels. Th
 
 Through environmental monitoring, motivational messaging, and user defined notifications, DeskBuddy allows users to work smarter, stay hydrated, and get regular physical movement.
 
-## Installation
-
+## Getting Started and Installation
 To be able to use this system, you need a [Wio Terminal](https://www.seeedstudio.com/Wio-Terminal-p-4509.html), the contents of this repository built and installed, and the following sensors:
 
 1. [Grove - Temperature & Humidity Sensor (DHT11)](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
@@ -20,20 +19,49 @@ To be able to use this system, you need a [Wio Terminal](https://www.seeedstudio
 
 For further information on installation please see the [installation wiki page](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Installation/Installation-Guide)
 
+## Purpose and Benefits
+
+Since the pandemic, a lot of people have started working more or exclusively from their homes. Factors such as light, temperature, humidity affect people’s well being and it is something that is often forgotten or overlooked. Other factors that affect people’s well being are posture and taking breaks. 
+
+The purpose of this project is to improve people's health, and their working or studying environment while they are working or studying from home. 
+
+Through sensors to measure various factors in their home, and consecutive reminders to check their posture and take breaks. We believe this system will help a lot of people improve their working environment, and benefit them feel better while they are working out of the comfort of their own homes. 
+
+## System Diagram
+
+<img src="https://i.imgur.com/AXQa1BL.png" alt="Logo" width="1000"/>  
+
 ## Project status
 
 [+ In development. +]
 
-Expected delivery of `v1.0`: [+ May 24th, 2023 +]
+Expected delivery of `v1.0`: [+ May 19th, 2023 +]
 
-## Authors and acknowledgment
-- [Karl Eriksson](https://git.chalmers.se/kaeriks)
-- [Malte Bengtsson](https://git.chalmers.se/bmalte)
-- [Ahmad Haj Ahmad](https://git.chalmers.se/haja)
-- [Nasit Vurgun](https://git.chalmers.se/nasit)
-- [Joel Celén](https://git.chalmers.se/joelcel)
-- [Rizwan Rafiq](https://git.chalmers.se/rizwanra)
+## Authors and Contributions
+### [Karl Eriksson](https://git.chalmers.se/kaeriks)
+### Contributions
+- Setting up MQTT class for the application
+- Setting up the reminders screen for saving various reminder intervals
+- Setting up the silent mode for reminders
+- Designing logo for the app and setting up the Icon displayed in the phone, and the start screen when you open the app
+- Contributing to various wiki page articles and readme
+- Adding enum classes to the app for easier use of topics and colors that should be published to the Wio
 
-Show your appreciation to those who have contributed to the project.
+### [Malte Bengtsson](https://git.chalmers.se/bmalte)
+### Contributions
+- 
+### [Ahmad Haj Ahmad](https://git.chalmers.se/haja)
+### Contributions
+- 
+
+### [Nasit Vurgun](https://git.chalmers.se/nasit)
+### Contributions
+-
+### [Joel Celén](https://git.chalmers.se/joelcel)
+### Contributions
+-
+### [Rizwan Rafiq](https://git.chalmers.se/rizwanra)
+### Contributions
+-
 
 <img src="https://i.imgur.com/IoqlBfD.png" alt="Logo" width="100"/>
