@@ -87,7 +87,7 @@ Expected delivery of `v1.0`: [+ May 19th, 2023 +]
     - Co-contribute to temperature chart (database queries) with Ahmad
     - Fix runtime errors in Android Application
     - Improve GUI of MainActivity class
-- Documentation: contributions to readme and wiki pages
+- Various contributions to readme and Wiki (installation pages)
 
 ### [Joel Celén](https://git.chalmers.se/joelcel)
 ### Contributions
