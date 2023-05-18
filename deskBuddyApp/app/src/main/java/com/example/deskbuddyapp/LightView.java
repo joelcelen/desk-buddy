@@ -18,7 +18,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
 public class LightView extends AppCompatActivity {
@@ -29,13 +28,17 @@ public class LightView extends AppCompatActivity {
     private long timeInterval;
     private int currentProfile;
 
-    ValueEventListener valueEventListener; // Store the ValueEventListener instance
+    private ValueEventListener valueEventListener; // Store the ValueEventListener instance
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_light_view);
+
+        // Initiate background animation.
+        BackgroundAnimator animator = new BackgroundAnimator();
+        animator.animateBackground(findViewById(R.id.light_view));
 
         timeInterval = 60000; //1 minute = 60000 milliseconds. This is the default setting(Live reading + 1 minute ago data).
         lightChart = findViewById(R.id.lightChart);

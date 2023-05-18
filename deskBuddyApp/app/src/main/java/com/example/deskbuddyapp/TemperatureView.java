@@ -30,13 +30,17 @@ public class TemperatureView extends AppCompatActivity {
     private long timeInterval;
     private int currentProfile;
 
-    ValueEventListener valueEventListener; // Store the ValueEventListener instance
+    private ValueEventListener valueEventListener; // Store the ValueEventListener instance
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature_view);
+
+        // Initiate background animation.
+        BackgroundAnimator animator = new BackgroundAnimator();
+        animator.animateBackground(findViewById(R.id.temp_view));
 
         timeInterval = 60000; //1 minute = 60000 milliseconds. This is the default setting(Live reading + 1 minute ago data).
         temperatureChart = findViewById(R.id.tempChart);

@@ -2,9 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/humidity_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient"
+    android:background="@drawable/gradient_list"
     tools:context=".HumidityView">
 
     <TextView
@@ -14,10 +15,10 @@
         android:text="Humidity (%)"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/humChart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/humChart" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/daily_button1"
@@ -25,8 +26,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
         android:layout_marginBottom="24dp"
+        android:background="@drawable/button_shape_profile"
         android:onClick="dailyGraph"
         android:text="Daily"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -36,8 +39,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="56dp"
         android:layout_marginBottom="24dp"
+        android:background="@drawable/button_shape_profile"
         android:onClick="weeklyGraph"
         android:text="Weekly"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -55,10 +60,12 @@
         android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
+        android:background="@drawable/button_shape_profile"
         android:onClick="mainActivity"
         android:text="Back"
-        app:layout_constraintBottom_toTopOf="@+id/daily_button1"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toStartOf="@+id/weekly_button1"
+        app:layout_constraintStart_toEndOf="@+id/daily_button1"
+        app:layout_constraintTop_toTopOf="@+id/daily_button1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

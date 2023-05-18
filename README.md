@@ -49,7 +49,14 @@ Expected delivery of `v1.0`: [+ May 19th, 2023 +]
 
 ### [Malte Bengtsson](https://git.chalmers.se/bmalte)
 ### Contributions
-- 
+- Implementing physical button behavior and functionality 
+- Creating home page of the app with behavior and GUI appearance connected to this
+- Creating suggestionsbutton and corresponding page with information regarding sensor settings 
+- Contributing to various wiki pages and readme
+- Updating overall GUI and appearance 
+- Work on CI/CD, testing and pipeline
+ 
+
 ### [Ahmad Haj Ahmad](https://git.chalmers.se/haja)
 ### Contributions
 - 
