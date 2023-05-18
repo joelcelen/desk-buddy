@@ -10,10 +10,16 @@
 class Display {
   private:
     TFT_eSPI tft;
+    String lastTempStr;
+    String lastHumidStr;
+    String lastLightStr;
+    int refreshCounter;
 
   public:
     Display();
     void init();
+    void clearScreen();
+    void clearScreenOnce();
     void drawLaunchScreen();
     void drawConnectingToWifi(const char* ssid);
     void drawConnectedToWifi();
