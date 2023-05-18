@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     private Button humButton;
     private Button profilesButton;
     private Button reminderButton;
-    private SwitchCompat switchButton;
     private ArrayList<RoomProfile> profileList;
     private TextView tempView;
     private TextView lightView;
@@ -71,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         lightButton = findViewById(R.id.light_button);
         humButton = findViewById(R.id.hum_button);
         profilesButton = findViewById(R.id.profiles_button);
-        switchButton = findViewById(R.id.switch_button);
         reminderButton = findViewById(R.id.reminders_button);
 
 
@@ -80,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         lightButton.setOnClickListener(view -> openLightView());
         humButton.setOnClickListener(view -> openHumidityView());
         profilesButton.setOnClickListener(view ->openProfilesView());
-        switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> handleSwitchStateChange(isChecked));
         reminderButton.setOnClickListener(view -> openReminderView());
 
         //Fetch current profile from ProfileActivity and set active profile to publish values.
@@ -155,12 +152,12 @@ public class MainActivity extends AppCompatActivity {
 
                     // populate database every second (live)
                     databaseNode = FirebaseDatabase.getInstance().getReference().child("temperature_liveData");
-                    //addSensorData("temperature_value", Double.parseDouble(payload));
+                    addSensorData("temperature_value", Double.parseDouble(payload));
 
                     // populate database averaging every minute (aggregate)
                     if(temperatureCounter == 60){
                         databaseNode = FirebaseDatabase.getInstance().getReference().child("temperature_aggregateData");
-                        //addSensorData("temperature_value", temperatureSum/ temperatureCounter);
+                        addSensorData("temperature_value", temperatureSum/ temperatureCounter);
                         temperatureCounter = 0;
                         temperatureSum = 0;
                     }
@@ -176,12 +173,12 @@ public class MainActivity extends AppCompatActivity {
 
                     // populate database every second (live)
                     databaseNode = FirebaseDatabase.getInstance().getReference().child("humidity_liveData");
-                    //addSensorData("humidity_value", Double.parseDouble(payload));
+                    addSensorData("humidity_value", Double.parseDouble(payload));
 
                     // populate database averaging every minute (aggregate)
                     if (humidityCounter == 60){
                     databaseNode = FirebaseDatabase.getInstance().getReference().child("humidity_aggregateData");
-                    //addSensorData("humidity_value", humiditySum/humidityCounter);
+                    addSensorData("humidity_value", humiditySum/humidityCounter);
                     humidityCounter = 0;
                     humiditySum = 0;
                     }
@@ -197,12 +194,12 @@ public class MainActivity extends AppCompatActivity {
 
                     // populate database every second (live)
                     databaseNode = FirebaseDatabase.getInstance().getReference().child("light_liveData");
-                    //addSensorData("light_value", Double.parseDouble(payload));
+                    addSensorData("light_value", Double.parseDouble(payload));
 
                     // populate database averaging every minute (aggregate)
                     if (lightCounter == 60){
                         databaseNode = FirebaseDatabase.getInstance().getReference().child("light_aggregateData");
-                        //addSensorData("light_value", lightSum / lightCounter);
+                        addSensorData("light_value", lightSum / lightCounter);
                         lightCounter = 0;
                         lightSum = 0;
 
@@ -215,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     // INSERT operation to Firebase Realtime DB
-    /*private void addSensorData(String pathString, double sensorValue) {
+    private void addSensorData(String pathString, double sensorValue) {
         String key = databaseNode.push().getKey(); // Generate a new unique key
         String timeStamp = String.valueOf(System.currentTimeMillis()); // Generate UNIX timestamp
         databaseNode.child(key).child("timestamp").setValue(timeStamp); //insert child timestamp
@@ -225,19 +222,6 @@ public class MainActivity extends AppCompatActivity {
         int currentProfileId = profileList.get(findActiveProfile().getId()).getId();
         databaseNode.child(key).child("profile").setValue(currentProfileId);
 
-    }*/
-
-    //publishes message to Wio terminal depending on if silent mode is on/off, to set the timing interval of notifications received to on/off
-    public void handleSwitchStateChange(boolean isChecked) {
-        // Handle the switch button changes to publish message to Wio
-        if (isChecked) {
-            // Switch is ON
-            publishMsg(Topics.TIMING_PUB.getTopic(), "0");
-        } else {
-            // Switch is OFF
-            publishMsg(Topics.TIMING_PUB.getTopic(), "7");
-
-        }
     }
     public void openReminderView(){
         Intent intentReminder = new Intent(this, ReminderActivity.class);

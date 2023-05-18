@@ -1,9 +1,14 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient
-        android:startColor="#AC1E46"
-        android:endColor="#3A082C"
-        android:centerColor="#B45C78"
-        android:centerY="0.5"
-        android:angle="45" />
-    <corners android:radius="30dp" />
-</shape>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?android:colorControlHighlight">
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#80AC1E46"
+                android:endColor="#803A082C"
+                android:centerColor="#80B45C78"
+                android:centerY="0.5"
+                android:angle="45" />
+            <corners android:radius="15dp" />
+        </shape>
+    </item>
+</ripple>

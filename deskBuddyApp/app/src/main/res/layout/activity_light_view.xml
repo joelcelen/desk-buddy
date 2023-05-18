@@ -28,6 +28,8 @@
         android:layout_marginBottom="24dp"
         android:onClick="dailyGraph"
         android:text="Daily"
+        android:background="@drawable/button_shape_profile"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/weekly_button1" />
 
@@ -39,6 +41,8 @@
         android:layout_marginBottom="24dp"
         android:onClick="weeklyGraph"
         android:text="Weekly"
+        android:background="@drawable/button_shape_profile"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -60,6 +64,8 @@
         android:layout_marginBottom="20dp"
         android:onClick="mainActivity"
         android:text="Back"
+        android:background="@drawable/button_shape_profile"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/daily_button1"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -71,6 +77,8 @@
         android:layout_marginBottom="24dp"
         android:onClick="hourlyGraph"
         android:text="Hourly"
+        android:background="@drawable/button_shape_profile"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/daily_button1" />
 
@@ -82,6 +90,8 @@
         android:layout_marginBottom="24dp"
         android:onClick="liveGraph"
         android:text="Live"
+        android:background="@drawable/button_shape_profile"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/hourly_button1" />
 
