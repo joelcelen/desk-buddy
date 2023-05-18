@@ -59,7 +59,12 @@ Expected delivery of `v1.0`: [+ May 19th, 2023 +]
 
 ### [Ahmad Haj Ahmad](https://git.chalmers.se/haja)
 ### Contributions
-- 
+- Setting up MQTT class for the application with Karl.
+- Setting up the configurion process of populating the database with sensor measurements with Nasit.
+- Setting up the the graph activites of the three indoor measurements.
+- Improve the GUI of the app after the second sprint (The non-final refinement).
+- Contributing to various wiki page articles and readme.
+
 
 ### [Nasit Vurgun](https://git.chalmers.se/nasit)
 ### Contributions
