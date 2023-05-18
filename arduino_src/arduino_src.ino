@@ -82,7 +82,7 @@ const unsigned long INTERVAL_STAND_UP = 3600000;      // time interval to displa
 const unsigned long INTERVAL_MOTIVATE = 1800000;      // time interval to display motivational messages      1800000  (default: 30 minutes)
 const unsigned long INTERVAL_PUBLISH = 1000;          // time interval to publish sensor data                1000     (default: 1 second)
 const unsigned long INTERVAL_DISPLAY = 1000;          // time interval to refresh dashboard display          1000     (default: 1 second)
-const unsigned long INTERVAL_NOTIFICATION = 25200000; // time interval to send notification to user          25200000 (default: 6 hours)
+const unsigned long INTERVAL_NOTIFICATION = 21600000; // time interval to send notification to user          21600000 (default: 6 hours)
 const unsigned long INTERVAL_ONE_TIME = 777;          // time interval for one-time events
 /* ADD YOUR OWN EVENT INTERVALS HERE */
 
@@ -210,7 +210,6 @@ void standUpEventSequence(){
   tft.drawGoodJobMsg(standUp.getCount());         // display good job message (encourages user, positive reinforcement)
   nonBlockingDelay(3000);
   colorLED.turnOff();                             // turn off color LED
-
   // turn off one-time standUp msg
   if(standUp.getInterval() == INTERVAL_ONE_TIME){
     standUp.setInterval(INTERVAL_STAND_UP);
@@ -223,7 +222,6 @@ void motivationEventSequence(){
   tft.drawMotivationMsg(motivate.getMessage());   // display motivational message
   nonBlockingDelay(2500);
   motivate.setLastEvent(millis());                // reset timer
-  
   // turn off one-time motivation msg
   if(motivate.getInterval() == INTERVAL_ONE_TIME){
     motivate.setInterval(INTERVAL_MOTIVATE);
@@ -256,16 +254,16 @@ void updateDashboardEventSequence(){
 void notificationEventSequence(){
   tft.drawNotificationMsg(notification.getMessage());  // display notification message
   for(int i=0; i<4; i++){
-    buzzer.notifyLoudly();                           // buzz notification
+    buzzer.notifyLoudly();                             // buzz notification
     nonBlockingDelay(300);
   }
-  tft.drawButtonPressMsg();                          // prompts user to press button
-  button.delayUntilPressed();                        // wait until button is pressed
-  nonBlockingDelay(300);
-  tft.drawGoodJobMsg();                              // display good job message (encourages user, positive reinforcement)
+  tft.drawButtonPressMsg();                            // prompts user to press button
+  while(!button.checkState()){                         // wait until button is pressed
+      nonBlockingDelay(100);
+  }
+  tft.drawGoodJobMsg();                                // display good job message (encourages user, positive reinforcement)
   nonBlockingDelay(3000);
   notification.setLastEvent(millis());
-
   // turn off one-time notification msg
   if(notification.getInterval() == INTERVAL_ONE_TIME){
     notification.setInterval(INTERVAL_NOTIFICATION);
@@ -350,15 +348,15 @@ void parseTiming(const char* message){
   Serial.println("A new timing message has arrived!");     // for debugging 
   Serial.println("Before: ");
   Serial.print("intervalStandUp= ");
-  Serial.println(standUp.getInterval());
+  Serial.println(standUp.getInterval()/60000);
   Serial.print("intervalMotivate= ");
-  Serial.println(motivate.getInterval());
+  Serial.println(motivate.getInterval()/60000);
   Serial.print("intervalNotification= ");
-  Serial.println(notification.getInterval());
+  Serial.println(notification.getInterval()/60000);
   Serial.print("intervalPublish= ");
-  Serial.println(publish.getInterval());
+  Serial.println(publish.getInterval()/60000);
   Serial.print("intervalDisplay= ");
-  Serial.println(refreshDisplay.getInterval());
+  Serial.println(refreshDisplay.getInterval()/60000);
   
 
   switch (messageType) {
@@ -425,15 +423,15 @@ void parseTiming(const char* message){
   
   Serial.println("After: ");                               // for debugging 
   Serial.print("intervalStandUp= ");
-  Serial.println(standUp.getInterval());
+  Serial.println(standUp.getInterval()/60000);
   Serial.print("intervalMotivate= ");
-  Serial.println(motivate.getInterval());
+  Serial.println(motivate.getInterval()/60000);
   Serial.print("intervalNotification= ");
-  Serial.println(notification.getInterval());
+  Serial.println(notification.getInterval()/60000);
   Serial.print("intervalPublish= ");
-  Serial.println(publish.getInterval());
+  Serial.println(publish.getInterval()/60000);
   Serial.print("intervalDisplay= ");
-  Serial.println(refreshDisplay.getInterval());
+  Serial.println(refreshDisplay.getInterval()/60000);
 }
 
 // PARSER: <New feature 1>
