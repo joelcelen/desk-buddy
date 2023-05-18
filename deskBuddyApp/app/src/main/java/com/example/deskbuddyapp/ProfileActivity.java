@@ -14,6 +14,8 @@ import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -98,10 +100,14 @@ public class ProfileActivity extends AppCompatActivity {
         //When pressed again, set the visibility of the corresponding textview to INVISIBLE
         suggestionsButton.setOnClickListener(v -> {
             if(isSuggestionsTextVisible){
+                Animation fadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+                suggestionsTextView.startAnimation(fadeOut);
                 suggestionsTextView.setVisibility(View.INVISIBLE);
                 isSuggestionsTextVisible = false;
             }
             else {
+                Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+                suggestionsTextView.startAnimation(fadeIn);
                 suggestionsTextView.setVisibility(View.VISIBLE);
                 suggestionsTextView.setText(getSuggestionsText());
                 isSuggestionsTextVisible = true;
