@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileActivity"
-    android:background="@drawable/background_gradient"
+    android:background="@drawable/gradient_list"
+    android:id="@+id/activity_profile"
     android:theme="@style/ProfileTheme">
 
     <ViewFlipper
@@ -77,6 +78,7 @@
                 android:layout_width="147dp"
                 android:layout_height="49dp"
                 android:background="@drawable/button_shape_profile"
+                android:textColor="#FFFFFF"
                 android:text="Settings"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -92,6 +94,7 @@
                 android:layout_marginTop="15dp"
                 android:text="Home"
                 android:background="@drawable/button_shape_profile"
+                android:textColor="#FFFFFF"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -113,8 +116,8 @@
 
             <TextView
                 android:id="@+id/suggestionsTextView"
-                android:layout_width="331dp"
-                android:layout_height="602dp"
+                android:layout_width="360dp"
+                android:layout_height="700dp"
                 android:background="@drawable/background_suggestions_textview"
                 android:elevation="10dp"
                 android:padding="16dp"
@@ -156,8 +159,9 @@
                 android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Go back"
+                android:text="Discard"
                 android:background="@drawable/button_shape_profile"
+                android:textColor="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -172,6 +176,7 @@
                 android:layout_height="47dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/button_shape_profile"
+                android:textColor="#FFFFFF"
                 android:text="Save changes"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -39,6 +39,10 @@ public class ReminderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reminder);
         client = MqttHandler.getInstance();
 
+        // Initiate background animation.
+        BackgroundAnimator animator = new BackgroundAnimator();
+        animator.animateBackground(findViewById(R.id.activity_reminder));
+
         //set all variables to their corresponding elements in the xml file
         sliderRemind = findViewById(R.id.slider_rem);
         sliderStandUp = findViewById(R.id.stand_up_slider);

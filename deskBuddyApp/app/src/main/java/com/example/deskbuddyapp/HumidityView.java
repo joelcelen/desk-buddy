@@ -36,6 +36,10 @@ public class HumidityView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_humidity_view);
 
+        // Initiate background animation.
+        BackgroundAnimator animator = new BackgroundAnimator();
+        animator.animateBackground(findViewById(R.id.humidity_view));
+
         timeInterval = 60000; //1 minute = 60000 milliseconds. This is the default setting(Live reading + 1 minute ago data).
         humidityChart = findViewById(R.id.humChart);
 
