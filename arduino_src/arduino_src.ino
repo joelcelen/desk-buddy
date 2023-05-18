@@ -96,6 +96,7 @@ Event refreshDisplay(INTERVAL_DISPLAY);         // define refresh GUI dashboard 
 
 // initialize TFT LCD display
 Display tft;
+int count = 0;
 
 // ascii art deskBuddy logo (font: big, layouts: default), from https://www.coolgenerator.com/ascii-text-generator
 const char* deskBuddyLogo = "      _           _    ____            _     _       \n"
@@ -146,7 +147,7 @@ void setup() {
 }
 
 void loop() {
-  timerStart = millis();                          // start timing the loop for debugging purposes -- takes about 500-600ms to get through a loop right now!
+  timerStart = millis();                          // start timing the loop for debugging purposes -- takes about 500 ms to get through a loop right now!
 
   //Connect MQTT - Verify connection
   mqttConnect();                                  // verify MQTT connection
@@ -189,7 +190,7 @@ void loop() {
   }
 
   timerEnd = millis();                            // end timing the loop for debugging
-  //Serial.println((timerEnd - timerStart));      // print serial port msg for debugging -- loop takes around 500-600 ms
+  //Serial.println((timerEnd - timerStart));      // print serial port msg for debugging -- loop takes around 500 ms
 }
 
 /*******************************************************************************************************************/
@@ -214,6 +215,7 @@ void standUpEventSequence(){
   if(standUp.getInterval() == INTERVAL_ONE_TIME){
     standUp.setInterval(INTERVAL_STAND_UP);
   }
+  tft.clearScreen();
 }
 
 // VIEW: Motivate (trigger: default/ user defined timing interval) 
@@ -226,6 +228,7 @@ void motivationEventSequence(){
   if(motivate.getInterval() == INTERVAL_ONE_TIME){
     motivate.setInterval(INTERVAL_MOTIVATE);
   }
+  tft.clearScreen();
 }
 
 // VIEW: Publish (trigger: default/ user defined timing interval) 
@@ -238,6 +241,7 @@ void publishSensorsEventSequence(){
 // VIEW: UpdateDashboard (trigger: default/ user defined timing interval)
 // Updates dashboard on device with environmental sensor readings and indicators that change color based on user preferences
 void updateDashboardEventSequence(){
+  tft.clearScreenOnce();
   //update dashboard of sensor readings and indicators based on user preferences
   tft.drawDashboard(
     temperature.getValue(),                       // displays live temperature sensor reading
@@ -268,6 +272,7 @@ void notificationEventSequence(){
   if(notification.getInterval() == INTERVAL_ONE_TIME){
     notification.setInterval(INTERVAL_NOTIFICATION);
   }
+  tft.clearScreen();
 }
 
 // VIEW: <New feature 1>
