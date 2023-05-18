@@ -29,7 +29,7 @@ public class LightView extends AppCompatActivity {
     private long timeInterval;
     private int currentProfile;
 
-    ValueEventListener valueEventListener; // Store the ValueEventListener instance
+    private ValueEventListener valueEventListener; // Store the ValueEventListener instance
 
 
     @Override
