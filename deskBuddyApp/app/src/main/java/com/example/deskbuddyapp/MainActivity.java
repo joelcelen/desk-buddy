@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         profilesButton = findViewById(R.id.profiles_button);
         reminderButton = findViewById(R.id.reminders_button);
 
-
         //Initialise listeners for if button is clicked --> call corresponding method
         tempButton.setOnClickListener(view -> openTemperatureView());
         lightButton.setOnClickListener(view -> openLightView());
@@ -130,7 +129,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intentProfiles = new Intent(MainActivity.this, ProfileActivity.class);
         startActivity(intentProfiles);
     }
-
+    public void openReminderView(){
+        Intent intentReminder = new Intent(this, ReminderActivity.class);
+        startActivity(intentReminder);
+    }
     protected void onDestroy() {
         super.onDestroy();
         client.disconnect();
@@ -229,9 +231,5 @@ public class MainActivity extends AppCompatActivity {
         int currentProfileId = profileList.get(findActiveProfile().getId()).getId();
         databaseNode.child(key).child("profile").setValue(currentProfileId);
 
-    }
-    public void openReminderView(){
-        Intent intentReminder = new Intent(this, ReminderActivity.class);
-        startActivity(intentReminder);
     }
 }
