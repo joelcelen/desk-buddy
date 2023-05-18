@@ -98,6 +98,7 @@ public class ProfileActivity extends AppCompatActivity {
         //Set onClick listener for when the suggestions (questionmark) button is pressed,
         //when pressed, set the visibility of the corresponding textview to VISIBLE
         //When pressed again, set the visibility of the corresponding textview to INVISIBLE
+        //Short fade in/out animation is called depending on if VISIBLE or INVISIBLE
         suggestionsButton.setOnClickListener(v -> {
             if(isSuggestionsTextVisible){
                 Animation fadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
@@ -254,7 +255,9 @@ public class ProfileActivity extends AppCompatActivity {
         viewFlipper.setDisplayedChild(1);
     }
 
-
+    //Method for constructing and editing the text that shows up in the suggestionsTextView.
+    //Utilizes spannableStringbuilder object which is constructe through sections, one for each paragraph
+    //The object is then returned and used in the listener for the suggestionsTextView
     public SpannableStringBuilder getSuggestionsText() {
         SpannableStringBuilder suggestionsText = new SpannableStringBuilder();
 

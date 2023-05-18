@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="green_track_color">#2ADE4C</color>
     <color name="red_track_color">#FF4E50</color>
+    <color name="bone_white">#E8E9DF</color>
     android:endColor="#FFAABB"
     android:centerColor="#FF4E50"
 </resources>
