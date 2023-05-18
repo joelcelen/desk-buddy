@@ -29,12 +29,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView tempView;
     private TextView lightView;
     private TextView humView;
-    private double temperatureCounter =0;
-    private double lightCounter=0;
-    private double humidityCounter =0;
-    private double temperatureSum=0;
-    private double lightSum=0;
-    private double humiditySum=0;
+    private int temperatureCounter = 0;
+    private int humidityCounter = 0;
+    private int lightCounter = 0;
+    private final int TEMPERATURE_COUNT_MAX = 60; // 1 minute = 60 seconds
+    private final int LIGHT_COUNT_MAX = 60; // 1 minute = 60 seconds
+    private final int HUMIDITY_COUNT_MAX = 60; // 1 minute = 60 seconds
+    private double temperatureSum = 0.0;
+    private double lightSum = 0.0;
+    private double humiditySum = 0.0;
 
     DatabaseReference databaseNode;     //Firebase database
     
@@ -118,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void openHumidityView() {
         Intent intentHumidity = new Intent(MainActivity.this, HumidityView.class);
+        int currentProfileId = profileList.get(findActiveProfile().getId()).getId();
+        intentHumidity.putExtra("profileId", currentProfileId);
         startActivity(intentHumidity);
     }
 
@@ -148,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             switch (topic1) {
                 case "deskBuddy/temperature":
                     temperatureCounter++;
+                    System.out.println(temperatureCounter);
                     temperatureSum+= Double.parseDouble(payload);
 
                     // populate database every second (live)
@@ -155,11 +161,12 @@ public class MainActivity extends AppCompatActivity {
                     addSensorData("temperature_value", Double.parseDouble(payload));
 
                     // populate database averaging every minute (aggregate)
-                    if(temperatureCounter == 60){
+                    if(temperatureCounter == TEMPERATURE_COUNT_MAX){
                         databaseNode = FirebaseDatabase.getInstance().getReference().child("temperature_aggregateData");
                         addSensorData("temperature_value", temperatureSum/ temperatureCounter);
+                        System.out.println("Added averaged temperature value to database.");
                         temperatureCounter = 0;
-                        temperatureSum = 0;
+                        temperatureSum = 0.0;
                     }
 
                     // update textview in live dashboard of main activity
@@ -176,11 +183,11 @@ public class MainActivity extends AppCompatActivity {
                     addSensorData("humidity_value", Double.parseDouble(payload));
 
                     // populate database averaging every minute (aggregate)
-                    if (humidityCounter == 60){
+                    if (humidityCounter == HUMIDITY_COUNT_MAX){
                     databaseNode = FirebaseDatabase.getInstance().getReference().child("humidity_aggregateData");
                     addSensorData("humidity_value", humiditySum/humidityCounter);
                     humidityCounter = 0;
-                    humiditySum = 0;
+                    humiditySum = 0.0;
                     }
 
                     // update textview in live dashboard of main activity
@@ -197,11 +204,11 @@ public class MainActivity extends AppCompatActivity {
                     addSensorData("light_value", Double.parseDouble(payload));
 
                     // populate database averaging every minute (aggregate)
-                    if (lightCounter == 60){
+                    if (lightCounter == LIGHT_COUNT_MAX){
                         databaseNode = FirebaseDatabase.getInstance().getReference().child("light_aggregateData");
                         addSensorData("light_value", lightSum / lightCounter);
                         lightCounter = 0;
-                        lightSum = 0;
+                        lightSum = 0.0;
 
                     }
                     // update textview in live dashboard of main activity

@@ -3,10 +3,19 @@ package com.example.deskbuddyapp;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 import com.google.android.material.slider.Slider;
 import com.google.gson.Gson;
@@ -27,6 +36,9 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText nameEditor;
     private ArrayList<RoomProfile> profileList;
     private ArrayList<Button> buttonList;
+    private Button suggestionsButton;
+    private TextView suggestionsTextView;
+    private boolean isSuggestionsTextVisible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +94,26 @@ public class ProfileActivity extends AppCompatActivity {
         homeButton.setOnClickListener(v -> {
             Intent home = new Intent(ProfileActivity.this, MainActivity.class);
             startActivity(home);
+        });
+
+        //Set onClick listener for when the suggestions (questionmark) button is pressed,
+        //when pressed, set the visibility of the corresponding textview to VISIBLE
+        //When pressed again, set the visibility of the corresponding textview to INVISIBLE
+        //Short fade in/out animation is called depending on if VISIBLE or INVISIBLE
+        suggestionsButton.setOnClickListener(v -> {
+            if(isSuggestionsTextVisible){
+                Animation fadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+                suggestionsTextView.startAnimation(fadeOut);
+                suggestionsTextView.setVisibility(View.INVISIBLE);
+                isSuggestionsTextVisible = false;
+            }
+            else {
+                Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+                suggestionsTextView.startAnimation(fadeIn);
+                suggestionsTextView.setVisibility(View.VISIBLE);
+                suggestionsTextView.setText(getSuggestionsText());
+                isSuggestionsTextVisible = true;
+            }
         });
     }
 
@@ -158,12 +190,16 @@ public class ProfileActivity extends AppCompatActivity {
         settingsButton = findViewById(R.id.btnSettings);
         backButton = findViewById(R.id.back_button);
         homeButton = findViewById(R.id.btnHome);
+        suggestionsButton = findViewById(R.id.suggestionsButton);
 
         // Sliders and adjusters.
         tempSlider = findViewById(R.id.sldTemp);
         humSlider = findViewById(R.id.sldHum);
         lightSlider = findViewById(R.id.sldLight);
         nameEditor = findViewById(R.id.editName);
+
+        //textView for Suggestions
+        suggestionsTextView = findViewById(R.id.suggestionsTextView);
     }
 
     /** This method finds the currently active profile by going through the profileList
@@ -217,6 +253,46 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void goToViewTwo(View view) {
         viewFlipper.setDisplayedChild(1);
+    }
+
+    //Method for constructing and editing the text that shows up in the suggestionsTextView.
+    //Utilizes spannableStringbuilder object which is constructe through sections, one for each paragraph
+    //The object is then returned and used in the listener for the suggestionsTextView
+    public SpannableStringBuilder getSuggestionsText() {
+        SpannableStringBuilder suggestionsText = new SpannableStringBuilder();
+
+        //Title
+        String suggestionsTitle = "Suggestions and recommendations\n\n";
+        suggestionsText.append(suggestionsTitle);
+        suggestionsText.setSpan(new RelativeSizeSpan(1.4f), 0, suggestionsTitle.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        suggestionsText.setSpan(new StyleSpan(Typeface.BOLD), 0, suggestionsTitle.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Temperature
+        String temperatureTitle = "Temperature: ";
+        String temperatureContent = "The ideal temperature range (20-24°C) promotes productivity and well-being. Individual temperature control options and flexible solutions like fans or space heaters accommodate preferences and ensure employees can adjust their surroundings for comfort.\n\n";
+        suggestionsText.append(temperatureTitle);
+        suggestionsText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), suggestionsText.length() - temperatureTitle.length(), suggestionsText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        suggestionsText.append(temperatureContent);
+
+        //Humidity
+        String humTitle = "Humidity: ";
+        String humText = "Maintaining optimal humidity levels (40-60%) is crucial for a comfortable and healthy workplace. It prevents dry skin, respiratory issues, and mold growth while reducing static electricity and improving air quality.\n\n";
+        suggestionsText.append(humTitle);
+        suggestionsText.setSpan(new StyleSpan(Typeface.BOLD), suggestionsText.length() - humTitle.length(), suggestionsText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        suggestionsText.append(humText);
+
+        // Light levels
+        String lightTitle = "Light levels: ";
+        String lightContent = "Balanced lighting, preferably natural light, enhances productivity and well-being. Adequate artificial lighting should be used when natural light is limited, minimizing glare and eye strain. Aim for 500-1,000 lux for general office work and provide adjustable lighting options for individual needs, incorporating ergonomic design principles for optimal conditions.\n\n";
+        suggestionsText.append(lightTitle);
+        suggestionsText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), suggestionsText.length() - lightTitle.length(), suggestionsText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        suggestionsText.append(lightContent);
+
+        //Remove trailing linebreak
+        if(!TextUtils.isEmpty(suggestionsText)){
+            suggestionsText.delete(suggestionsText.length() - 1, suggestionsText.length());
+        }
+        return suggestionsText;
     }
 
     public ArrayList<RoomProfile> getProfileList() {return profileList;}

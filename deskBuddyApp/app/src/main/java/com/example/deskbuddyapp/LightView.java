@@ -18,7 +18,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
 public class LightView extends AppCompatActivity {
@@ -29,7 +28,7 @@ public class LightView extends AppCompatActivity {
     private long timeInterval;
     private int currentProfile;
 
-    ValueEventListener valueEventListener; // Store the ValueEventListener instance
+    private ValueEventListener valueEventListener; // Store the ValueEventListener instance
 
 
     @Override

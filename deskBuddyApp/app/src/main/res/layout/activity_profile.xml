@@ -99,6 +99,53 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+
+
+            <ImageView
+                android:id="@+id/questionMark"
+                android:layout_width="50dp"
+                android:layout_height="46dp"
+                android:elevation="11dp"
+                app:layout_constraintBottom_toBottomOf="@+id/suggestionsButton"
+                app:layout_constraintEnd_toEndOf="@+id/suggestionsButton"
+                app:layout_constraintHorizontal_bias="0.2"
+                app:layout_constraintStart_toStartOf="@+id/suggestionsButton"
+                app:layout_constraintTop_toTopOf="@+id/suggestionsButton"
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@drawable/icons8_question_mark_64" />
+
+            <TextView
+                android:id="@+id/suggestionsTextView"
+                android:layout_width="360dp"
+                android:layout_height="700dp"
+                android:background="@drawable/background_suggestions_textview"
+                android:elevation="10dp"
+                android:padding="16dp"
+                android:text="TextView"
+                android:textAllCaps="false"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/suggestionsButton"
+                android:layout_width="60dp"
+                android:layout_height="47dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/button_suggestions"
+                android:elevation="11dp"
+                android:text="Button"
+                android:textSize="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.934"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.976" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Second view -->
@@ -160,6 +207,7 @@
                     android:textColor="#FFFFFF"
                     android:textColorHint="#CCCCCC"
                     android:textStyle="italic"
+                    android:maxLength="12"
                     app:layout_constraintBottom_toTopOf="@+id/sldTemp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
