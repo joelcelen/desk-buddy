@@ -87,19 +87,19 @@ public class ReminderActivity extends AppCompatActivity {
         resetButtonReminder.setOnClickListener(v -> {
             reminderMsg = reminderText.getText().toString();
             sliderRemind.setValue((float) REMINDER_DEFAULT / MIN_TO_MILLI_SEC);
-            handleSaveReminder(REMINDER_DEFAULT, reminderMsg);
+            handleReminderReset();
             saveReminderData((float) REMINDER_DEFAULT / MIN_TO_MILLI_SEC);
         });
 
         resetButtonMotivation.setOnClickListener(v -> {
             sliderMotivation.setValue((float) MOTIVATION_DEFAULT / MIN_TO_MILLI_SEC);
-            handleSaveMotivation(MOTIVATION_DEFAULT);
+            handleMotivationReset();
             saveMotivationData((float) MOTIVATION_DEFAULT / MIN_TO_MILLI_SEC);
         });
 
         resetButtonStandUp.setOnClickListener(v -> {
             sliderStandUp.setValue((float) STAND_UP_DEFAULT / MIN_TO_MILLI_SEC);
-            handleSaveStandUp(STAND_UP_DEFAULT);
+            handleStandUpReset();
             saveStandUpData((float) STAND_UP_DEFAULT / MIN_TO_MILLI_SEC);
         });
 
@@ -108,6 +108,19 @@ public class ReminderActivity extends AppCompatActivity {
             startActivity(home);
         });
     }
+
+    //method for publishing new time interval and message for the reminders to Wio if user presses save button for the slider
+    public void handleSaveReminder(float interval, String message) {
+        // send one time notification with new message
+        String reminder = "" + message;
+        String topic = Topics.NOTIFICATION_PUB.getTopic();
+        client.publish(topic, reminder);
+        //sends new interval, the 3 in the String message is for determining which type of notification to change in the Wio
+        String timing = "3" + (int)(interval * MIN_TO_MILLI_SEC);
+        topic = Topics.TIMING_PUB.getTopic();
+        client.publish(topic, timing);
+    }
+
     //method for publishing new time interval for the motivational messages to Wio if user presses save button for the slider
     public void handleSaveMotivation(float interval) {
         //sends new interval, the 2 in the String message is for determining which type of notification to change in the Wio
@@ -120,18 +133,28 @@ public class ReminderActivity extends AppCompatActivity {
         //sends new interval, the 1 in the String message is for determining which type of notification to change in the Wio
         String message = "1" + (int)(interval * MIN_TO_MILLI_SEC);
         String topic = Topics.TIMING_PUB.getTopic();
-        //client.publish(Topics.STANDUP_PUB.getTopic(), "Updated Stand-Up."); //one time standup
         client.publish(topic, message);
     }
-    //method for publishing new time interval and message for the reminders to Wio if user presses save button for the slider
-    public void handleSaveReminder(float interval, String message) {
-        // send one time notification with new message
-        String reminder = "" + message;
+    //Method for setting the correct value to publish to the Wio if the reset button for reminders is pressed
+    public void handleReminderReset() {
+        String reminder = "";
         String topic = Topics.NOTIFICATION_PUB.getTopic();
         client.publish(topic, reminder);
         //sends new interval, the 3 in the String message is for determining which type of notification to change in the Wio
-        String timing = "3" + (int)(interval * MIN_TO_MILLI_SEC);
+        String timing = "3" + REMINDER_DEFAULT;
         topic = Topics.TIMING_PUB.getTopic();
+        client.publish(topic, timing);
+    }
+    //Method for setting the correct value to publish to the Wio if the reset button for motivation is pressed
+    public void handleMotivationReset() {
+        String timing = "2" + MOTIVATION_DEFAULT;
+        String topic = Topics.TIMING_PUB.getTopic();
+        client.publish(topic, timing);
+    }
+    //Method for setting the correct value to publish to the Wio if the reset button for stand-ups is pressed
+    public void handleStandUpReset() {
+        String timing = "1" + STAND_UP_DEFAULT;
+        String topic = Topics.TIMING_PUB.getTopic();
         client.publish(topic, timing);
     }
     //save initial default values for each slider
@@ -172,5 +195,4 @@ public class ReminderActivity extends AppCompatActivity {
         motivationInterval = sharedPreferences.getFloat("motivation_saved", (float)MOTIVATION_DEFAULT / MIN_TO_MILLI_SEC);
         standUpInterval = sharedPreferences.getFloat("stand_up_saved", (float)STAND_UP_DEFAULT / MIN_TO_MILLI_SEC);
     }
-
 }
