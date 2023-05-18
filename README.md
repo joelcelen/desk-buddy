@@ -17,7 +17,10 @@ To be able to use this system, you need a [Wio Terminal](https://www.seeedstudio
 2. [Grove - Light Sensor v1.2](https://wiki.seeedstudio.com/Grove-Light_Sensor/)
 3. [Grove - Multi Color Flash LED (5mm)](https://www.seeedstudio.com/Grove-Multi-Color-Flash-LED-5mm.html)
 
-For further information on installation please see the [installation wiki page](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Installation/Installation-Guide)
+For further information on installation please see the following wiki pages:
+- [Configure Wio Sensors](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Configure%20Wio%20Sensors)
+- [Configure WiFi and MQTT](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Configure%20WiFi%20and%20MQTT)
+- [Automated Build](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Automated-Build)
 
 ## Purpose and Benefits
 
