@@ -82,7 +82,7 @@ const unsigned long INTERVAL_STAND_UP = 3600000;      // time interval to displa
 const unsigned long INTERVAL_MOTIVATE = 1800000;      // time interval to display motivational messages      1800000  (default: 30 minutes)
 const unsigned long INTERVAL_PUBLISH = 1000;          // time interval to publish sensor data                1000     (default: 1 second)
 const unsigned long INTERVAL_DISPLAY = 1000;          // time interval to refresh dashboard display          1000     (default: 1 second)
-const unsigned long INTERVAL_NOTIFICATION = 25200000; // time interval to send notification to user          25200000 (default: 6 hours)
+const unsigned long INTERVAL_NOTIFICATION = 21600000; // time interval to send notification to user          21600000 (default: 6 hours)
 const unsigned long INTERVAL_ONE_TIME = 777;          // time interval for one-time events
 /* ADD YOUR OWN EVENT INTERVALS HERE */
 
@@ -96,6 +96,7 @@ Event refreshDisplay(INTERVAL_DISPLAY);         // define refresh GUI dashboard 
 
 // initialize TFT LCD display
 Display tft;
+int count = 0;
 
 // ascii art deskBuddy logo (font: big, layouts: default), from https://www.coolgenerator.com/ascii-text-generator
 const char* deskBuddyLogo = "      _           _    ____            _     _       \n"
@@ -146,9 +147,9 @@ void setup() {
 }
 
 void loop() {
-  timerStart = millis();                          // start timing the loop for debugging purposes -- takes about 500-600ms to get through a loop right now!
+  timerStart = millis();                          // start timing the loop for debugging purposes -- takes about 500 ms to get through a loop right now!
 
-  //Connect MQTT - Verify connection
+  // Connect MQTT and verify connection
   mqttConnect();                                  // verify MQTT connection
   mqttClient.loop();                              // Retrieve messages on subscribed topics and trigger mqttCallback function
 
@@ -189,7 +190,7 @@ void loop() {
   }
 
   timerEnd = millis();                            // end timing the loop for debugging
-  //Serial.println((timerEnd - timerStart));      // print serial port msg for debugging -- loop takes around 500-600 ms
+  //Serial.println((timerEnd - timerStart));      // print serial port msg for debugging -- loop takes around 500 ms
 }
 
 /*******************************************************************************************************************/
@@ -210,11 +211,11 @@ void standUpEventSequence(){
   tft.drawGoodJobMsg(standUp.getCount());         // display good job message (encourages user, positive reinforcement)
   nonBlockingDelay(3000);
   colorLED.turnOff();                             // turn off color LED
-
   // turn off one-time standUp msg
   if(standUp.getInterval() == INTERVAL_ONE_TIME){
     standUp.setInterval(INTERVAL_STAND_UP);
   }
+  tft.clearScreen();
 }
 
 // VIEW: Motivate (trigger: default/ user defined timing interval) 
@@ -223,11 +224,11 @@ void motivationEventSequence(){
   tft.drawMotivationMsg(motivate.getMessage());   // display motivational message
   nonBlockingDelay(2500);
   motivate.setLastEvent(millis());                // reset timer
-  
   // turn off one-time motivation msg
   if(motivate.getInterval() == INTERVAL_ONE_TIME){
     motivate.setInterval(INTERVAL_MOTIVATE);
   }
+  tft.clearScreen();
 }
 
 // VIEW: Publish (trigger: default/ user defined timing interval) 
@@ -240,6 +241,7 @@ void publishSensorsEventSequence(){
 // VIEW: UpdateDashboard (trigger: default/ user defined timing interval)
 // Updates dashboard on device with environmental sensor readings and indicators that change color based on user preferences
 void updateDashboardEventSequence(){
+  tft.clearScreenOnce();
   //update dashboard of sensor readings and indicators based on user preferences
   tft.drawDashboard(
     temperature.getValue(),                       // displays live temperature sensor reading
@@ -256,20 +258,21 @@ void updateDashboardEventSequence(){
 void notificationEventSequence(){
   tft.drawNotificationMsg(notification.getMessage());  // display notification message
   for(int i=0; i<4; i++){
-    buzzer.notifyLoudly();                           // buzz notification
+    buzzer.notifyLoudly();                             // buzz notification
     nonBlockingDelay(300);
   }
-  tft.drawButtonPressMsg();                          // prompts user to press button
-  button.delayUntilPressed();                        // wait until button is pressed
-  nonBlockingDelay(300);
-  tft.drawGoodJobMsg();                              // display good job message (encourages user, positive reinforcement)
+  tft.drawButtonPressMsg();                            // prompts user to press button
+  while(!button.checkState()){                         // wait until button is pressed
+      nonBlockingDelay(100);
+  }
+  tft.drawGoodJobMsg();                                // display good job message (encourages user, positive reinforcement)
   nonBlockingDelay(3000);
   notification.setLastEvent(millis());
-
   // turn off one-time notification msg
   if(notification.getInterval() == INTERVAL_ONE_TIME){
     notification.setInterval(INTERVAL_NOTIFICATION);
   }
+  tft.clearScreen();
 }
 
 // VIEW: <New feature 1>
@@ -346,20 +349,6 @@ void parseStandUp(const char* message){
 
 void parseTiming(const char* message){
   char messageType = message[0];
-  
-  Serial.println("A new timing message has arrived!");     // for debugging 
-  Serial.println("Before: ");
-  Serial.print("intervalStandUp= ");
-  Serial.println(standUp.getInterval());
-  Serial.print("intervalMotivate= ");
-  Serial.println(motivate.getInterval());
-  Serial.print("intervalNotification= ");
-  Serial.println(notification.getInterval());
-  Serial.print("intervalPublish= ");
-  Serial.println(publish.getInterval());
-  Serial.print("intervalDisplay= ");
-  Serial.println(refreshDisplay.getInterval());
-  
 
   switch (messageType) {
     case '0':
@@ -422,18 +411,21 @@ void parseTiming(const char* message){
       Serial.println(message);
       break;
   }
-  
-  Serial.println("After: ");                               // for debugging 
+
+  /*
+  // for debugging, divide by 60000 to convert to minutes
+  Serial.println("A new timing message has arrived! Updated timing intervals: ");  
   Serial.print("intervalStandUp= ");
-  Serial.println(standUp.getInterval());
+  Serial.println(standUp.getInterval()/60000);
   Serial.print("intervalMotivate= ");
-  Serial.println(motivate.getInterval());
+  Serial.println(motivate.getInterval()/60000);
   Serial.print("intervalNotification= ");
-  Serial.println(notification.getInterval());
+  Serial.println(notification.getInterval()/60000);
   Serial.print("intervalPublish= ");
-  Serial.println(publish.getInterval());
+  Serial.println(publish.getInterval()/60000);
   Serial.print("intervalDisplay= ");
-  Serial.println(refreshDisplay.getInterval());
+  Serial.println(refreshDisplay.getInterval()/60000);
+  */
 }
 
 // PARSER: <New feature 1>
