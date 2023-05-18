@@ -30,9 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private int temperatureCounter = 0;
     private int humidityCounter = 0;
     private int lightCounter = 0;
-    private final int TEMPERATURE_COUNT_MAX = 60;
-    private final int LIGHT_COUNT_MAX = 60;
-    private final int HUMIDITY_COUNT_MAX = 60;
+    private final int TEMPERATURE_COUNT_MAX = 60; // 1 minute = 60 seconds
+    private final int LIGHT_COUNT_MAX = 60; // 1 minute = 60 seconds
+    private final int HUMIDITY_COUNT_MAX = 60; // 1 minute = 60 seconds
     private double temperatureSum = 0.0;
     private double lightSum = 0.0;
     private double humiditySum = 0.0;
