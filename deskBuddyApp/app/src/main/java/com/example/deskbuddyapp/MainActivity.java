@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
             switch (topic1) {
                 case "deskBuddy/temperature":
                     temperatureCounter++;
+                    System.out.println(temperatureCounter);
                     temperatureSum+= Double.parseDouble(payload);
 
                     // populate database every second (live)
@@ -159,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                     if(temperatureCounter == TEMPERATURE_COUNT_MAX){
                         databaseNode = FirebaseDatabase.getInstance().getReference().child("temperature_aggregateData");
                         addSensorData("temperature_value", temperatureSum/ temperatureCounter);
+                        System.out.println("Added averaged temperature value to database.");
                         temperatureCounter = 0;
                         temperatureSum = 0.0;
                     }
