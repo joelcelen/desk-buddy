@@ -17,7 +17,10 @@ To be able to use this system, you need a [Wio Terminal](https://www.seeedstudio
 2. [Grove - Light Sensor v1.2](https://wiki.seeedstudio.com/Grove-Light_Sensor/)
 3. [Grove - Multi Color Flash LED (5mm)](https://www.seeedstudio.com/Grove-Multi-Color-Flash-LED-5mm.html)
 
-For further information on installation please see the [installation wiki page](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Installation/Installation-Guide)
+For further information on installation please see the following wiki pages:
+- [Configure Wio Sensors](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Configure%20Wio%20Sensors)
+- [Configure WiFi and MQTT](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Configure%20WiFi%20and%20MQTT)
+- [Automated Build](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Automated-Build)
 
 ## Purpose and Benefits
 
@@ -52,9 +55,6 @@ Expected delivery of `v1.0`: [+ May 19th, 2023 +]
 - Implementing physical button behavior and functionality 
 - Creating home page of the app with behavior and GUI appearance connected to this
 - Creating suggestionsbutton and corresponding page with information regarding sensor settings 
-- Contributing to various wiki pages and readme
-- Updating overall GUI and appearance 
-- Work on CI/CD, testing and pipeline
  
 
 ### [Ahmad Haj Ahmad](https://git.chalmers.se/haja)
@@ -63,7 +63,31 @@ Expected delivery of `v1.0`: [+ May 19th, 2023 +]
 
 ### [Nasit Vurgun](https://git.chalmers.se/nasit)
 ### Contributions
--
+- Wio Terminal (majority of features):
+   - Encrypted MQTT connection (SSL/TLS) to HiveMQ cloud broker
+      - BrokerInfo.h file with secrets info and SSL certificate
+      - MqttTopics.h file with topics
+      - MQTT methods - subscribe to 7 topics, publish to 4 topics
+      - Parser methods
+      - Non-blocking delay implementation with MQTT - crucial for high-throughput messaging without lag (listen while waiting)
+   - Wi-Fi reconnection method with Rizwan
+   - Refactoring code from procedural to OOP (as much as possible)
+      - Event class - standUp, motivate, notification, publish, refreshDisplay
+      - Sensor class - store sensor values, indicator colors, and user preferences
+      - Display class - draw methods for setup screen, dashboard, events, removing flicker for high refresh rates
+      - LED class
+      - Buzzer class
+      - Button class with Malte
+   - Implement Controller in arduino_src.ino loop() to trigger Views: standUp, motivate, notification, publish, refreshDisplay event sequences
+   - Timing of events using millis() to achieve multitasking, precise timing, and responsive code execution of multiple event sequences, each running with multiple timers in parallel
+   - Implementing Wio logic for user defined preferences (user-defined timing intervals, messages, environmental preferences)
+   - Fix runtime errors in Wio Terminal (such as message corruption - fix through immutable String objects)
+- DeskBuddy Android App:
+    - Populate database with sensor data
+    - Co-contribute to temperature chart (database queries) with Ahmad
+    - Fix runtime errors in Android Application
+    - Improve GUI of MainActivity class
+
 ### [Joel Celén](https://git.chalmers.se/joelcel)
 ### Contributions
 -
