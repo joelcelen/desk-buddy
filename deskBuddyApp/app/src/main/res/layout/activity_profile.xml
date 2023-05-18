@@ -131,11 +131,12 @@
                 android:text="TextView"
                 android:textAllCaps="false"
                 android:visibility="invisible"
+                android:padding="16dp"
+                android:background="@drawable/background_suggestions_textview"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:background="@color/white"/>
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <Button
                 android:id="@+id/suggestionsButton"

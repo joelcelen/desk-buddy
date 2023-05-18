@@ -5,7 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -242,15 +249,41 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    public String getSuggestionsText() {
-        return "Suggestions and recommendations\n" +
-                "\n" +
-                "Humidity: Maintaining optimal humidity levels (40-60%) is crucial for a comfortable and healthy workplace. It prevents dry skin, respiratory issues, and mold growth while reducing static electricity and improving air quality.\n" +
-                "\n" +
-                "Temperature: The ideal temperature range (20-24°C) promotes productivity and well-being. Individual temperature control options and flexible solutions like fans or space heaters accommodate preferences and ensure employees can adjust their surroundings for comfort.\n" +
-                "\n" +
-                "Light levels: Balanced lighting, preferably natural light, enhances productivity and well-being. Adequate artificial lighting should be used when natural light is limited, minimizing glare and eye strain. Aim for 500-1,000 lux for general office work and provide adjustable lighting options for individual needs, incorporating ergonomic design principles for optimal conditions.\n" +
-                "\n";
+    public SpannableStringBuilder getSuggestionsText() {
+        SpannableStringBuilder suggestionsText = new SpannableStringBuilder();
+
+        //Title
+        String suggestionsTitle = "Suggestions and recommendations\n\n";
+        suggestionsText.append(suggestionsTitle);
+        suggestionsText.setSpan(new RelativeSizeSpan(1.4f), 0, suggestionsTitle.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        suggestionsText.setSpan(new StyleSpan(Typeface.BOLD), 0, suggestionsTitle.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        //Humidity
+        String humTitle = "Humidity: ";
+        String humText = "Maintaining optimal humidity levels (40-60%) is crucial for a comfortable and healthy workplace. It prevents dry skin, respiratory issues, and mold growth while reducing static electricity and improving air quality.\n\n";
+        suggestionsText.append(humTitle);
+        suggestionsText.setSpan(new StyleSpan(Typeface.BOLD), suggestionsText.length() - humTitle.length(), suggestionsText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        suggestionsText.append(humText);
+
+        // Temperature
+        String temperatureTitle = "Temperature: ";
+        String temperatureContent = "The ideal temperature range (20-24°C) promotes productivity and well-being. Individual temperature control options and flexible solutions like fans or space heaters accommodate preferences and ensure employees can adjust their surroundings for comfort.\n\n";
+        suggestionsText.append(temperatureTitle);
+        suggestionsText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), suggestionsText.length() - temperatureTitle.length(), suggestionsText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        suggestionsText.append(temperatureContent);
+
+        // Light levels
+        String lightTitle = "Light levels: ";
+        String lightContent = "Balanced lighting, preferably natural light, enhances productivity and well-being. Adequate artificial lighting should be used when natural light is limited, minimizing glare and eye strain. Aim for 500-1,000 lux for general office work and provide adjustable lighting options for individual needs, incorporating ergonomic design principles for optimal conditions.\n\n";
+        suggestionsText.append(lightTitle);
+        suggestionsText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), suggestionsText.length() - lightTitle.length(), suggestionsText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        suggestionsText.append(lightContent);
+
+        //Remove trailing linebreak
+        if(!TextUtils.isEmpty(suggestionsText)){
+            suggestionsText.delete(suggestionsText.length() - 1, suggestionsText.length());
+        }
+        return suggestionsText;
     }
 
     public ArrayList<RoomProfile> getProfileList() {return profileList;}
