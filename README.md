@@ -79,7 +79,7 @@ Expected delivery of `v1.0`: [+ May 19th, 2023 +]
       - Buzzer class
       - Button class with Malte
    - Implement Controller in arduino_src.ino loop() to trigger Views: standUp, motivate, notification, publish, refreshDisplay event sequences
-   - Timing of events using millis() to achieve multitasking, precise timing, and responsive code execution of multiple event sequences, each running with multiple timers in parallel
+   - Timing of events using millis() to achieve multitasking, precise timing, and responsive code execution of multiple event sequences, each running with own timers in parallel
    - Implementing Wio logic for user defined preferences (user-defined timing intervals, messages, environmental preferences)
    - Fix runtime errors in Wio Terminal (such as message corruption - fix through immutable String objects)
 - DeskBuddy Android App:
