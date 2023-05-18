@@ -32,7 +32,7 @@ Through sensors to measure various factors in their home, and consecutive remind
 
 ## System Diagram
 
-<img src="https://i.imgur.com/hX3FFIb.png" alt="Logo" width="1000"/>  
+<img src="https://i.imgur.com/m4MkGQa.png" alt="Logo" width="1000"/>  
 
 ## Project status
 
