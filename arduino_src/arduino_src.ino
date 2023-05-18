@@ -349,20 +349,6 @@ void parseStandUp(const char* message){
 
 void parseTiming(const char* message){
   char messageType = message[0];
-  
-  Serial.println("A new timing message has arrived!");     // for debugging 
-  Serial.println("Before: ");
-  Serial.print("intervalStandUp= ");
-  Serial.println(standUp.getInterval()/60000);
-  Serial.print("intervalMotivate= ");
-  Serial.println(motivate.getInterval()/60000);
-  Serial.print("intervalNotification= ");
-  Serial.println(notification.getInterval()/60000);
-  Serial.print("intervalPublish= ");
-  Serial.println(publish.getInterval()/60000);
-  Serial.print("intervalDisplay= ");
-  Serial.println(refreshDisplay.getInterval()/60000);
-  
 
   switch (messageType) {
     case '0':
@@ -425,8 +411,10 @@ void parseTiming(const char* message){
       Serial.println(message);
       break;
   }
-  
-  Serial.println("After: ");                               // for debugging 
+
+  /*
+  // for debugging, divide by 60000 to convert to minutes
+  Serial.println("A new timing message has arrived! Current timing intervals: ");  
   Serial.print("intervalStandUp= ");
   Serial.println(standUp.getInterval()/60000);
   Serial.print("intervalMotivate= ");
@@ -437,6 +425,7 @@ void parseTiming(const char* message){
   Serial.println(publish.getInterval()/60000);
   Serial.print("intervalDisplay= ");
   Serial.println(refreshDisplay.getInterval()/60000);
+  */
 }
 
 // PARSER: <New feature 1>
