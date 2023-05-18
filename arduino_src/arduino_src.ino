@@ -149,7 +149,7 @@ void setup() {
 void loop() {
   timerStart = millis();                          // start timing the loop for debugging purposes -- takes about 500 ms to get through a loop right now!
 
-  //Connect MQTT - Verify connection
+  // Connect MQTT and verify connection
   mqttConnect();                                  // verify MQTT connection
   mqttClient.loop();                              // Retrieve messages on subscribed topics and trigger mqttCallback function
 
@@ -414,7 +414,7 @@ void parseTiming(const char* message){
 
   /*
   // for debugging, divide by 60000 to convert to minutes
-  Serial.println("A new timing message has arrived! Current timing intervals: ");  
+  Serial.println("A new timing message has arrived! Updated timing intervals: ");  
   Serial.print("intervalStandUp= ");
   Serial.println(standUp.getInterval()/60000);
   Serial.print("intervalMotivate= ");
