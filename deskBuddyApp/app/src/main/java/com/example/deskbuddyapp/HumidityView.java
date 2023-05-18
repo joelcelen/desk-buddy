@@ -1,4 +1,5 @@
 package com.example.deskbuddyapp;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
@@ -12,54 +13,128 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import java.time.LocalTime;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class HumidityView extends AppCompatActivity {
-    private MqttHandler client;
-    ArrayList<Entry> humData = new ArrayList<>();
-    LineChart humidityChart;
-    LineDataSet humidityDataSet = new LineDataSet(humData,"Humidity Data Set");
-    ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-    LineData data = new LineData(dataSets);
+    private ArrayList<Entry> humData;
+    private LineChart humidityChart;
+    private LineData data;
+    private DatabaseReference databaseReference;
+    private long timeInterval;
+    private int currentProfile;
+
+    private ValueEventListener valueEventListener; // Store the ValueEventListener instance
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_humidity_view);
+
+        timeInterval = 60000; //1 minute = 60000 milliseconds. This is the default setting(Live reading + 1 minute ago data).
         humidityChart = findViewById(R.id.humChart);
-        client = MqttHandler.getInstance();
-        subscribeTopic(Topics.HUMIDITY_SUB.getTopic());
-        generateGraph();
+
+        Intent intent = getIntent();
+        currentProfile = intent.getIntExtra("profileId",0);
+
+        humData = new ArrayList<>();
+
+        readDataLive();
     }
 
-    public void generateGraph(){
-        humidityChart.refreshDrawableState();
-        humidityChart.setDragEnabled(true);
+    public void readDataLive(){
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("humidity_liveData");
+        removeDataListener();
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                humData.clear(); //
+                long startTime = System.currentTimeMillis() - timeInterval;
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Double value = dataSnapshot.child("humidity_value").getValue(Double.class);
+                    String generalTimeStamp = dataSnapshot.child("timestamp").getValue(String.class);
+                    Integer profileId = dataSnapshot.child("profile").getValue(Integer.class);
+
+                    if (value != null && generalTimeStamp!= null && profileId != null && profileId == currentProfile){ //Avoid getting empty value from the database
+                        long timeStamp = Long.parseLong(generalTimeStamp);
+                        if (timeStamp >= startTime){
+                            timeStamp = timeStamp -startTime;
+                            float time = (float) timeStamp;
+                            float entryData = value.floatValue();
+                            Entry entry = new Entry(time,entryData);
+                            humData.add(entry);
+                        }
+                    }
+                }
+                updateHumidityChart();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                //TODO: Add logic for this method
+            }
+        };
+        databaseReference.addValueEventListener(valueEventListener);
+    }
+
+    public void readDataAggregate(){
+
+        databaseReference =  FirebaseDatabase.getInstance().getReference("humidity_aggregateData");
+        removeDataListener();
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                humData.clear(); //
+                long startTime = System.currentTimeMillis() - timeInterval;
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Double value = dataSnapshot.child("humidity_value").getValue(Double.class);
+                    String generalTimeStamp = dataSnapshot.child("timestamp").getValue(String.class);
+                    Integer profileId = dataSnapshot.child("profile").getValue(Integer.class);
+
+                    if (value != null && generalTimeStamp!= null && profileId != null && profileId == currentProfile){ //Avoid getting empty value from the database
+                        long timeStamp = Long.parseLong(generalTimeStamp);
+                        if (timeStamp >= startTime){
+                            timeStamp = timeStamp -startTime;
+                            float time = (float) timeStamp;
+                            float entryData = value.floatValue();
+                            Entry entry = new Entry(time,entryData);
+                            humData.add(entry);
+                        }
+                    }
+                }
+                updateHumidityChart();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                //TODO: Add logic for this method
+            }
+        };
+        databaseReference.addValueEventListener(valueEventListener);
+    }
+
+
+    public void updateHumidityChart(){
+        data = new LineData(getHumidityDataSet());
+
+        // Notify the LineData that the data has changed
+        data.notifyDataChanged();
+
+        humidityChart.setData(data);
+        humidityChart.setDragEnabled(false);
         humidityChart.setScaleEnabled(false);
-
-
-        humidityDataSet.setColor(Color.GREEN);
-        humidityDataSet.setLineWidth(2f);
-        humidityDataSet.setDrawCircles(true);
-        humidityDataSet.setCircleColor(Color.BLUE);
-        humidityDataSet.setCircleRadius(5f);
-        humidityDataSet.setValueTextColor(Color.WHITE);
-
-
-        dataSets.add(humidityDataSet);
-
-
+        // Set the X-axis and Y-axis label position to bottom and enable grid lines
         XAxis xAxis = humidityChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
         xAxis.setTextSize(30);
         xAxis.setDrawLabels(false);
-        xAxis.setTextColor(Color.BLACK);
+        xAxis.setTextColor(Color.WHITE);
         xAxis.setTypeface(Typeface.DEFAULT_BOLD);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
         xAxis.setEnabled(false);
 
         YAxis yAxis = humidityChart.getAxisLeft();
@@ -74,45 +149,63 @@ public class HumidityView extends AppCompatActivity {
         legend.setTextSize(12);
         legend.setTextColor(Color.WHITE);
 
-        humidityChart.setDragEnabled(true);
-        humidityChart.setScaleEnabled(true);
-
         humidityChart.setData(data);
+
+        // Notify the chart that the data has changed
+        humidityChart.notifyDataSetChanged();
+        humidityChart.invalidate();
     }
 
-    private void subscribeTopic(String topic) {
-        client.subscribe(topic, new IMqttMessageListener() {
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                String payload = new String(message.getPayload());
-                Float humidity = Float.parseFloat(payload);
+    public LineDataSet getHumidityDataSet(){
 
-                LocalTime currentTime = LocalTime.now();
-                int seconds = currentTime.toSecondOfDay();
-                float time = (float) seconds;
+        LineDataSet humidityDataSet = new LineDataSet(humData,"Humidity %");
+        humidityDataSet.setColor(Color.WHITE);
+        humidityDataSet.setDrawFilled(true);
+        humidityDataSet.setLineWidth(0f);
+        humidityDataSet.setDrawCircles(true);
+        humidityDataSet.setCircleRadius(1.3f);
+        humidityDataSet.setValueTextColor(Color.WHITE);
+        humidityDataSet.setDrawValues(false);
 
-                Entry entry = new Entry(time,humidity);
-                humData.add(entry);
-                humidityDataSet.setValues(humData);
-                humidityDataSet.setValueTextSize(0);
+        return humidityDataSet;
+    }
+    // Add a method to remove the event listener
+    private void removeDataListener() {
+        if (valueEventListener != null) {
+            databaseReference.removeEventListener(valueEventListener);
+            valueEventListener = null;
+        }
+    }
 
-                // Notify the LineData that the data has changed
-                data.notifyDataChanged();
-
-                // Notify the chart that the data has changed
-                humidityChart.notifyDataSetChanged();
-                humidityChart.setData(data);
-                humidityChart.invalidate();
-            }
-        });
+    // Override the onDestroy() method to remove the event listener
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeDataListener();
     }
 
     public void mainActivity(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+    public void liveGraph(View view){
+        timeInterval = 60000; // 1 minute = 60000 milliseconds
+        removeDataListener();
+        readDataLive();
+    }
+    public void hourlyGraph(View view){
+        timeInterval = 3600000; // 1 hour = 3600000 milliseconds
+        removeDataListener();
+        readDataAggregate();
+    }
     public void dailyGraph(View view){
+        timeInterval = 3600000 * 24; // 1 day = 86400000 milliseconds
+        removeDataListener();
+        readDataAggregate();
     }
     public void weeklyGraph(View view){
+        timeInterval= 3600000 * 24 * 7; // 1 week = 604800000 milliseconds
+        removeDataListener();
+        readDataAggregate();
     }
 }
