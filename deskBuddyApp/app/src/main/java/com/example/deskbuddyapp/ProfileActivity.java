@@ -267,19 +267,19 @@ public class ProfileActivity extends AppCompatActivity {
         suggestionsText.setSpan(new RelativeSizeSpan(1.4f), 0, suggestionsTitle.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         suggestionsText.setSpan(new StyleSpan(Typeface.BOLD), 0, suggestionsTitle.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        //Humidity
-        String humTitle = "Humidity: ";
-        String humText = "Maintaining optimal humidity levels (40-60%) is crucial for a comfortable and healthy workplace. It prevents dry skin, respiratory issues, and mold growth while reducing static electricity and improving air quality.\n\n";
-        suggestionsText.append(humTitle);
-        suggestionsText.setSpan(new StyleSpan(Typeface.BOLD), suggestionsText.length() - humTitle.length(), suggestionsText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        suggestionsText.append(humText);
-
         // Temperature
         String temperatureTitle = "Temperature: ";
         String temperatureContent = "The ideal temperature range (20-24°C) promotes productivity and well-being. Individual temperature control options and flexible solutions like fans or space heaters accommodate preferences and ensure employees can adjust their surroundings for comfort.\n\n";
         suggestionsText.append(temperatureTitle);
         suggestionsText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), suggestionsText.length() - temperatureTitle.length(), suggestionsText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         suggestionsText.append(temperatureContent);
+
+        //Humidity
+        String humTitle = "Humidity: ";
+        String humText = "Maintaining optimal humidity levels (40-60%) is crucial for a comfortable and healthy workplace. It prevents dry skin, respiratory issues, and mold growth while reducing static electricity and improving air quality.\n\n";
+        suggestionsText.append(humTitle);
+        suggestionsText.setSpan(new StyleSpan(Typeface.BOLD), suggestionsText.length() - humTitle.length(), suggestionsText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        suggestionsText.append(humText);
 
         // Light levels
         String lightTitle = "Light levels: ";
