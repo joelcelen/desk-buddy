@@ -63,8 +63,8 @@ Expected delivery of `v1.0`: [+ May 19th, 2023 +]
 - Setting up the configurion process of populating the database with sensor measurements.
 - Setting up the the graph activites of the three indoor measurements.
 - Improve the GUI of the app (All activities) after the second sprint (The non-final refinement).
-- Contributing to various wiki page articles and readme.
-- setting up the first attempt of the light sensor code
+- Contributing to various wiki page articles and readme (The commit and code review guidlines).
+- Setting up the light sensor code (The first version)
 
 
 ### [Nasit Vurgun](https://git.chalmers.se/nasit)
