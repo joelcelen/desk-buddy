@@ -53,9 +53,22 @@ Expected delivery of `v1.0`: [+ May 19th, 2023 +]
 
 ### [Malte Bengtsson](https://git.chalmers.se/bmalte)
 ### Contributions
-- Implementing physical button behavior and functionality 
-- Creating home page of the app with behavior and GUI appearance connected to this
-- Creating suggestionsbutton and corresponding page with information regarding sensor settings 
+- Wio Terminal:
+   - Implementing physical button behavior and functionality 
+   - Refactor button into OOP structure with .h and .cpp which are called in the .ino in Arduino
+- Android App:
+   - Creating home page of the app with behavior and GUI appearance connected to this
+   - Creating suggestionsbutton and corresponding page with information regarding sensor settings 
+   - Overall GUI refactoring/edits
+- Contributing to various wiki pages of the git 
+   - Sprint pages 1, 2, 3
+   - Installation
+   - Code review guidelines
+   - Description
+   - Requirements
+- Contributing to README page
+- Working on the CI/CD and pipeline of the project's git. 
+   - The pipeline implementation unfortunately did not work as intended, even after extensive testing and             troubleshooting.
  
 
 ### [Ahmad Haj Ahmad](https://git.chalmers.se/haja)
