@@ -36,9 +36,10 @@ Through sensors to measure various factors in their home, and consecutive remind
 
 ## Project status
 
-[+ In development. +]
+[+ First Release v.1.0. May 19th+]
 
-Expected delivery of `v1.0`: [+ May 19th, 2023 +]
+## Video Demo
+### Link to [video demo](https://youtu.be/bD9ji7lhYXw)
 
 ## Authors and Contributions
 ### [Karl Eriksson](https://git.chalmers.se/kaeriks)
