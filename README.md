@@ -20,7 +20,7 @@ To be able to use this system, you need a [Wio Terminal](https://www.seeedstudio
 For further information on installation please see the following wiki pages:
 - [Configure Wio Sensors](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Configure%20Wio%20Sensors)
 - [Configure WiFi and MQTT](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Configure%20WiFi%20and%20MQTT)
-- [Automated Build](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Automated-Build)
+- [Automated Build Instructions](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/wikis/Automated%20Build%20Instructions)
 
 ## Purpose and Benefits
 
