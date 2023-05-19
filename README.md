@@ -62,7 +62,7 @@ Expected delivery of `v1.0`: [+ May 19th, 2023 +]
 - Setting up MQTT class for the application with Karl.
 - Setting up the configurion process of populating the database with sensor measurements.
 - Setting up the the graph activites of the three indoor measurements.
-- Improve the GUI of the app (All activities) after the second sprint (The non-final refinement).
+- Improve the GUI (All activities) after the second sprint (The non-final refinement).
 - Contributing to various wiki page articles and readme (The commit and code review guidlines).
 - Setting up the light sensor code (The first version)
 
