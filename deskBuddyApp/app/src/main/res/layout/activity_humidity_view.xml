@@ -17,6 +17,7 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/humChart"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,37 +25,39 @@
         android:id="@+id/daily_button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginBottom="24dp"
         android:background="@drawable/button_shape_profile"
         android:onClick="dailyGraph"
         android:text="Daily"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/back_button"
+        app:layout_constraintEnd_toStartOf="@+id/weekly_button1"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/humChart" />
 
     <Button
         android:id="@+id/weekly_button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="56dp"
-        android:layout_marginBottom="24dp"
         android:background="@drawable/button_shape_profile"
         android:onClick="weeklyGraph"
         android:text="Weekly"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/daily_button1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/daily_button1"
+        app:layout_constraintTop_toTopOf="@+id/daily_button1" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/humChart"
         android:layout_width="400dp"
         android:layout_height="500dp"
-        app:layout_constraintBottom_toTopOf="@+id/weekly_button1"
+        app:layout_constraintBottom_toTopOf="@+id/daily_button1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.450" />
+        app:layout_constraintTop_toBottomOf="@+id/hum_label" />
 
     <Button
         android:id="@+id/back_button"
@@ -64,8 +67,10 @@
         android:onClick="mainActivity"
         android:text="Back"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toStartOf="@+id/weekly_button1"
-        app:layout_constraintStart_toEndOf="@+id/daily_button1"
-        app:layout_constraintTop_toTopOf="@+id/daily_button1" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/daily_button1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
