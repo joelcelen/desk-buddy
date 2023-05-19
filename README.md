@@ -44,7 +44,8 @@ Expected delivery of `v1.0`: [+ May 19th, 2023 +]
 ### [Karl Eriksson](https://git.chalmers.se/kaeriks)
 ### Contributions
 - Setting up MQTT class for the application
-- Setting up the reminders screen for saving various reminder intervals
+- Making sure Mqtt connection is not publicly available, gets SSL certificate, and username/password from file in gitignore when starting app
+- Setting up the reminders screen for saving various reminder intervals with Rizwan
 - Setting up the silent mode for reminders
 - Designing logo for the app and setting up the Icon displayed in the phone, and the start screen when you open the app
 - Contributing to various wiki page articles and readme
