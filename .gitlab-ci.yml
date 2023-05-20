@@ -1,36 +1,3 @@
-## Arduino CI-CD for the Wio Terminal
-image: ubuntu:latest
-
-before_script:
-  # run shell script for installing arduino-cli, Wio Terminal core, and project libraries
-  - chmod +x setup-build-env.sh
-  - ./setup-build-env.sh
-
-stages:
-  - arduino_build
-
-# Compile Wio Terminal -- you can optionally upload if you are running docker locally
-compile_wio_terminal:
-  stage: arduino_build
-  tags:
-    - docker
-  script:
-    - export PATH=$PATH:/root/bin             # set the path to arduino-cli installation folder
-    - pwd                                     # print the current working directory
-    - cd arduino_src                          # change the directory to arduino folder
-    - echo "$NETWORK_INFO_H" > NetworkInfo.h  # import secrets for WiFi from Gitlab CI/CD Settings -> Variables
-    - echo "$BROKER_INFO_H" > BrokerInfo.h    # import secrets for MQTT from Gitlab CI/CD Settings -> Variables
-    - arduino-cli lib list                    # check that libraries are installed
-    
-    # Compile
-    - arduino-cli compile --fqbn Seeeduino:samd:seeed_wio_terminal
-
-    # Upload
-    - arduino-cli board list                  # Check if device is connected
-    #- arduino-cli upload -p $COM_PORT --fqbn Seeeduino:samd:seeed_wio_terminal           # if runnner is on local machine
-
-
-
 ## Android App CI-CD
 image: openjdk:11-jdk
 
