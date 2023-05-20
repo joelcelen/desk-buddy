@@ -1,3 +1,4 @@
+## Arduino CI-CD for the Wio Terminal
 image: ubuntu:latest
 
 before_script:
@@ -6,10 +7,11 @@ before_script:
   - ./setup-build-env.sh
 
 stages:
-  - build
+  - arduino_build
 
-compile:
-  stage: build
+# Compile Wio Terminal -- you can optionally upload if you are running docker locally
+compile_wio_terminal:
+  stage: arduino_build
   tags:
     - docker
   script:
@@ -26,3 +28,56 @@ compile:
     # Upload
     - arduino-cli board list                  # Check if device is connected
     #- arduino-cli upload -p $COM_PORT --fqbn Seeeduino:samd:seeed_wio_terminal           # if runnner is on local machine
+
+
+
+## Android App CI-CD
+image: openjdk:11-jdk
+
+variables:
+  ANDROID_COMPILE_SDK: "33"
+  ANDROID_BUILD_TOOLS: "31.0.0"
+  ANDROID_SDK_TOOLS: "6514223"
+
+before_script:
+  - cd /builds/courses/dit113/2023/group-8/desk-buddy/deskBuddyApp/
+  - apt-get --quiet update --yes
+  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+  - export ANDROID_HOME="${PWD}/android-home"
+  - install -d $ANDROID_HOME
+  - wget --output-document=$ANDROID_HOME/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
+  - pushd $ANDROID_HOME
+  - unzip -d cmdline-tools cmdline-tools.zip
+  - popd
+  - export PATH=$PATH:${ANDROID_HOME}/cmdline-tools/tools/bin/
+  - sdkmanager --version
+  - yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses || true
+  - sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-${ANDROID_COMPILE_SDK}"
+  - sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools"
+  - sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;${ANDROID_BUILD_TOOLS}"
+  - chmod +x ./gradlew
+  - cd app/src/main/res/raw/
+  - echo "$BROKER_INFO_TXT_FOR_ANDROID_APP" > brokerinfo.txt      # you need this secrets file for MQTT connection through app
+  - cd ../../../../../
+
+# Build android app
+assembleDebug:
+  interruptible: true
+  stage: build
+  tags:
+    - docker
+  script:
+    - ./gradlew assembleDebug
+  artifacts:
+    paths:
+      - app/build/outputs/
+
+# Test android app
+runTests:
+  interruptible: true
+  stage: test
+  tags:
+    - docker
+  script:
+    - ./gradlew test                            # run unit tests
+    #- ./gradlew connectedAndroidTest           # run instrumented unit tests (you need to connect a device first through adb)
