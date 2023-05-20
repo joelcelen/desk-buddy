@@ -107,7 +107,7 @@ Through sensors to measure various factors in their home, and consecutive remind
     - Co-contribute to temperature chart (database queries) with Ahmad
     - Fix runtime errors in Android Application
     - Improve GUI of MainActivity class
-- Various contributions to readme and Wiki (installation pages)
+- Contributions to sprint demos, README and Wiki (installation pages: configuring sensors, WiFi, MQTT, automated build)
 
 ### [Joel Celén](https://git.chalmers.se/joelcel)
 ### Contributions
