@@ -109,8 +109,9 @@ Through sensors to measure various factors in their home, and consecutive remind
     - Co-contribute to temperature chart (database queries) with Ahmad
     - Fix runtime errors in Android Application
     - Improve GUI of MainActivity class
-- Contributions to sprint demos, README and Wiki (installation pages: configuring sensors, WiFi, MQTT, automated build instructions)
-- Continuous integration with Arduino (Wio Terminal)
+- Contributions to sprint demos, README and Wiki (installation pages: configuring sensors, WiFi/MQTT setup, automated build instructions)
+- Continuous integration (CI) for Arduino / Wio Terminal
+- Continuous integration (CI) for Android App with Malte, Joel, Kalle
 
 ### [Joel Celén](https://git.chalmers.se/joelcel)
 ### Contributions
