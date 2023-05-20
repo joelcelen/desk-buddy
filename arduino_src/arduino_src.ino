@@ -14,7 +14,7 @@
 
 //WiFi libraries
 #include "WIFI.h"                              // Wi-Fi Custom library (deskBuddy)
-#include <rpcWiFi.h>                           // Wi-Fi System library
+#include "rpcWiFi.h"                           // Wi-Fi System library
 #include "NetworkInfo.h"                       // secrets file contains wifi SSID and PASSWORD (.gitignore)
 
 //MQTT libraries. See API info here: https://pubsubclient.knolleary.net/api
