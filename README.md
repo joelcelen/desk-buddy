@@ -35,7 +35,9 @@ Through sensors to measure various factors in their home, and consecutive remind
 <img src="https://i.imgur.com/m4MkGQa.png" alt="Logo" width="1000"/>  
 
 ## Project status
-[![Release](https://img.shields.io/badge/release-v1.1-blue.svg)](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/tags) -   Final Sprint Delivery with CI for Arduino / Wio Terminal: 2023-05-20
+[![Release](https://img.shields.io/badge/release-v1.2-blue.svg)](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/tags) -   Final Sprint Delivery with CI and automated tests for Android App (from branch 91): 2023-05-20
+
+[![Release](https://img.shields.io/badge/release-v1.1-blue.svg)](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/tags) -   Final Sprint Delivery with CI for Arduino / Wio Terminal (from main): 2023-05-20
 
 [![Release](https://img.shields.io/badge/release-v1.0-blue.svg)](https://git.chalmers.se/courses/dit113/2023/group-8/desk-buddy/-/tags) - Final Sprint Delivery (without CI): 2023-05-19
 
