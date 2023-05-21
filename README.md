@@ -72,7 +72,7 @@ Through sensors to measure various factors in their home, and consecutive remind
    - Requirements
 - Contributing to README page
 - Working on the CI/CD and pipeline of the project's git. 
-   - The pipeline implementation unfortunately did not work as intended, even after extensive testing and             troubleshooting.
+   - The pipeline implementation encountered a substantial amount of hurdles before it was able to run. It now runs as  it should.
  
 
 ### [Ahmad Haj Ahmad](https://git.chalmers.se/haja)
