@@ -117,7 +117,27 @@ Through sensors to measure various factors in their home, and consecutive remind
 
 ### [Joel Celén](https://git.chalmers.se/joelcel)
 ### Contributions
--
+- Wio Terminal:
+   - Initial setup of temperture and humidity sensor.
+- Android application fuctionality:
+   - Creating the RoomProfile class.
+   - Creating the ProfileActivity.
+   - Setting up a viewSwitcher and creation of a Settings view within the ProfileActivity.
+   - Setting up persisting RoomProfile objects for saving of environmental preferences.
+   - Importing RoomProfile objects to the MainActivity and publishing the preferences via the MQTT broker.
+- Android application GUI:
+   - Creation of GUI elements in the ProfileActivity class.
+   - Rework of overall GUI elements, including animated backgrounds and on-click ripple-effect button graphics.
+- Android application testing:
+   - Creating basic unit test class for the RoomProfile.
+   - Creating RoomProfile instrumented test class with Espresso testing framework.
+   - Creating instrumented test class for switching between the activities using Espresso.
+- Android application bug-fixing:
+   - Fixing bugs with loading RoomProfiles on initial application installation.
+   - Fixing GUI issues with constraints so that all phones will display the elements correctly.
+- Continuous contributions to project planning, scoping, documentation.
+- Continuous integration (CI) for Android App with Malte, Nasit, Kalle.
+
 ### [Rizwan Rafiq](https://git.chalmers.se/rizwanra)
 ### Contributions
 -
