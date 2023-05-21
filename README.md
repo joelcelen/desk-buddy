@@ -140,6 +140,20 @@ Through sensors to measure various factors in their home, and consecutive remind
 
 ### [Rizwan Rafiq](https://git.chalmers.se/rizwanra)
 ### Contributions
--
+- Wio Terminal:
+   - Wi-Fi class - WIFI.h and WIFI.cpp using OOP principles, solving connectivity issues with Nasit
+- Android App:
+   - Saving user profiles using Jackson library - feature was scrapped
+   - Implementing Firebase database connection to Android App
+      - set up cloud database with Google Services
+      - configured project level and app level Gradle to import Firebase dependencies and plug-in
+      - saving user profiles to Firebase database - feature was scrapped, decided to use shared preferences instead
+      - saving environmental data to Firebase database - refactored into Nasit's implementation
+   - Implementing shared preferences to save objects locally
+      - methods were used to save profiles including current profile - feature implemented by Joel
+      - methods were also used to save user-defined preferences (see below)
+   - User-defined preferences for notifications, motivational messages and stand up events with Kalle
+      - worked on XML file, activity class was implemented by Kalle
+- Documentation: worked with team on scoping, added security recommendations page to wiki
 
 <img src="https://i.imgur.com/IoqlBfD.png" alt="Logo" width="100"/>
