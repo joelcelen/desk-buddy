@@ -45,7 +45,7 @@ Through sensors to measure various factors in their home, and consecutive remind
 ### Link to [video demo](https://youtu.be/bD9ji7lhYXw)
 
 ## Authors and Contributions
-### [Karl Eriksson](https://git.chalmers.se/kaeriks)
+### [Karl Eriksson](https://github.com/kalleerikssoon)
 ### Contributions
 - Setting up MQTT class for the application
 - Making sure Mqtt connection is not publicly available, gets SSL certificate, and username/password from file in gitignore when starting app
@@ -55,7 +55,7 @@ Through sensors to measure various factors in their home, and consecutive remind
 - Contributing to various wiki page articles and readme
 - Adding enum classes to the app for easier use of topics and colors that should be published to the Wio
 
-### [Malte Bengtsson](https://git.chalmers.se/bmalte)
+### [Malte Bengtsson](https://github.com/maltextrakt)
 ### Contributions
 - Wio Terminal:
    - Implementing physical button behavior and functionality 
@@ -75,7 +75,7 @@ Through sensors to measure various factors in their home, and consecutive remind
    - The pipeline implementation encountered a substantial amount of hurdles before it was able to run. It now runs as  it should.
  
 
-### [Ahmad Haj Ahmad](https://git.chalmers.se/haja)
+### [Ahmad Haj Ahmad](https://github.com/ahmadhajahmad)
 ### Contributions
 - Setting up MQTT class for the application with Karl.
 - Setting up the configurion process of populating the database with sensor measurements.
@@ -85,7 +85,7 @@ Through sensors to measure various factors in their home, and consecutive remind
 - Setting up the light sensor code (The first version)
 
 
-### [Nasit Vurgun](https://git.chalmers.se/nasit)
+### [Nasit Vurgun](https://github.com/vurg)
 ### Contributions
 - Wio Terminal (majority of features):
    - Encrypted MQTT connection (SSL/TLS) to HiveMQ cloud broker
@@ -115,7 +115,7 @@ Through sensors to measure various factors in their home, and consecutive remind
 - Continuous integration (CI) for Arduino / Wio Terminal
 - Continuous integration (CI) for Android App with Malte, Joel, Kalle
 
-### [Joel Celén](https://git.chalmers.se/joelcel)
+### [Joel Celén](https://github.com/joelcelen)
 ### Contributions
 - Wio Terminal:
    - Initial setup of temperture and humidity sensor.
